@@ -6,21 +6,25 @@ import colors from "../../assets/colors";
 import links from "../../assets/links";
 
 const StyledContainer = styled.div`
-  background-color: ${colors.primary};
+  background-color: ${colors.white};
   border: 1px solid transparent;
   cursor: pointer;
+  width: 44px;
   height: 44px;
-  padding: 0px 6px;
+  padding: 8px;
   font-size: 14px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  justify-content: center;
   font-weight: 700;
   border-radius: 12px;
+  border: 1.5px solid transparent;
 
   &: hover {
-    border: 1px solid transparent;
-    border-color: ${colors.secondary4};
+    transition: 0.5s;
+    border: 1.5px solid;
+    border-color: ${colors.pointPink};
   }
 `;
 
@@ -29,19 +33,13 @@ type MenuItemProps = {
 };
 
 const StyledMenuItem = styled.div<MenuItemProps>`
-  padding: 4px 4px;
-  margin-left: -4px;
-  margin-right: -4px;
-  margin-top: ${(props) => (props.$first ? "0px" : "-8px")};
-
   a {
     font-weight: 600;
-    color: ${colors.white};
+    color: ${colors.darkGray1};
   }
 
   &: hover {
-    border-radius: 8px;
-    background-color: ${colors.secondary3};
+
   }
 `;
 
@@ -130,9 +128,9 @@ const DropDownMenu: MenuProps = {
   ],
   style: {
     marginTop: "8px",
-    backgroundColor: colors.primary,
-    border: "1px solid transparent",
-    borderColor: colors.secondary4,
+    backgroundColor: colors.realWhite,
+    border: "1.5px solid transparent",
+    borderColor: colors.pointPink,
   },
 };
 
@@ -145,12 +143,13 @@ const HeaderOptionButton: React.FC<Props> = () => {
         menu={DropDownMenu}
         placement={"bottomLeft"}
         trigger={["click"]}
+        overlayStyle={{ color: colors.white }}
       >
         <Button
           type="link"
           icon={
             <EllipsisOutlined
-              style={{ fontSize: "24px", color: colors.white }}
+              style={{ fontSize: "24px", color: colors.pointPink }}
             />
           }
         />

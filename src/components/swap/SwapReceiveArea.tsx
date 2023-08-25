@@ -6,8 +6,8 @@ import colors from "../../assets/colors";
 const StyledContainer = styled.div`
   border: 1px solid transparent;
   border-radius: 12px;
-  background-color: ${colors.secondary3};
-  color: ${colors.white};
+  background-color: ${colors.lightSal9};
+  color: ${colors.godong};
   padding: 16px;
 `;
 

@@ -13,7 +13,7 @@ const StyledButtonWrapper = styled.div`
 const StyledChangeFromToButton = styled.div`
   cursor: pointer;
   border-radius: 12px;
-  background-color: ${colors.secondary3};
+  background-color: ${colors.etcYellow};
 `;
 
 const StyledIcon = styled.div`

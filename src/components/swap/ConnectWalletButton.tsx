@@ -5,7 +5,7 @@ import colors from "../../assets/colors";
 const StyledContainer = styled.div`
   border: 1px solid transparent;
   border-radius: 12px;
-  background-color: ${colors.secondary4};
+  background-color: ${colors.pointPink};
   color: #fff;
   padding: 12px;
   font-size: 18px;

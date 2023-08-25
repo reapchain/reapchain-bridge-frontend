@@ -9,11 +9,18 @@ type Props = {
 
 const StyledIconWrapper = styled.div`
   padding: 8px;
-  background-color: ${colors.secondary2};
+  background-color: ${colors.lightSal9};
   border-radius: 50%;
   margin: 0px 4px;
   cursor: pointer;
   font-style: bold;
+  border: 1.5px solid transparent;
+
+  &: hover {
+    transition: 0.5s;
+    border: 1.5px solid;
+    border-color: ${colors.pointPink};
+  }
 `;
 
 const FooterLinkButton: React.FC<Props> = ({ icon, href }) => {

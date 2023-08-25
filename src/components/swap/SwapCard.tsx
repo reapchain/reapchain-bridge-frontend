@@ -5,15 +5,15 @@ import ChainSelectButton from "./ChainSelectButton";
 import SwapSendArea from "./SwapSendArea";
 import ChangeFromToButton from "./ChangeFromToButton";
 import SwapReceiveArea from "./SwapReceiveArea";
-import ConnectWallerButton from "./ConnectWallerButton";
+import ConnectWalletButton from "./ConnectWalletButton";
 import colors from "../../assets/colors";
 
 const StyledSwapCard = styled(Card)`
-  background-color: ${colors.primary};
+  background-color: ${colors};
   border: 1px solid transparent;
   border-radius: 12px;
-  border-color: ${colors.secondary4};
-  color: ${colors.white};
+  border-color: ${colors.pointPink};
+  color: ${colors.godong};
   padding: 12px 12px;
   font-weight: 600;
 `;
@@ -38,7 +38,7 @@ const SwapCard: React.FC = () => {
   return (
     <StyledSwapCard style={{ width: 550 }}>
       <StyledSelectTokenWrapper>
-        From <ChainSelectButton chainName={"Reap Token"} />
+        From <ChainSelectButton chainName={"REAP Token"} />
       </StyledSelectTokenWrapper>
 
       <StyledContentWrapper>
@@ -48,7 +48,7 @@ const SwapCard: React.FC = () => {
       <ChangeFromToButton />
 
       <StyledSelectTokenWrapper>
-        To <ChainSelectButton chainName={"Reap Coin"} />
+        To <ChainSelectButton chainName={"REAP Coin"} />
       </StyledSelectTokenWrapper>
 
       <StyledContentWrapper>
@@ -56,7 +56,7 @@ const SwapCard: React.FC = () => {
       </StyledContentWrapper>
 
       <StyledConnectWalletWrapper>
-        <ConnectWallerButton />
+        <ConnectWalletButton />
       </StyledConnectWalletWrapper>
     </StyledSwapCard>
   );

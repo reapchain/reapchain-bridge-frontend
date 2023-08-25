@@ -13,7 +13,7 @@ const StyledFooter = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  color: ${colors.white};
+  color: ${colors.godong};
   font-weight: 600;
   font-size: 12px;
   padding-bottom: 24px;
@@ -38,7 +38,7 @@ const StyledHrefWrapper = styled.div`
   text-underline-offset: 3px;
 `;
 
-const footerIconStyle = { fontSize: "16px", color: colors.white };
+const footerIconStyle = { fontSize: "16px", color: colors.godong };
 
 const Footer: React.FC = () => {
   return (

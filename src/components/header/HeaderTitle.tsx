@@ -13,7 +13,7 @@ const StyledHeaderTitle = styled.div`
   font-size: 28px;
   font-weight: 800;
   height: 44px;
-  color: ${colors.white};
+  color: ${colors.godong};
 `;
 
 const HeaderItem: React.FC<Props> = ({ title }) => {

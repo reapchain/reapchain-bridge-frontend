@@ -4,6 +4,7 @@ import HeaderLinkButton from "./HeaderLinkButton";
 import HeaderTitle from "./HeaderTitle";
 import HeaderHomeButton from "./HeaderHomeButton";
 import HeaderOptionButton from "./HeaderOptionButton";
+import HeaderMetamaskButtom from "./HeaderMetamaskButtom";
 
 const StyledHeader = styled.div`
   display: flex;
@@ -42,7 +43,7 @@ const Header: React.FC = () => {
         <HeaderTitle title={"rBridge"} />
       </StyledHeaderItemWrapper>
       <StyledHeaderItemWrapper>
-        <HeaderOptionButton />
+        <HeaderMetamaskButtom />
         <HeaderOptionButton />
       </StyledHeaderItemWrapper>
     </StyledHeader>

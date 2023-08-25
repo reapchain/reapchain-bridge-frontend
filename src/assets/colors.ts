@@ -9,6 +9,28 @@ const colors = {
   secondary2: "#489Fd8",
   secondary3: "#5BB6E7",
   secondary4: "#66C4F0",
+
+  realWhite: "#FFFFFF",
+  realBlack: "#000",
+  darkGray: "#242424",
+  darkGray1: "#8D8D8D",
+  warmWhite: "#FFF7F5",
+  warmBlue: "#F5FDFF",
+  sal9: "#FFBAA9",
+  lightSal9: "#FFCEC2",
+  godong: "#664a43",
+  warmGray5: "#504846",
+  warmGray4: "#857B7B",
+  warmGray3: "#A99691",
+  warmGray2: "#DBD4D4",
+  warmGray1: "#F4EFEF",
+  pointPink: "#FF768D",
+  pointPurple: "#6361E6",
+  etcYellow: "#FFD088",
+  etcLightYellow: "#FCF0DE",
+  etcBlue: "#1C3F74",
+  etcGray: "#7D7979",
+  etcRed: "#9F384A",
 };
 
 export default colors;
