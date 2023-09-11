@@ -35,7 +35,7 @@ const SwapReceiveArea: React.FC = () => {
       <StyledContentWrapper style={{ marginBottom: "4px" }}>
         <StyledSendAmount>
           <InputNumber
-            style={{}}
+            style={{ color: colors.godong }}
             bordered={false}
             color={"red"}
             size={"large"}

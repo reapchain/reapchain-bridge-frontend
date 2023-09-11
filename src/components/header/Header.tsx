@@ -4,12 +4,12 @@ import HeaderLinkButton from "./HeaderLinkButton";
 import HeaderTitle from "./HeaderTitle";
 import HeaderHomeButton from "./HeaderHomeButton";
 import HeaderOptionButton from "./HeaderOptionButton";
-import HeaderMetamaskButtom from "./HeaderMetamaskButtom";
+import HeaderMetamask from "./HeaderMetamask";
 
 const StyledHeader = styled.div`
   display: flex;
   width: 100%;
-  padding: 24px 0px;
+  padding: 12px 0px;
   z-index: 10;
   justify-content: space-between;
 `;
@@ -28,22 +28,22 @@ const Header: React.FC = () => {
         <HeaderHomeButton />
         <HeaderLinkButton
           tooltip="Dashboard"
-          href="https://dashboard.reapchain.org/dashboard"
+          href="https://test-dashboard.reapchain.org/dashboard"
         />
         <HeaderLinkButton
           tooltip="Explorer"
-          href="https://dashboard.reapchain.org/blocks"
+          href="https://test-dashboard.reapchain.org/blocks"
         />
         <HeaderLinkButton
           tooltip="Staking"
-          href="https://dashboard.reapchain.org/validators"
+          href="https://test-dashboard.reapchain.org/staking"
         />
       </StyledHeaderItemWrapper>
       <StyledHeaderItemWrapper>
         <HeaderTitle title={"rBridge"} />
       </StyledHeaderItemWrapper>
       <StyledHeaderItemWrapper>
-        <HeaderMetamaskButtom />
+        <HeaderMetamask />
         <HeaderOptionButton />
       </StyledHeaderItemWrapper>
     </StyledHeader>

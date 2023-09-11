@@ -1,0 +1,10 @@
+.ant-tabs-tab .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #363636 !important;
+  font-weight: 500;
+}
+
+.ant-tabs-ink-bar {
+  position: absolute;
+  background: #000000;
+  pointer-events: none;
+}

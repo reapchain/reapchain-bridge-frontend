@@ -8,18 +8,17 @@ import { Select } from "antd";
 import { networks } from "constants/network";
 import { Chain } from "types/chain";
 import reapchainIcon from "assets/images/reapchain.png";
-import ethereumIcon from "assets/images/ethereum.png";
+import ethereumIcon from "assets/images/reapchain.png";
 
 type Props = {
   chainName: string;
-  onClick: () => void;
 };
 
 const StyledChainSelectButton = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   border-radius: 12px;
   background-color: ${colors.lightSal9};
   color: ${colors.godong};
@@ -27,12 +26,6 @@ const StyledChainSelectButton = styled.div`
   margin-left: 12px;
   margin-right: auto;
   height: 24px;
-
-  &: hover {
-    transition: 0.5s;
-    border: 1.5px solid;
-    border-color: ${colors.pointPink};
-  }
 `;
 
 const StyledSelect = styled(Select)``;
@@ -65,16 +58,38 @@ const getIcon = (logo: string) => {
   }
 };
 
-const ChainSelectButton: React.FC<Props> = ({ chainName, onClick }) => {
-  // const [selected, setSelected] = useState<Chain>(chainList[0]);
+const ChainSelectButton: React.FC<Props> = ({ chainName }) => {
+  const [selected, setSelected] = useState<Chain>(chainList[0]);
 
   return (
-    <StyledChainSelectButton onClick={onClick}>
-      <img src={logoIcon} alt="icon" style={{ width: 20, height: 20 }} />
+    <StyledChainSelectButton>
+      <StyledSelect
+        showSearch
+        value={selected.chainName}
+        onChange={(obj) => {
+          console.log(obj);
+        }}
+      >
+        {chainList.map((chain: Chain) => {
+          return (
+            <Select.Option value={chain.chainId} key={chain.chainId}>
+              <StyledChainLogo>
+                <StyledChainLogoImage
+                  style={{ marginBottom: "-4px" }}
+                  src={getIcon(chain.icon)}
+                  alt={"chain logo"}
+                />
+                {chain.chainName}
+              </StyledChainLogo>
+            </Select.Option>
+          );
+        })}
+      </StyledSelect>
+      {/* <img src={logoIcon} alt="icon" style={{ width: 20, height: 20 }} />
       <div style={{ marginLeft: "8px", fontWeight: "600", fontSize: "16px" }}>
         {chainName}
       </div>
-      <Icon path={mdiChevronDown} size={1} style={{ opacity: 0.5 }} />
+      <Icon path={mdiChevronDown} size={1} style={{ opacity: 0.5 }} /> */}
     </StyledChainSelectButton>
   );
 };

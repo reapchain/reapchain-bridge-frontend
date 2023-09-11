@@ -1,7 +1,7 @@
 import { Tooltip } from "antd";
 import React from "react";
 import styled from "styled-components";
-import icon from "../../images/logo.png";
+import icon from "../../assets/images/logo.png";
 import colors from "../../assets/colors";
 
 const StyledContainer = styled.div`
@@ -27,11 +27,6 @@ const StyledContainer = styled.div`
   }
 `;
 
-const StyledA = styled.a`
-  width: 24px;
-  height: 24px;
-`;
-
 type Props = {
   tooltip: string;
   href: string;
@@ -39,13 +34,15 @@ type Props = {
 };
 
 const HeaderLinkButton: React.FC<Props> = ({ tooltip, href }) => {
+  const handleClickLink = () => {
+    window.open(href, "_blank");
+  };
+
   return (
     <>
       <Tooltip placement="bottom" title={tooltip}>
-        <StyledContainer>
-          <StyledA href={href} target="_blank" rel="noreferrer">
-            <img src={icon} alt="logo" style={{ width: 24, height: 24 }} />
-          </StyledA>
+        <StyledContainer onClick={handleClickLink}>
+          <img src={icon} alt="icon" style={{ width: 24, height: 24 }} />
         </StyledContainer>
       </Tooltip>
     </>

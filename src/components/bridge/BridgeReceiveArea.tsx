@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import TokenSelectButton from "./TokenSelectButton";
 import { InputNumber } from "antd";
 import colors from "../../assets/colors";
 
-const StyledSwapSendArea = styled.div`
+const StyledContainer = styled.div`
   border: 1px solid transparent;
   border-radius: 12px;
   background-color: ${colors.lightSal9};
@@ -26,17 +25,11 @@ const StyledSendAmount = styled.div`
   color: ${colors.white};
 `;
 
-const SwapSendArea: React.FC = () => {
-  const [sendAmount, setSendAmount] = useState<number | null>(0);
-
-  const handleChangeSendAmount = (value: any) => {
-    setSendAmount(value);
-  };
-
+const BridgeReceiveArea: React.FC = () => {
   return (
-    <StyledSwapSendArea>
+    <StyledContainer>
       <StyledContentWrapper style={{ marginBottom: "12px" }}>
-        <StyledContent>Send: </StyledContent>
+        <StyledContent>Receive (estimated):</StyledContent>
         <StyledContent>Max: 0</StyledContent>
       </StyledContentWrapper>
       <StyledContentWrapper style={{ marginBottom: "4px" }}>
@@ -47,20 +40,17 @@ const SwapSendArea: React.FC = () => {
             color={"red"}
             size={"large"}
             controls={false}
-            value={sendAmount}
+            value={0}
             min={0}
             max={10000000}
             defaultValue={0}
             placeholder={"0.0"}
-            onChange={handleChangeSendAmount}
+            onChange={() => {}}
           />
         </StyledSendAmount>
-        <StyledSendAmount>
-          <TokenSelectButton tokenName={"REAP"} />
-        </StyledSendAmount>
       </StyledContentWrapper>
-    </StyledSwapSendArea>
+    </StyledContainer>
   );
 };
 
-export default SwapSendArea;
+export default BridgeReceiveArea;

@@ -4,9 +4,12 @@ import logoIcon from "../../assets/images/logo.png";
 import Icon from "@mdi/react";
 import { mdiChevronDown } from "@mdi/js";
 import colors from "../../assets/colors";
+import { Token } from "types/chain";
+import { getIconSource } from "utils/util";
 
 type Props = {
-  tokenName: string;
+  token: Token;
+  onClick: () => void;
 };
 
 const StyledTokenSelectButton = styled.div`
@@ -18,10 +21,14 @@ const StyledTokenSelectButton = styled.div`
   height: 100%;
 `;
 
-const TokenSelectButton: React.FC<Props> = ({ tokenName }) => {
+const TokenSelectButton: React.FC<Props> = ({ token, onClick }) => {
   return (
-    <StyledTokenSelectButton>
-      <img src={logoIcon} alt="icon" style={{ width: 20, height: 20 }} />
+    <StyledTokenSelectButton onClick={onClick}>
+      <img
+        src={getIconSource(token.icon)}
+        alt="icon"
+        style={{ width: 20, height: 20 }}
+      />
       <div
         style={{
           marginLeft: "8px",
@@ -30,7 +37,7 @@ const TokenSelectButton: React.FC<Props> = ({ tokenName }) => {
           color: colors.godong,
         }}
       >
-        {tokenName}
+        {token.name}
       </div>
       <Icon path={mdiChevronDown} size={1} style={{ opacity: 1 }} />
     </StyledTokenSelectButton>
