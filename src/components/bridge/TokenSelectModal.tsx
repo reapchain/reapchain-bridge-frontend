@@ -83,6 +83,8 @@ const TokenSelectModal: React.FC<Props> = ({
       footer={null}
     >
       <StyledTokenList>
+        {chain.chainName}
+        target : {target}
         <TokenList
           list={chain.tokens}
           selected={selected}

@@ -4,13 +4,12 @@ import React from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
 import links from "../../assets/links";
+import HeaderOptionDropdownItem from "components/header/HeaderOptionDropdownItem";
 
-const StyledContainer = styled.div`
+const StyledDropdown = styled(Dropdown)`
   background-color: ${colors.white};
   border: 1px solid transparent;
   cursor: pointer;
-  width: 44px;
-  height: 44px;
   padding: 8px;
   font-size: 14px;
   box-sizing: border-box;
@@ -28,100 +27,58 @@ const StyledContainer = styled.div`
   }
 `;
 
-type MenuItemProps = {
-  $first?: boolean | undefined;
-};
-
-const StyledMenuItem = styled.div<MenuItemProps>`
-  a {
-    font-weight: 600;
-    color: ${colors.darkGray1};
-  }
-
-  &: hover {
-
-  }
+const StyledDropdownButton = styled(Button)`
+  width: 44px;
+  height: 44px;
 `;
 
 const DropDownMenu: MenuProps = {
   items: [
     {
-      label: (
-        <StyledMenuItem $first>
-          <a target="_blank" rel="noopener noreferrer" href={links.gitbook}>
-            Docs
-          </a>
-        </StyledMenuItem>
-      ),
+      label: <HeaderOptionDropdownItem href={links.gitbook} text={"Docs"} />,
       key: 1,
     },
     {
       label: (
-        <StyledMenuItem>
-          <a target="_blank" rel="noopener noreferrer" href={links.gitbook}>
-            Tutorial
-          </a>
-        </StyledMenuItem>
+        <HeaderOptionDropdownItem href={links.gitbook} text={"Tutorial"} />
       ),
       key: 2,
     },
     {
-      label: (
-        <StyledMenuItem>
-          <a target="_blank" rel="noopener noreferrer" href={links.gitbook}>
-            FAQ
-          </a>
-        </StyledMenuItem>
-      ),
+      label: <HeaderOptionDropdownItem href={links.gitbook} text={"FAQ"} />,
       key: 3,
     },
     {
       label: (
-        <StyledMenuItem>
-          <a target="_blank" rel="noopener noreferrer" href={links.gitbook}>
-            Audit Reports
-          </a>
-        </StyledMenuItem>
+        <HeaderOptionDropdownItem href={links.gitbook} text={"Audit Reports"} />
       ),
       key: 4,
     },
     {
-      label: (
-        <StyledMenuItem>
-          <a target="_blank" rel="noopener noreferrer" href={links.gitbook}>
-            SDK
-          </a>
-        </StyledMenuItem>
-      ),
+      label: <HeaderOptionDropdownItem href={links.gitbook} text={"SDK"} />,
       key: 5,
     },
     {
       label: (
-        <StyledMenuItem>
-          <a target="_blank" rel="noopener noreferrer" href={links.gitbook}>
-            Contect Support
-          </a>
-        </StyledMenuItem>
+        <HeaderOptionDropdownItem
+          href={links.gitbook}
+          text={"Contect Support"}
+        />
       ),
       key: 6,
     },
     {
       label: (
-        <StyledMenuItem>
-          <a target="_blank" rel="noopener noreferrer" href={links.gitbook}>
-            Contect Address
-          </a>
-        </StyledMenuItem>
+        <HeaderOptionDropdownItem
+          href={links.gitbook}
+          text={"Contect Address"}
+        />
       ),
       key: 7,
     },
     {
       label: (
-        <StyledMenuItem>
-          <a target="_blank" rel="noopener noreferrer" href={links.gitbook}>
-            Bug Bounty
-          </a>
-        </StyledMenuItem>
+        <HeaderOptionDropdownItem href={links.gitbook} text={"Bug Bounty"} />
       ),
       key: 8,
     },
@@ -138,23 +95,22 @@ type Props = {};
 
 const HeaderOptionButton: React.FC<Props> = () => {
   return (
-    <StyledContainer>
-      <Dropdown
-        menu={DropDownMenu}
-        placement={"bottomLeft"}
-        trigger={["click"]}
-        overlayStyle={{ color: colors.white }}
-      >
-        <Button
-          type="link"
-          icon={
-            <EllipsisOutlined
-              style={{ fontSize: "24px", color: colors.pointPink }}
-            />
-          }
-        />
-      </Dropdown>
-    </StyledContainer>
+    <StyledDropdown
+      menu={DropDownMenu}
+      placement={"bottomLeft"}
+      trigger={["click"]}
+      overlayStyle={{ color: colors.white }}
+    >
+      <StyledDropdownButton
+        type="link"
+        icon={
+          <EllipsisOutlined
+            style={{ fontSize: "24px", color: colors.pointPink }}
+          />
+        }
+        style={{ width: "44px", height: "44px" }}
+      />
+    </StyledDropdown>
   );
 };
 

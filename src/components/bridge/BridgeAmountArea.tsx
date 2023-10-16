@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import styled from "styled-components";
 import TokenSelectButton from "./TokenSelectButton";
-import { InputNumber } from "antd";
+import { Input, InputNumber } from "antd";
 import colors from "../../assets/colors";
 import { Token } from "types/chain";
 
@@ -29,11 +29,11 @@ const StyledInputAmount = styled.div`
 
 type Props = {
   type: "send" | "receive";
-  amount: number;
+  amount: string;
   max: number;
   token: Token;
   onClick: () => void;
-  onChange: (amount: number) => void;
+  onChange?: (value: string) => void;
 };
 
 const BridgeAmountArea: React.FC<Props> = ({
@@ -44,8 +44,8 @@ const BridgeAmountArea: React.FC<Props> = ({
   onClick,
   onChange,
 }) => {
-  const handleChangeAmount = (value: number | null) => {
-    onChange(value !== null ? value : 0);
+  const handleChangeAmount = (e: ChangeEvent<HTMLInputElement>) => {
+    onChange && onChange(e.target.value);
   };
 
   const handleClick = () => {
@@ -56,6 +56,10 @@ const BridgeAmountArea: React.FC<Props> = ({
     return type === "send" ? "Send:" : "Receive (estimated):";
   };
 
+  const disabled = () => {
+    return type === "receive" ? true : false;
+  };
+
   return (
     <StyledBridgeInputArea>
       <StyledContentWrapper style={{ marginBottom: "12px" }}>
@@ -64,7 +68,23 @@ const BridgeAmountArea: React.FC<Props> = ({
       </StyledContentWrapper>
       <StyledContentWrapper style={{ marginBottom: "4px" }}>
         <StyledInputAmount>
-          <InputNumber
+          <Input
+            style={{
+              color: colors.pointPink,
+              width: 220,
+              fontWeight: 600,
+              fontSize: 20,
+            }}
+            disabled={disabled()}
+            bordered={false}
+            size={"large"}
+            value={amount}
+            min={0}
+            placeholder={"0.0"}
+            onChange={handleChangeAmount}
+            // onChange={handleChangeAmount}
+          />
+          {/* <InputNumber
             style={{ color: colors.godong, width: 220 }}
             bordered={false}
             color={"red"}
@@ -72,10 +92,9 @@ const BridgeAmountArea: React.FC<Props> = ({
             controls={false}
             value={amount}
             min={0}
-            defaultValue={0}
-            placeholder={"0.00"}
+            placeholder={"값."}
             onChange={handleChangeAmount}
-          />
+          /> */}
         </StyledInputAmount>
         <StyledInputAmount>
           <TokenSelectButton token={token} onClick={handleClick} />

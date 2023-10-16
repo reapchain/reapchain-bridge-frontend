@@ -9,7 +9,7 @@ type NetworkList = {
 
 export const networks: NetworkList = {
   reapchain_mainnet: {
-    chainId: "0x7e6",
+    chainId: "0x3602E",
     // chainId: "0x3602E",
     chainName: "Reapchain Mainnet",
     rpcUrls: ["https://eth.reapchain.org"],

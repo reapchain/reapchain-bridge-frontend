@@ -110,12 +110,12 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
     });
     web3Connection.on("disconnect", () => {
       console.log("disconnect");
+      window.location.reload();
     });
   }, [web3Connection]);
 
   const connectWeb3 = useCallback(
     async (providerName: string, catchMethmod?: () => void) => {
-      console.log("connectWeb3 : ", providerName);
       setError(undefined);
 
       setConnecting(true);
@@ -139,21 +139,15 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
 
   const disconnectWeb3 = useCallback(async () => {
     setError(undefined);
-
     setConnecting(false);
     setConnectName("");
-
-    if (connector?.deactivate) {
-      void connector.deactivate();
-    } else {
-      void connector.resetState();
-    }
-
     removeLocalStorageItem(localStorageKey.KEY_PROVIDER_TYPE);
+
+    await connector.resetState();
   }, []);
 
   useEffect(() => {
-    connectWeb3("injected");
+    // connectWeb3("injected");
   }, [connectWeb3, connectName]);
 
   const connectWeb3Signer = useCallback(async (chain: Chain) => {

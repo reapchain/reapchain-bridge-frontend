@@ -6,12 +6,13 @@ import BridgeAmountArea from "components/bridge/BridgeAmountArea";
 import ChainSelectButton from "components/bridge/ChainSelectButton";
 import ChainSelectModal from "components/bridge/ChainSelectModal";
 import ExchangeButton from "components/bridge/ExchangeButton";
-import ConnectWalletButton from "components/bridge/ConnectWalletButton";
+import ExecuteButton from "components/bridge/ExecuteButton";
 import { Chain, Token } from "types/chain";
 import { networks } from "constants/network";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import TokenSelectModal from "components/bridge/TokenSelectModal";
 import { BigNumber } from "@ethersproject/bignumber";
+import { applyAmountNumber } from "utils/number";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.white};
@@ -62,8 +63,8 @@ const Bridge: React.FC = () => {
   const [toToken, setToToken] = useState<Token>(
     networks.reapchain_mainnet.tokens[0]
   );
-  const [sendAmount, setSendAmount] = useState<number>(0);
-  const [receiveAmount, setReceiveAmount] = useState<number>(0);
+  const [sendAmount, setSendAmount] = useState<string>("");
+  const [receiveAmount, setReceiveAmount] = useState<string>("");
   // const [sendAmount, setSendAmount] = useState<BigNumber>(BigNumber.from("0"));
   // const [receiveAmount, setReceiveAmount] = useState<BigNumber>(
   //   BigNumber.from("0")
@@ -84,7 +85,6 @@ const Bridge: React.FC = () => {
   };
 
   const handleSelectChain = (target: string, chain: Chain) => {
-    console.log(target, chain);
     if (target === "from") {
       if (toChain.chainId === chain.chainId) {
         setToChain(fromChain);
@@ -110,7 +110,6 @@ const Bridge: React.FC = () => {
   };
 
   const handleSelectToken = (target: string, token: Token) => {
-    console.log(target, token);
     if (target === "from") {
       setFromToken(token);
     } else if (target === "to") {
@@ -151,6 +150,10 @@ const Bridge: React.FC = () => {
     return tokenModalTarget === "from" ? fromToken : toToken;
   };
 
+  const getTargetTokenChain = () => {
+    return tokenModalTarget === "from" ? fromChain : toChain;
+  };
+
   useEffect(() => {
     if (isInit === true) {
       setIsInit(false);
@@ -164,12 +167,19 @@ const Bridge: React.FC = () => {
     connectWeb3Signer(fromChain);
   }, [isActive, fromChain]);
 
-  const handleChangeSendAmount = (value: number) => {
+  useEffect(() => {}, [chainModalTarget]);
+  useEffect(() => {}, [tokenModalTarget]);
+
+  const handleChangeSendAmount = (value: string) => {
     setSendAmount(value);
   };
 
-  const handleChangeReceiveAmount = (value: number) => {
-    setReceiveAmount(value);
+  // const handleChangeReceiveAmount = (value: string) => {
+  //   setReceiveAmount(value);
+  // };
+
+  const handleClickExecute = () => {
+    console.log("handleClickExecute");
   };
 
   return (
@@ -181,7 +191,6 @@ const Bridge: React.FC = () => {
           onClick={() => handleOpenSelectChain("from")}
         />
       </StyledSelectTokenWrapper>
-
       <StyledContentWrapper>
         <BridgeAmountArea
           type={"send"}
@@ -192,11 +201,9 @@ const Bridge: React.FC = () => {
           onChange={handleChangeSendAmount}
         />
       </StyledContentWrapper>
-
       <ExchangeButtonWrapper>
         <ExchangeButton onClick={handleExchange} />
       </ExchangeButtonWrapper>
-
       <StyledSelectTokenWrapper>
         <StyledFromToText>To</StyledFromToText>
         <ChainSelectButton
@@ -204,22 +211,18 @@ const Bridge: React.FC = () => {
           onClick={() => handleOpenSelectChain("to")}
         />
       </StyledSelectTokenWrapper>
-
       <StyledContentWrapper>
         <BridgeAmountArea
           type={"receive"}
-          amount={receiveAmount}
+          amount={false ? receiveAmount : sendAmount}
           max={0}
           token={toToken}
           onClick={() => handleOpenSelectToken("to")}
-          onChange={handleChangeReceiveAmount}
         />
       </StyledContentWrapper>
-
       <StyledConnectWalletWrapper>
-        <ConnectWalletButton />
+        <ExecuteButton onClick={handleClickExecute} />
       </StyledConnectWalletWrapper>
-
       <ChainSelectModal
         open={chainModalOpen}
         target={chainModalTarget}
@@ -227,11 +230,10 @@ const Bridge: React.FC = () => {
         onSelect={handleSelectChain}
         onCancel={closeChainModal}
       />
-
       <TokenSelectModal
         open={tokenModalOpen}
         target={tokenModalTarget}
-        chain={getTargetChain()}
+        chain={getTargetTokenChain()}
         selected={getTargetToken()}
         onSelect={handleSelectToken}
         onCancel={closeTokenModal}
