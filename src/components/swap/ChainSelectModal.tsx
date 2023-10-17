@@ -59,7 +59,6 @@ const ChainSelectButton: React.FC<Props> = ({
   onCancel,
 }) => {
   const getModalTitle = () => {
-    console.log("getModalTitle");
     const targetNext = target === "from" ? "Source" : "Destination";
     return `Select ${targetNext} Network`;
   };

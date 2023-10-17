@@ -84,7 +84,6 @@ const DropDownMenu: MenuProps = {
     },
   ],
   style: {
-    marginTop: "8px",
     backgroundColor: colors.realWhite,
     border: "1.5px solid transparent",
     borderColor: colors.pointPink,

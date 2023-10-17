@@ -121,7 +121,6 @@ const HeaderMetamask: React.FC<Props> = () => {
       },
     ],
     style: {
-      marginTop: "8px",
       backgroundColor: colors.realWhite,
       border: "1.5px solid transparent",
       borderColor: colors.pointPink,
@@ -129,9 +128,6 @@ const HeaderMetamask: React.FC<Props> = () => {
   });
 
   useEffect(() => {
-    console.log("provider : ", provider);
-    // disconnectWeb3();
-
     // if (!provider) return;
     // const aa = provider.getSigner();
   }, [provider]);

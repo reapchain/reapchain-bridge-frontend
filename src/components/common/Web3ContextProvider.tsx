@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { message } from "antd";
 import {
   JsonRpcProvider,
   JsonRpcSigner,
@@ -16,6 +17,7 @@ import { useAsync } from "react-use";
 import { Chain, EthereumChain } from "types/chain";
 import { useWeb3React } from "@web3-react/core";
 import {
+  getLocalStorageItem,
   removeLocalStorageItem,
   setLocalStorageItem,
 } from "utils/localStorage";
@@ -96,6 +98,8 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
   const [error, setError] = useState<Error | undefined>(undefined);
   const [connectionStatus, setConnectionStatus] = useState("Disconnected");
 
+  const [messageApi, contextHolder] = message.useMessage();
+
   useAsync(async () => {
     if (!web3Connection) {
       return;
@@ -128,8 +132,9 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
         await connector.activate(1);
 
         // switch
-      } catch (error) {
+      } catch (error: any) {
         console.log(error);
+        messageApi.error(error.message || "error");
       }
 
       setLocalStorageItem(localStorageKey.KEY_PROVIDER_TYPE, "injected");
@@ -143,18 +148,21 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
     setConnectName("");
     removeLocalStorageItem(localStorageKey.KEY_PROVIDER_TYPE);
 
+    messageApi.warning("Disconnected");
+
     await connector.resetState();
   }, []);
 
   useEffect(() => {
-    // connectWeb3("injected");
-  }, [connectWeb3, connectName]);
+    if (getLocalStorageItem("provider") === "injected") {
+      connectWeb3("injected");
+    }
+  }, []);
 
   const connectWeb3Signer = useCallback(async (chain: Chain) => {
-    // console.log("connector.provider : ", connector.provider);
     try {
       if (!connector.provider) {
-        console.log("no provider...");
+        messageApi.info("Please install and run MetaMask");
 
         await connectWeb3("injected");
 
@@ -172,8 +180,11 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: chain.chainId }],
       });
+
+      messageApi.success("Connected");
     } catch (switchError: any) {
       console.log("switchError : ", switchError, chain);
+
       if (switchError.code && switchError.code === 4902) {
         try {
           await connector.provider?.request({
@@ -206,6 +217,7 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
       }}
     >
       {children}
+      {contextHolder}
     </Web3Context.Provider>
   );
 };
