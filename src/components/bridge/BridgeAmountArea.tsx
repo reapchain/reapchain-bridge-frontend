@@ -82,7 +82,6 @@ const BridgeAmountArea: React.FC<Props> = ({
             min={0}
             placeholder={"0.0"}
             onChange={handleChangeAmount}
-            // onChange={handleChangeAmount}
           />
           {/* <InputNumber
             style={{ color: colors.godong, width: 220 }}

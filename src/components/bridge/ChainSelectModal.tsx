@@ -91,7 +91,6 @@ const ChainSelectModal: React.FC<Props> = ({
       }}
       footer={null}
     >
-      {selected?.chainName}
       <StyledChainList>
         <ChainList
           list={chainList}

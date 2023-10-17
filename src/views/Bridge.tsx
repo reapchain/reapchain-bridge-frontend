@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Card } from "antd";
 import styled from "styled-components";
 import colors from "assets/colors";
@@ -12,7 +12,13 @@ import { networks } from "constants/network";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import TokenSelectModal from "components/bridge/TokenSelectModal";
 import { BigNumber } from "@ethersproject/bignumber";
-import { applyAmountNumber } from "utils/number";
+import {
+  applyAmountNumber,
+  removeLastDot,
+  validateDecimalInput,
+} from "utils/number";
+import { debounce } from "lodash";
+import FeeInfo from "components/bridge/FeeInfo";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.white};
@@ -140,6 +146,8 @@ const Bridge: React.FC = () => {
     setToChain(fromChain);
     setFromToken(toChain.tokens[0]);
     setToToken(fromChain.tokens[0]);
+    setSendAmount("");
+    setReceiveAmount("");
   };
 
   const getTargetChain = () => {
@@ -169,14 +177,39 @@ const Bridge: React.FC = () => {
 
   useEffect(() => {}, [chainModalTarget]);
   useEffect(() => {}, [tokenModalTarget]);
+  useEffect(() => debouncedCalcFee(), [sendAmount]);
 
   const handleChangeSendAmount = (value: string) => {
-    setSendAmount(value);
+    const tempValue = validateDecimalInput(value);
+
+    setSendAmount(tempValue);
   };
 
   // const handleChangeReceiveAmount = (value: string) => {
   //   setReceiveAmount(value);
   // };
+
+  const calcReceiveAmountAndFee = () => {
+    const ratio = 1;
+
+    if (!sendAmount) {
+      setReceiveAmount("");
+      return;
+    }
+
+    const tempSendAmount = removeLastDot(sendAmount);
+
+    if (!tempSendAmount || Number(tempSendAmount) === 0) {
+      setReceiveAmount("");
+      return;
+    }
+
+    const tempReceiveAmount = Number(tempSendAmount) * ratio;
+
+    setReceiveAmount(tempReceiveAmount.toString());
+  };
+
+  const debouncedCalcFee = debounce(calcReceiveAmountAndFee, 500);
 
   const handleClickExecute = () => {
     console.log("handleClickExecute");
@@ -214,7 +247,7 @@ const Bridge: React.FC = () => {
       <StyledContentWrapper>
         <BridgeAmountArea
           type={"receive"}
-          amount={false ? receiveAmount : sendAmount}
+          amount={receiveAmount}
           max={0}
           token={toToken}
           onClick={() => handleOpenSelectToken("to")}
@@ -223,6 +256,7 @@ const Bridge: React.FC = () => {
       <StyledConnectWalletWrapper>
         <ExecuteButton onClick={handleClickExecute} />
       </StyledConnectWalletWrapper>
+      {receiveAmount && <FeeInfo />}
       <ChainSelectModal
         open={chainModalOpen}
         target={chainModalTarget}
