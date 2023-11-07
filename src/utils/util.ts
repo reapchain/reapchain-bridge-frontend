@@ -2,6 +2,7 @@ import reapchainIcon from "assets/images/reapchain.png";
 import ethereumIcon from "assets/images/ethereum.png";
 import { networks } from "constants/network";
 import { Chain } from "types/chain";
+import { fromHex, toBech32, fromBech32, toHex } from "@cosmjs/encoding";
 
 export const getIconSource = (logo: string) => {
   if (logo === "reapchain") {
@@ -33,81 +34,102 @@ export const getEthereumChainObject = (chain: Chain) => {
     iconUrls: chain.iconUrls,
   };
 };
-// export const getChainInfo = () => {};
 
-// interface Window {
-//   ethereum: any;
-// }
+export const convertToBech32 = (hexAddress: string, prefix: string) => {
+  if (hexAddress.substring(0, 2) !== "0x" || hexAddress.length !== 42) {
+    return "";
+  }
 
-// declare global {
-//   interface Window {
-//     ethereum: any;
-//   }
-// }
+  return toBech32(prefix, fromHex(hexAddress.substring(2)));
+};
 
-// type Chain = {
-//   chainId: string;
-//   chainName: string;
-//   nativeCurrency: {
-//     name: string;
-//     symbol: string;
-//     decimals: number;
-//   };
-//   rpcUrls: string[];
-//   blockExplorerUrls: string[];
+export const convertToHex = (bech32Address: string) => {
+  if (bech32Address.substring(0, 4) !== "reap" || bech32Address.length !== 43) {
+    return "";
+  }
+
+  const address = fromBech32(bech32Address);
+
+  return `0x${toHex(address.data).toUpperCase()}`;
+};
+
+export const compareHexAddress = (hexAddress1: string, hexAddress2: string) => {
+  if (hexAddress1.substring(0, 2) !== "0x" || hexAddress1.length !== 42) {
+    return false;
+  }
+
+  if (hexAddress2.substring(0, 2) !== "0x" || hexAddress2.length !== 42) {
+    return false;
+  }
+
+  return (
+    hexAddress1.substring(2).toUpperCase() ===
+    hexAddress2.substring(2).toUpperCase()
+  );
+};
+
+// export const hexToBech32 = (hex: string) => {
+//   return converter("reap").toBech32(hex);
 // };
 
-// export const setChain = async (chain: Chain) => {
-//   let def = ["0x1", "0x3", "0x4", "0x5", "0x2a", "0x7e7"];
-//   if (def.indexOf(chain.chainId) === -1) {
-//     await window.ethereum.request({
-//       method: "wallet_addEthereumChain",
-//       params: [chain],
-//     });
-//   } else {
-//     await window.ethereum.request({
-//       method: "wallet_switchEthereumChain",
-//       params: [
-//         {
-//           chainId: chain.chainId,
-//         },
-//       ],
-//     });
-//   }
+// export const bech32ToHex = (bech32: string) => {
+//   return converter("eth").toBech32(bech32);
 // };
 
-// const setChain = async (chain: Chain) => {
+// export const makeChecksummedHexEncoder = () => {
+//   return (data: any) => toChecksumAddress(data.toString("hex"), null);
+// };
 
-// Vue.prototype.getWallet = async function (parent, accountChanged) {
-//     let _client;
-
-//     if (!window.ethereum) {
-//       let rpc = {};
-//       rpc[process.env.VUE_APP_MAIN_ID] = process.env.VUE_APP_MAIN_URL;
-//       rpc[process.env.VUE_APP_SUB_ID] = process.env.VUE_APP_SUB_URL;
-//       _client = new WalletConnectProvider({ rpc });
-
-//       let wc_inited = sessionStorage.getItem("walletconnect");
-//       if (wc_inited) {
-//         await _client.enable();
-//       } else {
-//         if (_client.connected) {
-//           await _client.connector.killSession();
-//         }
-//         await _client.enable();
-
-//         sessionStorage.setItem("walletconnect", "1");
-//       }
-
-//       parent.web3 = new Web3(_client);
-//     } else {
-//       _client = window.ethereum;
-//       await _client.enable();
-
-//       parent.web3 = new Web3(window.web3.currentProvider);
+// export const makeChecksummedHexDecoder = () => {
+//   return (data: any) => {
+//     const stripped = stripHexPrefix(data);
+//     if (
+//       !isValidChecksumAddress(data, null) &&
+//       stripped !== stripped.toLowerCase() &&
+//       stripped !== stripped.toUpperCase()
+//     ) {
+//       throw Error("Invalid address checksum");
 //     }
-
-//     accountChanged(_client);
-
-//     return await parent.web3.eth.getAccounts();
+//     return Buffer.from(stripHexPrefix(data), "hex");
 //   };
+// };
+
+// const hexChecksumChain = (name: string) => ({
+//   decoder: makeChecksummedHexDecoder(),
+//   encoder: makeChecksummedHexEncoder(),
+//   name,
+// });
+
+// export const ETH = hexChecksumChain("ETH");
+
+// function makeBech32Encoder(prefix: string) {
+//   return (data: any) => encode(prefix, toWords(data));
+// }
+
+// function makeBech32Decoder(currentPrefix: string) {
+//   return (data: any) => {
+//     const { prefix, words } = decode(data);
+//     if (prefix !== currentPrefix) {
+//       throw Error("Unrecognised address format");
+//     }
+//     return Buffer.from(fromWords(words));
+//   };
+// }
+
+// const bech32Chain = (name: string, prefix: string) => ({
+//   decoder: makeBech32Decoder(prefix),
+//   encoder: makeBech32Encoder(prefix),
+//   name,
+// });
+
+// export const REAP = bech32Chain("REAP", "reap");
+
+// export const ethToReap = (ethAddress: string) => {
+//   let data = ETH.decoder(ethAddress);
+//   return REAP.encoder(data);
+// };
+
+// export const reapToEth = (evmosAddress: string) => {
+//   let data = REAP.decoder(evmosAddress);
+//   return ETH.encoder(data);
+// };

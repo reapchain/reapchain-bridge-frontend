@@ -17,21 +17,35 @@ const StyledContainer = styled.div`
 `;
 
 type Props = {
-  onClick: () => void;
+  onClickConnectWallet: () => void;
+  onClickExecute: () => void;
 };
 
-const ExecuteButton: React.FC<Props> = ({ onClick }) => {
+const ExecuteButton: React.FC<Props> = ({
+  onClickConnectWallet,
+  onClickExecute,
+}) => {
   const { isActive } = useWeb3Context();
 
-  const handleClick = () => {
-    onClick();
+  const handleClickConnectWallet = () => {
+    onClickConnectWallet();
+  };
+
+  const handleClickExecute = () => {
+    onClickExecute();
   };
 
   if (!isActive) {
-    return <StyledContainer>Connect Wallet</StyledContainer>;
+    return (
+      <StyledContainer onClick={handleClickConnectWallet}>
+        Connect Wallet
+      </StyledContainer>
+    );
   }
 
-  return <StyledContainer onClick={handleClick}>Transfer</StyledContainer>;
+  return (
+    <StyledContainer onClick={handleClickExecute}>Transfer</StyledContainer>
+  );
 };
 
 export default ExecuteButton;

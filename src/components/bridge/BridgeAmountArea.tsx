@@ -4,6 +4,8 @@ import TokenSelectButton from "./TokenSelectButton";
 import { Input, InputNumber } from "antd";
 import colors from "../../assets/colors";
 import { Token } from "types/chain";
+import { displayBalanceWithDash } from "utils/number";
+import { BigNumberish } from "@ethersproject/bignumber";
 
 const StyledBridgeInputArea = styled.div`
   border: 1px solid transparent;
@@ -31,6 +33,7 @@ type Props = {
   type: "send" | "receive";
   amount: string;
   max: number;
+  availableBalance: BigNumberish;
   token: Token;
   onClick: () => void;
   onChange?: (value: string) => void;
@@ -40,6 +43,7 @@ const BridgeAmountArea: React.FC<Props> = ({
   type,
   amount,
   max,
+  availableBalance,
   token,
   onClick,
   onChange,
@@ -60,11 +64,25 @@ const BridgeAmountArea: React.FC<Props> = ({
     return type === "receive" ? true : false;
   };
 
+  const displayBalance = (balance: string, symbol: string) => {
+    if (balance === "0" || !balance) {
+      return "-";
+    } else {
+      return `${balance} ${symbol}`;
+    }
+  };
+
   return (
     <StyledBridgeInputArea>
       <StyledContentWrapper style={{ marginBottom: "12px" }}>
         <StyledContent>{getTypeTitle()}</StyledContent>
-        <StyledContent>Max: {max}</StyledContent>
+        {/* <StyledContent>Max: {max}</StyledContent> */}
+        {type === "send" && (
+          <StyledContent>
+            Balance: {displayBalanceWithDash(availableBalance, token.symbol, 4)}
+            {/* Balance: {displayBalance(availableBalance, token.symbol)} */}
+          </StyledContent>
+        )}
       </StyledContentWrapper>
       <StyledContentWrapper style={{ marginBottom: "4px" }}>
         <StyledInputAmount>

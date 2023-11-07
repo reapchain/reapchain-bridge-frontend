@@ -10,7 +10,6 @@ type NetworkList = {
 export const networks: NetworkList = {
   reapchain_mainnet: {
     chainId: "0x3602E",
-    // chainId: "0x3602E",
     chainName: "Reapchain Mainnet",
     rpcUrls: ["https://eth.reapchain.org"],
     blockExplorerUrls: ["https://dashboard.reapchain.org"],
@@ -43,10 +42,9 @@ export const networks: NetworkList = {
     ],
   },
   reapchain_testnet: {
-    // chainId: "0x3602F",
-    chainId: "0x3602F",
-    chainName: "Reapchain Testnet",
-    rpcUrls: ["https://test-eth.reapchain.org"],
+    chainId: "0x7e7",
+    chainName: "Reapchain Bridge Testnet",
+    rpcUrls: ["http://43.201.57.7:24000"],
     blockExplorerUrls: ["https://test-dashboard.reapchain.org"],
     nativeCurrency: {
       name: "Reapchain",
@@ -55,6 +53,10 @@ export const networks: NetworkList = {
     },
     icon: "reapchain",
     iconUrls: ["https://test-dashboard.reapchain.org/reapchain_bg_logo.png"],
+    // setting: {
+    //   useBridge: ['from', "to"],
+    //   useSwap: ['from', "to"]
+    // },
     tokens: [
       {
         id: 1,
@@ -76,6 +78,43 @@ export const networks: NetworkList = {
       },
     ],
   },
+  // reapchain_testnet: {
+  //   chainId: "0x3602F",
+  //   chainName: "Reapchain Testnet",
+  //   rpcUrls: ["https://test-eth.reapchain.org"],
+  //   blockExplorerUrls: ["https://test-dashboard.reapchain.org"],
+  //   nativeCurrency: {
+  //     name: "Reapchain",
+  //     symbol: "REAP",
+  //     decimals: 18,
+  //   },
+  //   icon: "reapchain",
+  //   iconUrls: ["https://test-dashboard.reapchain.org/reapchain_bg_logo.png"],
+  //   // setting: {
+  //   //   useBridge: ['from', "to"],
+  //   //   useSwap: ['from', "to"]
+  //   // },
+  //   tokens: [
+  //     {
+  //       id: 1,
+  //       name: "Reapchain Test Coin",
+  //       symbol: "REAP",
+  //       decimals: 18,
+  //       contractAddress: "",
+  //       contractOwner: "",
+  //       icon: "reapchain",
+  //     },
+  //     {
+  //       id: 2,
+  //       name: "Reapchain Test Token",
+  //       symbol: "tREAP",
+  //       decimals: 18,
+  //       contractAddress: "",
+  //       contractOwner: "",
+  //       icon: "reapchain",
+  //     },
+  //   ],
+  // },
   ethereum_mainnet: {
     chainId: "0x1",
     chainName: "Ethereum Mainnet",
@@ -122,19 +161,10 @@ export const networks: NetworkList = {
     tokens: [
       {
         id: 1,
-        name: "Ethereum Sepolia Coin",
-        symbol: "SepoliaETH",
+        name: "REAP Token",
+        symbol: "REAPt",
         decimals: 18,
-        contractAddress: "",
-        contractOwner: "",
-        icon: "ethereum",
-      },
-      {
-        id: 2,
-        name: "Ethereum Sepolia Token",
-        symbol: "reapETH",
-        decimals: 18,
-        contractAddress: "",
+        contractAddress: "0x89b7284C67B30e8E85A930B8A07c4943286D0D1d",
         contractOwner: "",
         icon: "ethereum",
       },

@@ -21,10 +21,16 @@ export interface Token {
   contractOwner: string;
 }
 
+export interface Setting {
+  useBridge: ("from" | "to")[];
+  useSwap: ("from" | "to")[];
+}
+
 export interface Chain extends EthereumChain {
   displayName?: string;
   icon: string;
   tokens: Token[];
+  setting?: Setting;
 }
 
 export type SelectedChain = {

@@ -34,6 +34,7 @@ const StyledModal = styled(Modal)`
 
 const StyledTokenList = styled.div`
   margin-top: 24px;
+  margin-bottom: 24px;
 `;
 
 type Props = {

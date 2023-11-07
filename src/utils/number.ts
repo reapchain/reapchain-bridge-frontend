@@ -1,3 +1,6 @@
+import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import { formatEther } from "@ethersproject/units";
+
 export const applyLocaleString = (value: number) => {
   return ("" + value).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
@@ -20,6 +23,20 @@ export const validateDecimalInput = (input: string) => {
   }
 
   return input;
+};
+
+export const displayBalanceWithDash = (
+  balance: BigNumberish,
+  symbol: string,
+  fraction: number = 4
+) => {
+  const tempBigNumber = BigNumber.from(balance);
+
+  if (!tempBigNumber || tempBigNumber.isZero()) {
+    return "-";
+  }
+
+  return `${formatEther(tempBigNumber)} ${symbol}`;
 };
 
 export const removeLastDot = (input: string) => {

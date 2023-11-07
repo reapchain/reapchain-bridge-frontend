@@ -63,13 +63,6 @@ const SwapCard: React.FC = () => {
     setModalOpen(false);
   };
 
-  // test
-  const { data } = useConnectionQuery();
-  const { mutate } = useConnectionMutation();
-  const handleClickTest = () => {
-    mutate(networks.ethereum_mainnet);
-  };
-
   return (
     <StyledSwapCard style={{ width: 550 }}>
       <StyledSelectTokenWrapper>
@@ -79,17 +72,6 @@ const SwapCard: React.FC = () => {
           onClick={handleClickSelectFromChain}
         />
       </StyledSelectTokenWrapper>
-
-      <div>
-        <div>Data Test</div>
-        <div>
-          <div>queryTest</div>
-          <div>data : {data ? data.chainName : "not selected"}</div>
-          <div>
-            <button onClick={handleClickTest}>Change</button>
-          </div>
-        </div>
-      </div>
 
       <StyledContentWrapper>
         <SwapSendArea />

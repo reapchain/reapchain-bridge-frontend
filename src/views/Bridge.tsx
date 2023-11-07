@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Card } from "antd";
+import { Card, message } from "antd";
 import styled from "styled-components";
 import colors from "assets/colors";
 import BridgeAmountArea from "components/bridge/BridgeAmountArea";
@@ -12,6 +12,13 @@ import { networks } from "constants/network";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import TokenSelectModal from "components/bridge/TokenSelectModal";
 import { BigNumber } from "@ethersproject/bignumber";
+import { Contract } from "@ethersproject/contracts";
+import {
+  ERC20ContractAddress,
+  BridgeContractAddress,
+  ApproveAmount,
+} from "constants/contract";
+import { BridgeABI, ERC20ABI } from "contracts/abi";
 import {
   applyAmountNumber,
   removeLastDot,
@@ -19,6 +26,11 @@ import {
 } from "utils/number";
 import { debounce } from "lodash";
 import FeeInfo from "components/bridge/FeeInfo";
+import { RegisteredSubscription } from "web3/lib/commonjs/eth.exports";
+import { Web3 } from "web3";
+import { useWeb3React } from "@web3-react/core";
+import { formatEther, parseEther } from "@ethersproject/units";
+import { compareHexAddress, convertToBech32, convertToHex } from "utils/util";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.white};
@@ -61,13 +73,15 @@ const Bridge: React.FC = () => {
   const [chainModalTarget, setChainModalTarget] = useState("from");
   const [tokenModalOpen, setTokenModalOpen] = useState(false);
   const [tokenModalTarget, setTokenModalTarget] = useState("from");
-  const [fromChain, setFromChain] = useState<Chain>(networks.ethereum_mainnet);
-  const [toChain, setToChain] = useState<Chain>(networks.reapchain_mainnet);
+  const [fromChain, setFromChain] = useState<Chain>(networks.ethereum_sepolia);
+  const [toChain, setToChain] = useState<Chain>(networks.reapchain_testnet);
+  // const [fromChain, setFromChain] = useState<Chain>(networks.ethereum_mainnet);
+  // const [toChain, setToChain] = useState<Chain>(networks.reapchain_mainnet);
   const [fromToken, setFromToken] = useState<Token>(
-    networks.ethereum_mainnet.tokens[0]
+    networks.ethereum_sepolia.tokens[0]
   );
   const [toToken, setToToken] = useState<Token>(
-    networks.reapchain_mainnet.tokens[0]
+    networks.reapchain_testnet.tokens[0]
   );
   const [sendAmount, setSendAmount] = useState<string>("");
   const [receiveAmount, setReceiveAmount] = useState<string>("");
@@ -75,6 +89,10 @@ const Bridge: React.FC = () => {
   // const [receiveAmount, setReceiveAmount] = useState<BigNumber>(
   //   BigNumber.from("0")
   // );
+  const [availableBalance, setAvailableBalance] = useState<BigNumber>(
+    BigNumber.from(0)
+  );
+  const [messageApi, contextHolder] = message.useMessage();
 
   const {
     provider,
@@ -85,12 +103,18 @@ const Bridge: React.FC = () => {
     connectWeb3Signer,
   } = useWeb3Context();
 
+  const { connector, hooks } = useWeb3React();
+  const { useSelectedChainId } = hooks;
+  const chainId = useSelectedChainId(connector);
+
   const handleOpenSelectChain = (target: string) => {
     setChainModalTarget(target);
     openChainModal();
   };
 
   const handleSelectChain = (target: string, chain: Chain) => {
+    connectWeb3("injected");
+
     if (target === "from") {
       if (toChain.chainId === chain.chainId) {
         setToChain(fromChain);
@@ -162,6 +186,32 @@ const Bridge: React.FC = () => {
     return tokenModalTarget === "from" ? fromChain : toChain;
   };
 
+  const fetchBalanceOfToken = async () => {
+    if (parseInt(fromChain.chainId) !== chainId) {
+      console.log("ChainId missmatch");
+      setAvailableBalance(BigNumber.from(0));
+      return;
+    }
+
+    if (!fromToken.contractAddress) {
+      console.log("err2");
+      setAvailableBalance(BigNumber.from(0));
+      return;
+    }
+
+    try {
+      const contract = new Contract(ERC20ContractAddress, ERC20ABI, provider);
+      const result = await contract.balanceOf(address);
+
+      setAvailableBalance(result);
+
+      return result;
+    } catch (error) {
+      console.log(error);
+      setAvailableBalance(BigNumber.from(0));
+    }
+  };
+
   useEffect(() => {
     if (isInit === true) {
       setIsInit(false);
@@ -173,11 +223,15 @@ const Bridge: React.FC = () => {
     }
 
     connectWeb3Signer(fromChain);
-  }, [isActive, fromChain]);
+  }, [isActive, fromChain, fromToken]);
+
+  useEffect(() => {
+    fetchBalanceOfToken();
+  }, [isActive, chainId, fromToken]);
 
   useEffect(() => {}, [chainModalTarget]);
   useEffect(() => {}, [tokenModalTarget]);
-  useEffect(() => debouncedCalcFee(), [sendAmount]);
+  useEffect(() => debouncedChangeSendAmount(), [sendAmount]);
 
   const handleChangeSendAmount = (value: string) => {
     const tempValue = validateDecimalInput(value);
@@ -185,11 +239,7 @@ const Bridge: React.FC = () => {
     setSendAmount(tempValue);
   };
 
-  // const handleChangeReceiveAmount = (value: string) => {
-  //   setReceiveAmount(value);
-  // };
-
-  const calcReceiveAmountAndFee = () => {
+  const debouncedChangeSendAmount = debounce(() => {
     const ratio = 1;
 
     if (!sendAmount) {
@@ -204,15 +254,119 @@ const Bridge: React.FC = () => {
       return;
     }
 
-    const tempReceiveAmount = Number(tempSendAmount) * ratio;
+    const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
 
-    setReceiveAmount(tempReceiveAmount.toString());
+    if (availableBalance.lt(sendAmountBigNumber) || availableBalance.lte(0)) {
+      messageApi.warning("Insufficient available amount");
+      setReceiveAmount("");
+      return;
+    }
+
+    setReceiveAmount(formatEther(sendAmountBigNumber.mul(ratio)));
+  }, 500);
+
+  const handleClickConnectWallet = () => {
+    connectWeb3("injected");
+    handleSelectChain("from", fromChain);
   };
 
-  const debouncedCalcFee = debounce(calcReceiveAmountAndFee, 500);
+  const handleClickExecute = async () => {
+    connectWeb3("injected");
+    handleSelectChain("from", fromChain);
 
-  const handleClickExecute = () => {
-    console.log("handleClickExecute");
+    if (!signer || !provider) {
+      messageApi.error("no signer");
+      return;
+    }
+
+    if (parseInt(fromChain.chainId) !== chainId) {
+      messageApi.error("Please connect the chain first");
+      return;
+    }
+
+    if (!fromToken.contractAddress) {
+      messageApi.error(
+        "The currently selected chain does not provide contract functionality"
+      );
+      return;
+    }
+
+    const tempSendAmount = removeLastDot(sendAmount);
+
+    if (!tempSendAmount || Number(tempSendAmount) === 0) {
+      messageApi.error("Invalid send amount");
+      return;
+    }
+
+    const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
+
+    if (sendAmountBigNumber.lte(0)) {
+      messageApi.error("Send amount must be greater than 0");
+      return;
+    }
+
+    if (availableBalance.lte(0) || availableBalance.lt(sendAmountBigNumber)) {
+      messageApi.error("Insufficient available amount");
+      return;
+    }
+
+    try {
+      const contractERC20 = new Contract(
+        ERC20ContractAddress,
+        ERC20ABI,
+        provider.getSigner()
+      );
+      const allowanceResult = await contractERC20.allowance(
+        address,
+        BridgeContractAddress
+      );
+
+      if (allowanceResult.lt(sendAmountBigNumber)) {
+        messageApi.info("To use the bridge, you must approve ERC20");
+
+        const approveResult = await contractERC20.approve(
+          BridgeContractAddress,
+          BigNumber.from(ApproveAmount),
+          {
+            gasLimit: 50000,
+          }
+        );
+        console.log("approveResult : ", approveResult);
+        return;
+      }
+
+      const bech32Address = convertToBech32(address, "reap");
+      const hexAddress = convertToHex(bech32Address);
+
+      if (!compareHexAddress(address, hexAddress)) {
+        messageApi.error("Error : address missmatch");
+        return;
+      }
+
+      const contractBridge = new Contract(
+        BridgeContractAddress,
+        BridgeABI,
+        provider?.getSigner()
+      );
+
+      console.log("sendAmountBigNumber : ", sendAmountBigNumber);
+
+      const sendToCosmosResult = await contractBridge.sendToCosmos(
+        ERC20ContractAddress,
+        bech32Address,
+        sendAmountBigNumber,
+        {
+          gasLimit: 100000,
+        }
+      );
+      console.log("sendToCosmosResult : ", sendToCosmosResult);
+    } catch (error) {
+      console.error(error);
+    }
+
+    console.log("next...");
+
+    // approve and sendtoCosmos......
   };
 
   return (
@@ -228,6 +382,7 @@ const Bridge: React.FC = () => {
         <BridgeAmountArea
           type={"send"}
           amount={sendAmount}
+          availableBalance={availableBalance}
           max={0}
           token={fromToken}
           onClick={() => handleOpenSelectToken("from")}
@@ -248,13 +403,17 @@ const Bridge: React.FC = () => {
         <BridgeAmountArea
           type={"receive"}
           amount={receiveAmount}
+          availableBalance={"0"}
           max={0}
           token={toToken}
           onClick={() => handleOpenSelectToken("to")}
         />
       </StyledContentWrapper>
       <StyledConnectWalletWrapper>
-        <ExecuteButton onClick={handleClickExecute} />
+        <ExecuteButton
+          onClickExecute={handleClickExecute}
+          onClickConnectWallet={handleClickConnectWallet}
+        />
       </StyledConnectWalletWrapper>
       {receiveAmount && <FeeInfo />}
       <ChainSelectModal
@@ -272,6 +431,7 @@ const Bridge: React.FC = () => {
         onSelect={handleSelectToken}
         onCancel={closeTokenModal}
       />
+      {contextHolder}
     </StyledBridgeCard>
   );
 };

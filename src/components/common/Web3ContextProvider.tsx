@@ -29,7 +29,7 @@ interface Web3ContextProps {
   network: string | undefined;
   address: string;
   rpcUrl: string;
-  chainId: number;
+  chainId: number | undefined;
   chain: Chain | undefined;
   connecting: boolean;
   isActive: boolean;
@@ -68,8 +68,6 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
   const defaultNetwork = getDefaultNetwork();
   const { connector, hooks } = useWeb3React();
 
-  // const [provider, setProvider] = useState<JsonRpcProvider>();
-  // const [signer, setSigner] = useState<JsonRpcSigner>();
   const [network, setNetwork] = useState(defaultNetwork.chainName);
   // const [address, setAddress] = useState("");
   const [rpcUrl, setRpcUrl] = useState(defaultNetwork.rpcUrls[0]);
@@ -88,13 +86,11 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
   const isActivating = useSelectedIsActivating(connector);
   const isActive = useSelectedIsActive(connector);
   const account = useSelectedAccount(connector);
-  const chainId = useSelectedChainId(connector) || 0;
   const chain = undefined;
+  const chainId = useSelectedChainId(connector);
   const provider = useSelectedProvider(connector);
   const signer = useSelectedProvider(connector)?.getSigner();
-
   const address = useSelectedAccount(connector) || "";
-
   const [error, setError] = useState<Error | undefined>(undefined);
   const [connectionStatus, setConnectionStatus] = useState("Disconnected");
 
@@ -118,29 +114,38 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
     });
   }, [web3Connection]);
 
-  const connectWeb3 = useCallback(
-    async (providerName: string, catchMethmod?: () => void) => {
-      setError(undefined);
+  const connectWeb3 = async (
+    providerName: string,
+    catchMethmod?: () => void
+  ) => {
+    setError(undefined);
+    setConnecting(true);
+    setConnectName("injected");
 
-      setConnecting(true);
-      setConnectName("injected");
-      // connect to wallet......
-
-      setConnectionStatus("Connecting..");
-
-      try {
-        await connector.activate(1);
-
-        // switch
-      } catch (error: any) {
-        console.log(error);
-        messageApi.error(error.message || "error");
-      }
+    try {
+      await connector.activate();
 
       setLocalStorageItem(localStorageKey.KEY_PROVIDER_TYPE, "injected");
-    },
-    []
-  );
+    } catch (err: any) {
+      if (err.code === -32002) {
+        messageApi.error(
+          "Already processing MetaMask request. Please check it."
+        );
+      }
+    }
+
+    // messageApi.success("Connected");
+
+    // try {
+    // await connector.activate(221230);
+    // await connector.activate(1);
+
+    // switch
+    // } catch (error: any) {
+    //   console.log(error);
+    //   messageApi.error(error.message || "error");
+    // }
+  };
 
   const disconnectWeb3 = useCallback(async () => {
     setError(undefined);
@@ -159,7 +164,7 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
     }
   }, []);
 
-  const connectWeb3Signer = useCallback(async (chain: Chain) => {
+  const connectWeb3Signer = async (chain: Chain) => {
     try {
       if (!connector.provider) {
         messageApi.info("Please install and run MetaMask");
@@ -181,9 +186,17 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
         params: [{ chainId: chain.chainId }],
       });
 
-      messageApi.success("Connected");
+      const beforeChainId = chainId || 0;
+      const nowChainId = Number(chain.chainId);
+
+      if (beforeChainId === nowChainId) {
+        messageApi.success("Connected");
+      } else {
+        messageApi.success("Switched");
+      }
     } catch (switchError: any) {
       console.log("switchError : ", switchError, chain);
+      messageApi.error("Cancled");
 
       if (switchError.code && switchError.code === 4902) {
         try {
@@ -193,10 +206,11 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
           });
         } catch (error) {
           console.error(error);
+          messageApi.error("switch error 2");
         }
       }
     }
-  }, []);
+  };
 
   return (
     <Web3Context.Provider
