@@ -349,14 +349,14 @@ const setLocalPubkey = async (ethAddress: string, provider: Provider) => {
     // data[ethAddress + "_u"] = pubKeyBase64_u;
     localStorage.setItem("ethPubkey", JSON.stringify(data));
 
-    console.log("# Test");
-    const curve = new elliptic.ec("secp256k1");
-    const feePayerPubkey = recoveredPubKey.substring(2);
-    const keyBuffer = Buffer.from(feePayerPubkey, "hex");
-    const publicKey = curve.keyFromPublic(keyBuffer).getPublic();
-    console.log("publicKey : ", publicKey);
-    const publicKeyHex = publicKey.encode("hex", true);
-    console.log("publicKeyHex : ", publicKeyHex);
+    // console.log("# Test");
+    // const curve = new elliptic.ec("secp256k1");
+    // const feePayerPubkey = recoveredPubKey.substring(2);
+    // const keyBuffer = Buffer.from(feePayerPubkey, "hex");
+    // const publicKey = curve.keyFromPublic(keyBuffer).getPublic();
+    // console.log("publicKey : ", publicKey);
+    // const publicKeyHex = publicKey.encode("hex", true);
+    // console.log("publicKeyHex : ", publicKeyHex);
 
     return pubKeyBase64;
   } catch (error) {
