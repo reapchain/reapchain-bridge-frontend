@@ -72,22 +72,22 @@ const App = () => {
         <Web3ContextProvider>
           <StyledPage>
             <StyledApp>
-              <Header />
-              <StyledContent>
-                <BrowserRouter>
+              <BrowserRouter>
+                <Header />
+                <StyledContent>
                   <TabMenu />
                   <Suspense fallback={<ComponentLoading />}>
                     <Routes>
                       <Route path="/" element={<Bridge />} />
-                      <Route path="/bridge" element={<Bridge />} />
+                      <Route path="/bridge/*" element={<Bridge />} />
                       <Route path="/swap" element={<Swap />} />
                       <Route path="/test" element={<Test />} />
                       <Route path="/*" element={<Swap />} />
                     </Routes>
                   </Suspense>
-                </BrowserRouter>
-              </StyledContent>
-              <Footer />
+                </StyledContent>
+                <Footer />
+              </BrowserRouter>
             </StyledApp>
           </StyledPage>
         </Web3ContextProvider>

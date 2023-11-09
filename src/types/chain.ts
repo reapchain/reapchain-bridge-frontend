@@ -31,6 +31,7 @@ export interface Chain extends EthereumChain {
   icon: string;
   tokens: Token[];
   setting?: Setting;
+  wallet: "MetaMask" | "Keplr";
 }
 
 export type SelectedChain = {

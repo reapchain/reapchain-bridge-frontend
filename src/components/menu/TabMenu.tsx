@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ConfigProvider, Tabs, TabsProps } from "antd";
 import styled from "styled-components";
 import colors from "assets/colors";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type TabMenuItemProps = {
   title: string;
@@ -20,12 +20,12 @@ const TabMenuItem: React.FC<TabMenuItemProps> = ({ title }) => {
 
 const items: TabsProps["items"] = [
   {
-    key: "bridge",
-    label: <TabMenuItem title={"Bridge"} link={"/bridge"} />,
+    key: "bridge/token",
+    label: <TabMenuItem title={"Token → Reap"} link={"/bridge/token"} />,
   },
   {
-    key: "swap",
-    label: <TabMenuItem title={"Swap"} link={"/swap"} />,
+    key: "bridge/reap",
+    label: <TabMenuItem title={"Reap → Token"} link={"/bridge/reap"} />,
   },
   {
     key: "test",
@@ -40,10 +40,14 @@ const TabMenu: React.FC = () => {
 
   useEffect(() => {
     let tempKey;
-    if (location.pathname === "/" || location.pathname === "/bridge") {
-      tempKey = "bridge";
-    } else if (location.pathname === "/swap") {
-      tempKey = "swap";
+    if (
+      location.pathname === "/" ||
+      location.pathname === "/bridge" ||
+      location.pathname === "/bridge/token"
+    ) {
+      tempKey = "bridge/token";
+    } else if (location.pathname === "/bridge/reap") {
+      tempKey = "bridge/reap";
     } else if (location.pathname === "/test") {
       tempKey = "test";
     } else {

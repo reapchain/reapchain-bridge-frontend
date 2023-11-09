@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
 import metamaskIcon from "../../assets/images/metamask-logo.svg";
-import keplrIcon from "../../assets/images/keplr-logo.svg";
 
 const StyledImage = styled.img`
   padding-left: 4px;
@@ -16,33 +15,17 @@ const StyledContent = styled.div`
 `;
 
 type Props = {
-  walletType: "MetaMask" | "Keplr";
   address: string;
   displayAddress: string;
 };
 
 const HeaderMetamaskContext: React.FC<Props> = ({
-  walletType,
   address,
   displayAddress,
 }) => {
-  const getWalletIcon = () => {
-    if (walletType === "MetaMask") {
-      return metamaskIcon;
-    } else {
-      return keplrIcon;
-    }
-  };
-
   return (
     <>
-      <StyledImage
-        src={getWalletIcon()}
-        width={24}
-        height={24}
-        alt="walletImage"
-      />
-      {/* <StyledImage src={metamaskIcon} width={24} height={24} alt="metamask" /> */}
+      <StyledImage src={metamaskIcon} width={24} height={24} alt="metamask" />
       <StyledContent>{displayAddress}</StyledContent>
     </>
   );

@@ -36,7 +36,8 @@ export interface Balance {
 //   cosmosChainId: "reapchain_221231-1",
 // };
 
-const testEndpoint = "http://43.201.57.7:1317";
+const testEndpoint = "https://test-lcd.reapchain.org";
+// const testEndpoint = "http://43.201.57.7:1317";
 const pubkeyType = "/ethermint.crypto.v1.ethsecp256k1.PubKey";
 
 export const fetchBankBalance = async (address: string, denom: string) => {
@@ -76,8 +77,8 @@ export const sendToEth = async (
     }
 
     const myChain: Chain = {
-      chainId: 0x7e7,
-      cosmosChainId: "mercury_2023-1",
+      chainId: 0x3602f,
+      cosmosChainId: "reapchain_221231-1",
     };
 
     const bech32Address = convertToBech32(hexAddress, "reap");
@@ -131,7 +132,9 @@ export const sendToEth = async (
     );
 
     console.log("rawTx : ", rawTx);
+    console.log("tx data : ", JSON.parse(generatePostBodyBroadcast(rawTx)));
 
+    return;
     const res = await axios.post(
       testEndpoint + generateEndpointBroadcast(),
       JSON.parse(generatePostBodyBroadcast(rawTx))
@@ -168,8 +171,8 @@ export const transferReap = async (
     }
 
     const myChain: Chain = {
-      chainId: 0x7e7,
-      cosmosChainId: "mercury_2023-1",
+      chainId: 0x3602f,
+      cosmosChainId: "reapchain_221231-1",
     };
 
     const bech32Address = convertToBech32(hexAddress, "reap");
@@ -262,7 +265,7 @@ const createMetamaskMessageSendToEth = (
   const testTxData: MessageSendToEthParams = {
     sender: sender.accountAddress,
     ethDest: "0x1F45834d8a907B12870498341De6C79609dfa1E8",
-    amount: { denom: "areap", amount: "1000000000000000000000" },
+    amount: { denom: "areap", amount: "10000000000000000000" },
     bridgeFee: {
       denom: "areap",
       amount: "10000000000000000",
@@ -296,7 +299,7 @@ const createMetamaskMessageTransferReap = (
   console.log("myFeeTest : ", myFeeTest);
 
   return createMessageSend(chain, sender, tempFee, "", {
-    destinationAddress: "reap1dv582jlffrmm66gl6r8esr4z45m20al9qjemkr",
+    destinationAddress: "reap1w92fjswvtmg0yds8352de9td2ajy888q2wpcnm",
     amount: "1000000000000000000",
     denom: "areap",
   });

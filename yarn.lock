@@ -2165,6 +2165,13 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
+"@keplr-wallet/types@^0.12.40":
+  "integrity" "sha512-V6nLj8KtsCnkgvzsTG1yApHqlibv17FIyrS3baCgean+Cqu50yF3t/p2b8cPhIASr2+G05piXIFDpniwgvXYag=="
+  "resolved" "https://registry.npmjs.org/@keplr-wallet/types/-/types-0.12.40.tgz"
+  "version" "0.12.40"
+  dependencies:
+    "long" "^4.0.0"
+
 "@leichtgewicht/ip-codec@^2.0.1":
   "integrity" "sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A=="
   "resolved" "https://registry.npmjs.org/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz"

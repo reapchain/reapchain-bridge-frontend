@@ -83,6 +83,7 @@
     ]
   },
   "devDependencies": {
+    "@keplr-wallet/types": "^0.12.40",
     "@types/elliptic": "^6.4.16",
     "assert": "^2.1.0",
     "buffer": "^6.0.3",

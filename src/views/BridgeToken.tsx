@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Card, message } from "antd";
 import styled from "styled-components";
 import colors from "assets/colors";
@@ -25,15 +25,6 @@ import FeeInfo from "components/bridge/FeeInfo";
 import { useWeb3React } from "@web3-react/core";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { compareHexAddress, convertToBech32, convertToHex } from "utils/util";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useWalletQuery, useWalletMutation } from "queries/useWalletType";
-import { connectKeplrWallet, getKeplrChainConfig } from "utils/keplr";
-import { getBankBalance } from "apis/api";
-import {
-  useKeplrQuery,
-  initKeplrWallet,
-  useKeplrMutation,
-} from "queries/useKeplrWallet";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.white};
@@ -71,14 +62,6 @@ const StyledFromToText = styled.div`
 `;
 
 const Bridge: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { data: walletData } = useWalletQuery();
-  const targetWallet = walletData ?? "MetaMask";
-  const { data: keplrData } = useKeplrQuery();
-  const keplrWallet = keplrData ?? initKeplrWallet;
-  const { mutate: walletMutate } = useWalletMutation();
-  const { mutate: keplrMutate } = useKeplrMutation();
   const [isInit, setIsInit] = useState(true);
   const [chainModalOpen, setChainModalOpen] = useState(false);
   const [chainModalTarget, setChainModalTarget] = useState("from");
@@ -94,6 +77,10 @@ const Bridge: React.FC = () => {
   );
   const [sendAmount, setSendAmount] = useState<string>("");
   const [receiveAmount, setReceiveAmount] = useState<string>("");
+  // const [sendAmount, setSendAmount] = useState<BigNumber>(BigNumber.from("0"));
+  // const [receiveAmount, setReceiveAmount] = useState<BigNumber>(
+  //   BigNumber.from("0")
+  // );
   const [availableBalance, setAvailableBalance] = useState<BigNumber>(
     BigNumber.from(0)
   );
@@ -116,6 +103,7 @@ const Bridge: React.FC = () => {
     setChainModalTarget(target);
     openChainModal();
   };
+
   const handleSelectChain = (target: string, chain: Chain) => {
     connectWeb3("injected");
 
@@ -137,10 +125,12 @@ const Bridge: React.FC = () => {
 
     closeChainModal();
   };
+
   const handleOpenSelectToken = (target: string) => {
     setTokenModalTarget(target);
     openTokenModal();
   };
+
   const handleSelectToken = (target: string, token: Token) => {
     if (target === "from") {
       setFromToken(token);
@@ -150,32 +140,30 @@ const Bridge: React.FC = () => {
 
     closeTokenModal();
   };
+
   const openChainModal = () => {
     setChainModalOpen(true);
   };
+
   const closeChainModal = () => {
     setChainModalOpen(false);
   };
+
   const openTokenModal = () => {
     setTokenModalOpen(true);
   };
+
   const closeTokenModal = () => {
     setTokenModalOpen(false);
   };
 
   const handleExchange = () => {
-    if (location.pathname === "/bridge/reap") {
-      navigate("/bridge/token");
-    } else if (location.pathname === "/bridge/token") {
-      navigate("/bridge/reap");
-    } else {
-      setFromChain(toChain);
-      setToChain(fromChain);
-      setFromToken(toChain.tokens[0]);
-      setToToken(fromChain.tokens[0]);
-      setSendAmount("");
-      setReceiveAmount("");
-    }
+    setFromChain(toChain);
+    setToChain(fromChain);
+    setFromToken(toChain.tokens[0]);
+    setToToken(fromChain.tokens[0]);
+    setSendAmount("");
+    setReceiveAmount("");
   };
 
   const getTargetChain = () => {
@@ -188,20 +176,6 @@ const Bridge: React.FC = () => {
 
   const getTargetTokenChain = () => {
     return tokenModalTarget === "from" ? fromChain : toChain;
-  };
-
-  const fetchBalanceOfCoin = async () => {
-    if (!keplrData || !keplrData.isActive) {
-      return;
-    }
-
-    const endpoint = getKeplrChainConfig(fromChain).rest;
-    const balance = await getBankBalance(
-      endpoint,
-      keplrWallet.address,
-      "areap"
-    );
-    setAvailableBalance(BigNumber.from(balance));
   };
 
   const fetchBalanceOfToken = async () => {
@@ -230,64 +204,30 @@ const Bridge: React.FC = () => {
     }
   };
 
-  const fetchBalance = () => {
-    if (targetWallet === "MetaMask") {
-      fetchBalanceOfToken();
-    } else {
-      fetchBalanceOfCoin();
-    }
-  };
-
-  const selectFromToChain = () => {
-    if (location.pathname === "/" || location.pathname === "/bridge") {
-      navigate("/bridge/token");
-      return;
-    }
-    if (location.pathname === "/bridge/reap") {
-      walletMutate("Keplr");
-      setFromChain(networks.reapchain_testnet);
-      setFromToken(networks.reapchain_testnet.tokens[0]);
-      setToChain(networks.ethereum_sepolia);
-      setToToken(networks.ethereum_sepolia.tokens[0]);
-    } else {
-      walletMutate("MetaMask");
-      setFromChain(networks.ethereum_sepolia);
-      setFromToken(networks.ethereum_sepolia.tokens[0]);
-      setToChain(networks.reapchain_testnet);
-      setToToken(networks.reapchain_testnet.tokens[0]);
-    }
-  };
-
-  const connectWallet = () => {
+  useEffect(() => {
     if (isInit === true) {
       setIsInit(false);
       return;
     }
+
     if (!isActive) {
       return;
     }
-    if (targetWallet === "MetaMask") {
-      connectWeb3Signer(fromChain);
-    } else if (targetWallet === "Keplr") {
-    }
-  };
+
+    connectWeb3Signer(fromChain);
+  }, [isActive, fromChain, fromToken]);
 
   useEffect(() => {
-    connectWallet();
-    fetchBalance();
-    setSendAmount("");
-    setReceiveAmount("");
-    setAvailableBalance(BigNumber.from(0));
-  }, [isActive, keplrWallet, fromChain, fromToken]);
+    fetchBalanceOfToken();
+  }, [isActive, chainId, fromToken]);
 
+  useEffect(() => {}, [chainModalTarget]);
+  useEffect(() => {}, [tokenModalTarget]);
   useEffect(() => debouncedChangeSendAmount(), [sendAmount]);
-
-  useEffect(() => {
-    selectFromToChain();
-  }, [location]);
 
   const handleChangeSendAmount = (value: string) => {
     const tempValue = validateDecimalInput(value);
+
     setSendAmount(tempValue);
   };
 
@@ -315,37 +255,16 @@ const Bridge: React.FC = () => {
     }
 
     setReceiveAmount(formatEther(sendAmountBigNumber.mul(ratio)));
-  }, 1000);
+  }, 500);
 
   const handleClickConnectWallet = () => {
-    if (targetWallet === "MetaMask") {
-      connectWeb3("injected");
-    } else {
-      connectKeplr();
-    }
-  };
-
-  const connectKeplr = async () => {
-    const keplr = await connectKeplrWallet(networks.reapchain_testnet);
-    if (!keplr) {
-      return;
-    }
-
-    const keplrWallet = {
-      isActive: true,
-      address: keplr.account.bech32Address,
-      name: keplr.account.name,
-    };
-    keplrMutate(keplrWallet);
-    return keplr;
+    connectWeb3("injected");
+    handleSelectChain("from", fromChain);
   };
 
   const handleClickExecute = async () => {
-    if (targetWallet === "MetaMask") {
-      connectWallet();
-    } else {
-      const keplr = await connectKeplrWallet(networks.reapchain_testnet);
-    }
+    connectWeb3("injected");
+    handleSelectChain("from", fromChain);
 
     if (!signer || !provider) {
       messageApi.error("no signer");
@@ -438,13 +357,18 @@ const Bridge: React.FC = () => {
     }
 
     console.log("next...");
+
+    // approve and sendtoCosmos......
   };
 
   return (
     <StyledBridgeCard style={{ width: 550 }}>
       <StyledSelectTokenWrapper>
         <StyledFromToText>From</StyledFromToText>
-        <ChainSelectButton chain={fromChain} onClick={() => {}} />
+        <ChainSelectButton
+          chain={fromChain}
+          onClick={() => handleOpenSelectChain("from")}
+        />
       </StyledSelectTokenWrapper>
       <StyledContentWrapper>
         <BridgeAmountArea
@@ -453,7 +377,7 @@ const Bridge: React.FC = () => {
           availableBalance={availableBalance}
           max={0}
           token={fromToken}
-          onClick={() => {}}
+          onClick={() => handleOpenSelectToken("from")}
           onChange={handleChangeSendAmount}
         />
       </StyledContentWrapper>
@@ -462,7 +386,10 @@ const Bridge: React.FC = () => {
       </ExchangeButtonWrapper>
       <StyledSelectTokenWrapper>
         <StyledFromToText>To</StyledFromToText>
-        <ChainSelectButton chain={toChain} onClick={() => {}} />
+        <ChainSelectButton
+          chain={toChain}
+          onClick={() => handleOpenSelectChain("to")}
+        />
       </StyledSelectTokenWrapper>
       <StyledContentWrapper>
         <BridgeAmountArea
@@ -471,7 +398,7 @@ const Bridge: React.FC = () => {
           availableBalance={"0"}
           max={0}
           token={toToken}
-          onClick={() => {}}
+          onClick={() => handleOpenSelectToken("to")}
         />
       </StyledContentWrapper>
       <StyledConnectWalletWrapper>

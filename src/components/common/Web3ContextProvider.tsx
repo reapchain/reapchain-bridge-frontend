@@ -16,11 +16,7 @@ import { getDefaultNetwork, getEthereumChainObject } from "utils/util";
 import { useAsync } from "react-use";
 import { Chain, EthereumChain } from "types/chain";
 import { useWeb3React } from "@web3-react/core";
-import {
-  getLocalStorageItem,
-  removeLocalStorageItem,
-  setLocalStorageItem,
-} from "utils/localStorage";
+import { getItem, removeItem, setItem } from "utils/localStorage";
 import { localStorageKey } from "constants/storage";
 
 interface Web3ContextProps {
@@ -125,7 +121,7 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
     try {
       await connector.activate();
 
-      setLocalStorageItem(localStorageKey.KEY_PROVIDER_TYPE, "injected");
+      setItem(localStorageKey.KEY_PROVIDER_TYPE, "injected");
     } catch (err: any) {
       if (err.code === -32002) {
         messageApi.error(
@@ -133,25 +129,13 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
         );
       }
     }
-
-    // messageApi.success("Connected");
-
-    // try {
-    // await connector.activate(221230);
-    // await connector.activate(1);
-
-    // switch
-    // } catch (error: any) {
-    //   console.log(error);
-    //   messageApi.error(error.message || "error");
-    // }
   };
 
   const disconnectWeb3 = useCallback(async () => {
     setError(undefined);
     setConnecting(false);
     setConnectName("");
-    removeLocalStorageItem(localStorageKey.KEY_PROVIDER_TYPE);
+    removeItem(localStorageKey.KEY_PROVIDER_TYPE);
 
     messageApi.warning("Disconnected");
 
@@ -159,7 +143,7 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
   }, []);
 
   useEffect(() => {
-    if (getLocalStorageItem("provider") === "injected") {
+    if (getItem("provider") === "injected") {
       connectWeb3("injected");
     }
   }, []);

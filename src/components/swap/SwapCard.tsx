@@ -8,10 +8,6 @@ import SwapReceiveArea from "./SwapReceiveArea";
 import ConnectWalletButton from "./ConnectWalletButton";
 import colors from "../../assets/colors";
 import ChainSelectModal from "components/swap/ChainSelectModal";
-import {
-  useConnectionMutation,
-  useConnectionQuery,
-} from "queries/useChainTest";
 import { networks } from "constants/network";
 
 const StyledSwapCard = styled(Card)`

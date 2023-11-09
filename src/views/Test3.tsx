@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from "react";
-import {
-  useConnectionMutation,
-  useConnectionQuery,
-} from "queries/useChainTest";
 import { networks } from "constants/network";
 import { Chain } from "types/chain";
 import { useWeb3React } from "@web3-react/core";
@@ -16,15 +12,7 @@ const Test: React.FC = (props: Props) => {
 
   const handleClickConnect = () => {
     console.log("handleClickConnect...");
-
-    // mutate(reapchainTestNet);
   };
-
-  // const { register, handleSubmit } = useForm<>();
-
-  // const onSubmit = handleSubmit((value) => {
-  //   mutate(reapchainTestNet);
-  // });
 
   useEffect(() => {
     console.log("env test : ", process.env.REACT_APP_TESTTEST);
@@ -76,23 +64,9 @@ const Test: React.FC = (props: Props) => {
   const [myTest, setMyTest] = useState<any>("none");
   const testFunction = async () => {};
 
-  const { data } = useConnectionQuery();
-  const { mutate } = useConnectionMutation();
-
-  const handleClickTest = () => {
-    mutate(networks.reapchain_mainnet);
-  };
-
-  useEffect(() => {
-    console.log("data : ", data);
-  }, [data]);
-
   const handleSwitch = async (chain: Chain) => {
-    console.log("handleSwitch : ", chain);
-    console.log("connector.provider : ", connector.provider);
     try {
       if (!connector.provider) {
-        console.log("no provider...");
         // window.open(metamaskDownloadLink, "_blank");
         return;
       }
@@ -127,13 +101,11 @@ const Test: React.FC = (props: Props) => {
           <h1>Connection</h1>
           <div>
             <div>queryTest</div>
-            <div>data : {data ? data.chainName : "not selected"}</div>
 
             <div></div>
 
             <div></div>
             <div>
-              <button onClick={handleClickTest}>Change</button>
               <br />
               <button onClick={() => handleSwitch(networks.reapchain_mainnet)}>
                 {networks.reapchain_mainnet.chainName}

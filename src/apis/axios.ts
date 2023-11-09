@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig, AxiosInstance } from "axios";
-import { getItem } from "./localStorage";
 
 // function setInterceptors(instance: any) {
 //   // request interceptor

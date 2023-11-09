@@ -1,16 +1,20 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
-import metamaskIcon from "../../assets/images/metamask-logo.svg";
-import { EllipsisOutlined } from "@ant-design/icons";
-// import { useChainMutation } from "queries/useChainMutation";
-// import { reapchainTestNet } from "constants/network";
-import { useChainQuery } from "queries/useChainQuery";
-import { useWeb3React } from "@web3-react/core";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
-import { displayShortHexAddress } from "utils/util";
 import { Button, Dropdown, MenuProps, message } from "antd";
 import HeaderMetamaskContext from "components/header/HeaderMetamaskContext";
+import { useWalletQuery } from "queries/useWalletType";
+import { networks } from "constants/network";
+import { connectKeplrWallet, getAccounts } from "utils/keplr";
+import { displayShortHexAddress } from "utils/util";
+import {
+  initKeplrWallet,
+  useKeplrMutation,
+  useKeplrQuery,
+} from "queries/useKeplrWallet";
+import { getItem, setItem } from "utils/localStorage";
+import { localStorageKey } from "constants/storage";
 
 const StyledContainer = styled.div`
   background-color: ${colors.white};
@@ -57,8 +61,13 @@ const StyledDropdown = styled(Dropdown)`
 `;
 
 const StyldNotConnected = styled.div`
+  display: flex;
   padding-left: 4px;
   padding-right: 4px;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
   color: ${colors.godong};
 `;
 
@@ -77,22 +86,70 @@ const StyledMenuItem = styled.div<MenuItemProps>`
   }
 `;
 
+const dropDownStyle = {
+  backgroundColor: colors.realWhite,
+  border: "1.5px solid transparent",
+  borderColor: colors.pointPink,
+};
+
 type Props = {};
 
 const HeaderMetamask: React.FC<Props> = () => {
+  const { data: walletData } = useWalletQuery();
+  const targetWallet = walletData ?? "MetaMask";
   const { provider, address, isActive, connectWeb3, disconnectWeb3 } =
     useWeb3Context();
+  const [messageApi, contextHolder] = message.useMessage();
+  const { mutate: keplrMutate } = useKeplrMutation();
+  const { data: keplrData } = useKeplrQuery();
+  const keplrWallet = keplrData ?? initKeplrWallet;
 
-  // const handleClickMetamask = useCallback(async () => {
-  //   connectWeb3("injected");
-  // }, []);
+  useEffect(() => {
+    if (getItem(localStorageKey.KEY_KEPLR_ACTIVE) === "active") {
+      if (targetWallet === "Keplr") {
+        connectKeplr();
 
-  const connectMetamask = () => {
-    connectWeb3("injected");
+        window.addEventListener("keplr_keystorechange", () => {
+          connectKeplr();
+        });
+      }
+    }
+  }, [targetWallet, isActive, address]);
+
+  const connectKeplr = async () => {
+    const keplr = await connectKeplrWallet(networks.reapchain_testnet);
+    if (!keplr) {
+      return;
+    }
+    const keplrWallet = {
+      isActive: true,
+      address: keplr.account.bech32Address,
+      name: keplr.account.name,
+    };
+    keplrMutate(keplrWallet);
+    return keplr;
   };
 
-  const disconnectMetamask = () => {
-    disconnectWeb3();
+  const connectWallet = () => {
+    if (walletData === "MetaMask") {
+      connectWeb3("injected");
+    } else if (targetWallet === "Keplr") {
+      connectKeplr();
+    }
+  };
+
+  const disconnectWallet = (wallet: string) => {
+    if (wallet === "MetaMask") {
+      disconnectWeb3();
+    } else if (wallet === "Keplr") {
+      keplrMutate({
+        isActive: false,
+        address: "",
+        name: "",
+      });
+      setItem(localStorageKey.KEY_KEPLR_ACTIVE, "inactive");
+      window.removeEventListener("keplr_keystorechange", () => {});
+    }
   };
 
   // const [messageApi, contextHolder] = message.useMessage();
@@ -109,46 +166,68 @@ const HeaderMetamask: React.FC<Props> = () => {
   //   </StyledContainer>
   // );
 
-  const [dropdownMenu] = useState<MenuProps>({
+  const [metamaskDropdown] = useState<MenuProps>({
     items: [
       {
         label: (
-          <StyledMenuItem onClick={disconnectMetamask}>
+          <StyledMenuItem onClick={() => disconnectWallet("MetaMask")}>
             <a>Disconnect</a>
           </StyledMenuItem>
         ),
         key: 1,
       },
     ],
-    style: {
-      backgroundColor: colors.realWhite,
-      border: "1.5px solid transparent",
-      borderColor: colors.pointPink,
-    },
+    style: dropDownStyle,
   });
 
-  useEffect(() => {
-    // if (!provider) return;
-    // const aa = provider.getSigner();
-  }, [provider]);
+  const [keplrDropdown] = useState<MenuProps>({
+    items: [
+      {
+        label: (
+          <StyledMenuItem onClick={() => disconnectWallet("Keplr")}>
+            <a>Disconnect</a>
+          </StyledMenuItem>
+        ),
+        key: 1,
+      },
+    ],
+    style: dropDownStyle,
+  });
 
-  if (!isActive) {
+  useEffect(() => {}, [provider]);
+
+  if (
+    (targetWallet === "MetaMask" && !isActive) ||
+    (targetWallet === "Keplr" && !keplrWallet.isActive)
+  ) {
     return (
-      <StyledContainer onClick={connectMetamask}>
-        <StyldNotConnected>Connect MetaMask</StyldNotConnected>
+      <StyledContainer onClick={connectWallet}>
+        <StyldNotConnected>Connect {targetWallet}</StyldNotConnected>
       </StyledContainer>
     );
   }
 
   return (
     <StyledDropdown
-      menu={dropdownMenu}
+      menu={targetWallet === "MetaMask" ? metamaskDropdown : keplrDropdown}
       placement={"bottomLeft"}
       trigger={["click"]}
       overlayStyle={{ color: colors.white }}
     >
       <Button type="link">
-        <HeaderMetamaskContext address={address} />
+        {targetWallet === "MetaMask" ? (
+          <HeaderMetamaskContext
+            walletType={targetWallet}
+            address={address}
+            displayAddress={displayShortHexAddress(address)}
+          />
+        ) : (
+          <HeaderMetamaskContext
+            walletType={targetWallet}
+            address={keplrWallet.address}
+            displayAddress={keplrWallet.name}
+          />
+        )}
       </Button>
     </StyledDropdown>
   );

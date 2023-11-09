@@ -40,48 +40,12 @@ export const networks: NetworkList = {
         icon: "reapchain",
       },
     ],
-  },
-  reapchain_testnet: {
-    chainId: "0x7e7",
-    chainName: "Reapchain Bridge Testnet",
-    rpcUrls: ["http://43.201.57.7:24000"],
-    blockExplorerUrls: ["https://test-dashboard.reapchain.org"],
-    nativeCurrency: {
-      name: "Reapchain",
-      symbol: "REAP",
-      decimals: 18,
-    },
-    icon: "reapchain",
-    iconUrls: ["https://test-dashboard.reapchain.org/reapchain_bg_logo.png"],
-    // setting: {
-    //   useBridge: ['from', "to"],
-    //   useSwap: ['from', "to"]
-    // },
-    tokens: [
-      {
-        id: 1,
-        name: "Reapchain Test Coin",
-        symbol: "REAP",
-        decimals: 18,
-        contractAddress: "",
-        contractOwner: "",
-        icon: "reapchain",
-      },
-      {
-        id: 2,
-        name: "Reapchain Test Token",
-        symbol: "tREAP",
-        decimals: 18,
-        contractAddress: "",
-        contractOwner: "",
-        icon: "reapchain",
-      },
-    ],
+    wallet: "Keplr",
   },
   // reapchain_testnet: {
-  //   chainId: "0x3602F",
-  //   chainName: "Reapchain Testnet",
-  //   rpcUrls: ["https://test-eth.reapchain.org"],
+  //   chainId: "0x7e7",
+  //   chainName: "Reapchain Bridge Testnet",
+  //   rpcUrls: ["http://43.201.57.7:24000"],
   //   blockExplorerUrls: ["https://test-dashboard.reapchain.org"],
   //   nativeCurrency: {
   //     name: "Reapchain",
@@ -115,6 +79,44 @@ export const networks: NetworkList = {
   //     },
   //   ],
   // },
+  reapchain_testnet: {
+    chainId: "0x3602F",
+    chainName: "Reapchain Testnet",
+    rpcUrls: ["https://test-eth.reapchain.org"],
+    blockExplorerUrls: ["https://test-dashboard.reapchain.org"],
+    nativeCurrency: {
+      name: "Reapchain",
+      symbol: "REAP",
+      decimals: 18,
+    },
+    icon: "reapchain",
+    iconUrls: ["https://test-dashboard.reapchain.org/reapchain_bg_logo.png"],
+    // setting: {
+    //   useBridge: ['from', "to"],
+    //   useSwap: ['from', "to"]
+    // },
+    tokens: [
+      {
+        id: 1,
+        name: "Reapchain Test Coin",
+        symbol: "REAP",
+        decimals: 18,
+        contractAddress: "",
+        contractOwner: "",
+        icon: "reapchain",
+      },
+      {
+        id: 2,
+        name: "Reapchain Test Token",
+        symbol: "tREAP",
+        decimals: 18,
+        contractAddress: "",
+        contractOwner: "",
+        icon: "reapchain",
+      },
+    ],
+    wallet: "Keplr",
+  },
   ethereum_mainnet: {
     chainId: "0x1",
     chainName: "Ethereum Mainnet",
@@ -146,6 +148,7 @@ export const networks: NetworkList = {
         icon: "ethereum",
       },
     ],
+    wallet: "MetaMask",
   },
   ethereum_sepolia: {
     chainId: "0xAA36A7",
@@ -169,6 +172,7 @@ export const networks: NetworkList = {
         icon: "ethereum",
       },
     ],
+    wallet: "MetaMask",
   },
 };
 
