@@ -6,7 +6,7 @@ import { Button, Dropdown, MenuProps, message } from "antd";
 import HeaderMetamaskContext from "components/header/HeaderMetamaskContext";
 import { useWalletQuery } from "queries/useWalletType";
 import { networks } from "constants/network";
-import { connectKeplrWallet, getAccounts } from "utils/keplr";
+import { connectKeplrWallet } from "utils/keplr";
 import { displayShortHexAddress } from "utils/util";
 import {
   initKeplrWallet,
@@ -171,15 +171,38 @@ const HeaderMetamask: React.FC<Props> = () => {
   //   </StyledContainer>
   // );
 
+  const handleClickLinkButton = () => {
+    console.log("targetWallet : ", targetWallet);
+    if (targetWallet === "MetaMask") {
+      window.open(
+        `${networks.ethereum_sepolia.explorerUrl}/address/${address}`,
+        "_blank"
+      );
+    } else {
+      window.open(
+        `${networks.reapchain_testnet.explorerUrl}/account/${keplrWallet.address}`,
+        "_blank"
+      );
+    }
+  };
+
   const [metamaskDropdown] = useState<MenuProps>({
     items: [
+      {
+        label: (
+          <StyledMenuItem onClick={handleClickLinkButton}>
+            <a>Account Info</a>
+          </StyledMenuItem>
+        ),
+        key: 1,
+      },
       {
         label: (
           <StyledMenuItem onClick={() => disconnectWallet("MetaMask")}>
             <a>Disconnect</a>
           </StyledMenuItem>
         ),
-        key: 1,
+        key: 2,
       },
     ],
     style: dropDownStyle,
@@ -189,11 +212,19 @@ const HeaderMetamask: React.FC<Props> = () => {
     items: [
       {
         label: (
+          <StyledMenuItem onClick={handleClickLinkButton}>
+            <a>Account Info</a>
+          </StyledMenuItem>
+        ),
+        key: 1,
+      },
+      {
+        label: (
           <StyledMenuItem onClick={() => disconnectWallet("Keplr")}>
             <a>Disconnect</a>
           </StyledMenuItem>
         ),
-        key: 1,
+        key: 2,
       },
     ],
     style: dropDownStyle,

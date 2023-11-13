@@ -40,6 +40,12 @@ export const keplrSendTx = async (
     }
 
     const keplrChainConfig = getKeplrChainConfig(chain);
+
+    if (!keplrChainConfig) {
+      console.log("retry");
+      return;
+    }
+
     const authAccount = await getAuthAccount(
       keplrChainConfig.rest,
       keplrAccount.address

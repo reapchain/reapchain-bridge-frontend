@@ -414,11 +414,9 @@ const Bridge: React.FC = () => {
   };
 
   const executeSendToCosmos = async () => {
-    if (targetWallet === "MetaMask") {
-      connectWallet();
-    }
     if (!signer || !provider) {
       messageApi.error("no signer");
+      connectWallet();
       return;
     }
 

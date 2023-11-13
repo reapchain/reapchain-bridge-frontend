@@ -41,6 +41,7 @@ export const networks: NetworkList = {
       },
     ],
     wallet: "Keplr",
+    explorerUrl: "https://test-dashboard.reapchain.org",
   },
   reapchain_testnet: {
     chainId: "0x7e7",
@@ -79,6 +80,7 @@ export const networks: NetworkList = {
       },
     ],
     wallet: "Keplr",
+    explorerUrl: "https://test-dashboard.reapchain.org",
   },
   // reapchain_testnet: {
   //   chainId: "0x3602F",
@@ -150,6 +152,7 @@ export const networks: NetworkList = {
       },
     ],
     wallet: "MetaMask",
+    explorerUrl: "https://etherscan.io",
   },
   ethereum_sepolia: {
     chainId: "0xAA36A7",
@@ -174,6 +177,7 @@ export const networks: NetworkList = {
       },
     ],
     wallet: "MetaMask",
+    explorerUrl: "https://sepolia.etherscan.io",
   },
 };
 

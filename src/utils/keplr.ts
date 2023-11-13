@@ -254,6 +254,7 @@ export const getKeplrChainConfig = (chain: Chain) => {
   } else if (chain.chainId === "0x7e7") {
     return devChainConfig;
   } else {
-    throw new Error("Not supported chain.");
+    return devChainConfig;
+    // throw new Error("Not supported chain.");
   }
 };
