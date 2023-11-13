@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
@@ -122,7 +122,6 @@ const HeaderMetamask: React.FC<Props> = () => {
       if (!keplr) {
         return;
       }
-      console.log("keplr.account : ", keplr.account);
       const keplrWallet = {
         isActive: true,
         address: keplr.account.bech32Address,
@@ -157,22 +156,21 @@ const HeaderMetamask: React.FC<Props> = () => {
     }
   };
 
-  // const [messageApi, contextHolder] = message.useMessage();
-  // const showMessage = (text: string) => {
-  //   messageApi.info(text);
-  // };
+  const disconnectWallet2 = () => {
+    if (targetWallet === "MetaMask") {
+      disconnectWeb3();
+    } else if (targetWallet === "Keplr") {
+      keplrMutate({
+        isActive: false,
+        address: "",
+        name: "",
+      });
+      setItem(localStorageKey.KEY_KEPLR_ACTIVE, "inactive");
+      window.removeEventListener("keplr_keystorechange", () => {});
+    }
+  };
 
-  // return (
-  //   <StyledContainer onClick={handleClickMetamask}>
-  //     {contextHolder}
-  //     isActive : {isActive ? "true" : "false"}
-  //     isActivating : {isActivating ? "true" : "false"}
-  //     address : {address ? displayShortHexAddress(address) : "-"}
-  //   </StyledContainer>
-  // );
-
-  const handleClickLinkButton = () => {
-    console.log("targetWallet : ", targetWallet);
+  const handleClickLinkButton = useCallback(() => {
     if (targetWallet === "MetaMask") {
       window.open(
         `${networks.ethereum_sepolia.explorerUrl}/address/${address}`,
@@ -184,7 +182,7 @@ const HeaderMetamask: React.FC<Props> = () => {
         "_blank"
       );
     }
-  };
+  }, [address, targetWallet, keplrWallet]);
 
   const [metamaskDropdown] = useState<MenuProps>({
     items: [
@@ -230,8 +228,6 @@ const HeaderMetamask: React.FC<Props> = () => {
     style: dropDownStyle,
   });
 
-  useEffect(() => {}, [provider]);
-
   if (
     (targetWallet === "MetaMask" && !isActive) ||
     (targetWallet === "Keplr" && !keplrWallet.isActive)
@@ -245,7 +241,27 @@ const HeaderMetamask: React.FC<Props> = () => {
 
   return (
     <StyledDropdown
-      menu={targetWallet === "MetaMask" ? metamaskDropdown : keplrDropdown}
+      menu={{
+        items: [
+          {
+            label: (
+              <StyledMenuItem onClick={handleClickLinkButton}>
+                <a>Account Info</a>
+              </StyledMenuItem>
+            ),
+            key: 1,
+          },
+          {
+            label: (
+              <StyledMenuItem onClick={disconnectWallet2}>
+                <a>Disconnect</a>
+              </StyledMenuItem>
+            ),
+            key: 2,
+          },
+        ],
+        style: dropDownStyle,
+      }}
       placement={"bottomLeft"}
       trigger={["click"]}
       overlayStyle={{ color: colors.white }}
