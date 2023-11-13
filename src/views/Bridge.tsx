@@ -34,6 +34,8 @@ import {
   initKeplrWallet,
   useKeplrMutation,
 } from "queries/useKeplrWallet";
+import { keplrSendTx } from "utils/keplrTx";
+import { MessageSendToEthParams } from "transactions/msgSendToEth";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.white};
@@ -194,14 +196,15 @@ const Bridge: React.FC = () => {
     if (!keplrData || !keplrData.isActive) {
       return;
     }
-
     const endpoint = getKeplrChainConfig(fromChain).rest;
     const balance = await getBankBalance(
       endpoint,
       keplrWallet.address,
       "areap"
     );
-    setAvailableBalance(BigNumber.from(balance));
+    if (targetWallet === "Keplr") {
+      setAvailableBalance(BigNumber.from(balance));
+    }
   };
 
   const fetchBalanceOfToken = async () => {
@@ -221,7 +224,9 @@ const Bridge: React.FC = () => {
       const contract = new Contract(ERC20ContractAddress, ERC20ABI, provider);
       const result = await contract.balanceOf(address);
 
-      setAvailableBalance(result);
+      if (targetWallet === "MetaMask") {
+        setAvailableBalance(result);
+      }
 
       return result;
     } catch (error) {
@@ -340,13 +345,78 @@ const Bridge: React.FC = () => {
     return keplr;
   };
 
-  const handleClickExecute = async () => {
+  const handleClickExecute = () => {
     if (targetWallet === "MetaMask") {
-      connectWallet();
-    } else {
-      const keplr = await connectKeplrWallet(networks.reapchain_testnet);
+      executeSendToCosmos();
+    } else if (targetWallet === "Keplr") {
+      executeSendToEth();
+    }
+  };
+
+  const checkSendAmount = (): boolean => {
+    const tempSendAmount = removeLastDot(sendAmount);
+
+    if (!tempSendAmount || Number(tempSendAmount) === 0) {
+      messageApi.error("Invalid send amount");
+      return false;
     }
 
+    const tempSendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
+
+    if (tempSendAmountBigNumber.lte(0)) {
+      messageApi.error("Send amount must be greater than 0");
+      return false;
+    }
+
+    if (
+      availableBalance.lte(0) ||
+      availableBalance.lt(tempSendAmountBigNumber)
+    ) {
+      messageApi.error("Insufficient available amount");
+      return false;
+    }
+
+    return true;
+  };
+
+  const executeSendToEth = async () => {
+    const keplr = await connectKeplrWallet(fromChain);
+    if (!keplr) {
+      return;
+    }
+
+    if (!checkSendAmount()) {
+      return;
+    }
+
+    const tempSendAmount = removeLastDot(sendAmount);
+    const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
+
+    const sendToEthParams: MessageSendToEthParams = {
+      sender: keplr.account.bech32Address,
+      ethDest: convertToHex(keplr.account.bech32Address),
+      amount: {
+        denom: "areap",
+        amount: sendAmountBigNumber.toString(),
+      },
+      bridgeFee: {
+        denom: "areap",
+        amount: "2000000000000000000",
+      },
+      chainFee: {
+        denom: "areap",
+        amount: "2000000000000000000",
+      },
+    };
+
+    const res = keplrSendTx("SendToEth", fromChain, sendToEthParams);
+    console.log("res : ", res);
+  };
+
+  const executeSendToCosmos = async () => {
+    if (targetWallet === "MetaMask") {
+      connectWallet();
+    }
     if (!signer || !provider) {
       messageApi.error("no signer");
       return;
@@ -364,22 +434,7 @@ const Bridge: React.FC = () => {
       return;
     }
 
-    const tempSendAmount = removeLastDot(sendAmount);
-
-    if (!tempSendAmount || Number(tempSendAmount) === 0) {
-      messageApi.error("Invalid send amount");
-      return;
-    }
-
-    const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
-
-    if (sendAmountBigNumber.lte(0)) {
-      messageApi.error("Send amount must be greater than 0");
-      return;
-    }
-
-    if (availableBalance.lte(0) || availableBalance.lt(sendAmountBigNumber)) {
-      messageApi.error("Insufficient available amount");
+    if (!checkSendAmount()) {
       return;
     }
 
@@ -393,6 +448,11 @@ const Bridge: React.FC = () => {
         address,
         BridgeContractAddress
       );
+
+      console.log("allowanceResult : ", allowanceResult);
+
+      const tempSendAmount = removeLastDot(sendAmount);
+      const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
 
       if (allowanceResult.lt(sendAmountBigNumber)) {
         messageApi.info("To use the bridge, you must approve ERC20");

@@ -58,3 +58,30 @@ export const getBankBalance = async (
     .catch((e) => {
       console.log("error=>", e);
     });
+
+export const getAuthAccount = async (
+  endpoint: string,
+  address: string
+): Promise<any> =>
+  axios
+    .get(`${endpoint}/cosmos/auth/v1beta1/accounts/${address}`)
+    .then((res) => {
+      const data = commonProcess(res.data);
+
+      if (!data.account) {
+        return null;
+      }
+
+      if (data.account.base_account) {
+        return data.account.base_account;
+      }
+
+      if (data.account.base_vesting_account) {
+        return data.account.base_vesting_account;
+      }
+
+      return null;
+    })
+    .catch((e) => {
+      console.log("error=>", e);
+    });

@@ -117,17 +117,22 @@ const HeaderMetamask: React.FC<Props> = () => {
   }, [targetWallet, isActive, address]);
 
   const connectKeplr = async () => {
-    const keplr = await connectKeplrWallet(networks.reapchain_testnet);
-    if (!keplr) {
-      return;
+    try {
+      const keplr = await connectKeplrWallet(networks.reapchain_testnet);
+      if (!keplr) {
+        return;
+      }
+      console.log("keplr.account : ", keplr.account);
+      const keplrWallet = {
+        isActive: true,
+        address: keplr.account.bech32Address,
+        name: keplr.account.name,
+      };
+      keplrMutate(keplrWallet);
+      return keplr;
+    } catch (error) {
+      console.error(error);
     }
-    const keplrWallet = {
-      isActive: true,
-      address: keplr.account.bech32Address,
-      name: keplr.account.name,
-    };
-    keplrMutate(keplrWallet);
-    return keplr;
   };
 
   const connectWallet = () => {

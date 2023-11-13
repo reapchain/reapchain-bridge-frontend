@@ -86,7 +86,6 @@ export const sendToEth = async (
     let { data: myAccount } = await axios.get(
       `${testEndpoint}/${generateEndpointAccount(bech32Address)}`
     );
-    console.log("myAccount : ", myAccount);
 
     // cannot use origin pubkey
     if (!myAccount.account.base_account.pub_key || true) {
@@ -134,7 +133,6 @@ export const sendToEth = async (
     console.log("rawTx : ", rawTx);
     console.log("tx data : ", JSON.parse(generatePostBodyBroadcast(rawTx)));
 
-    return;
     const res = await axios.post(
       testEndpoint + generateEndpointBroadcast(),
       JSON.parse(generatePostBodyBroadcast(rawTx))
