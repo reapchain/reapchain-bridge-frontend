@@ -184,50 +184,6 @@ const HeaderMetamask: React.FC<Props> = () => {
     }
   }, [address, targetWallet, keplrWallet]);
 
-  const [metamaskDropdown] = useState<MenuProps>({
-    items: [
-      {
-        label: (
-          <StyledMenuItem onClick={handleClickLinkButton}>
-            <a>Account Info</a>
-          </StyledMenuItem>
-        ),
-        key: 1,
-      },
-      {
-        label: (
-          <StyledMenuItem onClick={() => disconnectWallet("MetaMask")}>
-            <a>Disconnect</a>
-          </StyledMenuItem>
-        ),
-        key: 2,
-      },
-    ],
-    style: dropDownStyle,
-  });
-
-  const [keplrDropdown] = useState<MenuProps>({
-    items: [
-      {
-        label: (
-          <StyledMenuItem onClick={handleClickLinkButton}>
-            <a>Account Info</a>
-          </StyledMenuItem>
-        ),
-        key: 1,
-      },
-      {
-        label: (
-          <StyledMenuItem onClick={() => disconnectWallet("Keplr")}>
-            <a>Disconnect</a>
-          </StyledMenuItem>
-        ),
-        key: 2,
-      },
-    ],
-    style: dropDownStyle,
-  });
-
   if (
     (targetWallet === "MetaMask" && !isActive) ||
     (targetWallet === "Keplr" && !keplrWallet.isActive)
