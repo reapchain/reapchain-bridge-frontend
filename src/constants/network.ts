@@ -44,7 +44,7 @@ export const networks: NetworkList = {
   reapchain_testnet: {
     chainId: "0x7e7",
     chainName: "Reapchain Bridge Testnet",
-    rpcUrls: ["http://43.201.57.7:24000"],
+    rpcUrls: ["http://43.201.57.7:27400"],
     blockExplorerUrls: ["https://test-dashboard.reapchain.org"],
     nativeCurrency: {
       name: "Reapchain",

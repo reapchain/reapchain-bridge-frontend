@@ -262,14 +262,14 @@ const createMetamaskMessageSendToEth = (
   const testTxData: MessageSendToEthParams = {
     sender: sender.accountAddress,
     ethDest: "0x1F45834d8a907B12870498341De6C79609dfa1E8",
-    amount: { denom: "areap", amount: "1000000000000000000000" },
+    amount: { denom: "areap", amount: "100000000000000000000" },
     bridgeFee: {
       denom: "areap",
-      amount: "10000000000000000",
+      amount: "2000000000000000000",
     },
     chainFee: {
       denom: "areap",
-      amount: "10000000000000000",
+      amount: "2000000000000000000",
     },
   };
 
