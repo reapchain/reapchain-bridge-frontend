@@ -349,8 +349,6 @@ const Bridge: React.FC = () => {
         provider?.getSigner()
       );
 
-      console.log("sendAmountBigNumber : ", sendAmountBigNumber);
-
       const sendToCosmosResult = await contractBridge.sendToCosmos(
         ERC20ContractAddress,
         bech32Address,
