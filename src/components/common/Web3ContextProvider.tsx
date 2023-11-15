@@ -12,12 +12,13 @@ import {
   JsonRpcSigner,
   Web3Provider,
 } from "@ethersproject/providers";
-import { getDefaultNetwork, getEthereumChainObject } from "utils/util";
+import { getEthereumChainObject } from "utils/util";
 import { useAsync } from "react-use";
 import { Chain, EthereumChain } from "types/chain";
 import { useWeb3React } from "@web3-react/core";
 import { getItem, removeItem, setItem } from "utils/localStorage";
 import { localStorageKey } from "constants/storage";
+import { ethereumNetworkConfig } from "constants/networkConfig";
 
 interface Web3ContextProps {
   provider: JsonRpcProvider | undefined;
@@ -61,7 +62,7 @@ interface Web3ContextProviderProps {
 const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
   children,
 }) => {
-  const defaultNetwork = getDefaultNetwork();
+  const defaultNetwork = ethereumNetworkConfig;
   const { connector, hooks } = useWeb3React();
 
   const [network, setNetwork] = useState(defaultNetwork.chainName);
@@ -174,7 +175,7 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
       const nowChainId = Number(chain.chainId);
 
       if (beforeChainId === nowChainId) {
-        messageApi.success("Connected");
+        messageApi.success("MetaMask Connected");
       } else {
         messageApi.success("Switched");
       }
