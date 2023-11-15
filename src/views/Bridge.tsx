@@ -13,18 +13,13 @@ import { useWeb3Context } from "components/common/Web3ContextProvider";
 import TokenSelectModal from "components/bridge/TokenSelectModal";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Contract } from "@ethersproject/contracts";
-import {
-  ERC20ContractAddress,
-  BridgeContractAddress,
-  ApproveAmount,
-} from "constants/contractConfig";
-import { BridgeABI, ERC20ABI } from "contracts/abi";
+import { ERC20ContractAddress } from "constants/contractConfig";
+import { ERC20ABI } from "contracts/abi";
 import { removeLastDot, validateDecimalInput } from "utils/number";
 import { debounce } from "lodash";
 import FeeInfo from "components/bridge/FeeInfo";
 import { useWeb3React } from "@web3-react/core";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { compareHexAddress, convertToBech32, convertToHex } from "utils/util";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useWalletQuery, useWalletMutation } from "queries/useWalletType";
 import { connectKeplrWallet } from "utils/keplr";
@@ -34,10 +29,12 @@ import {
   initKeplrWallet,
   useKeplrMutation,
 } from "queries/useKeplrWallet";
-// import { keplrSendTx } from "utils/keplrTx";
-// import { MessageSendToEthParams } from "transactions/msgSendToEth";
 import BridgeTxModal from "components/bridge/modal/BridgeTxModal";
 import { reapchainKeplrConfig } from "constants/keplrConfig";
+import {
+  ethereumNetworkConfig,
+  reapchainNetworkConfig,
+} from "constants/networkConfig";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.white};
@@ -88,13 +85,13 @@ const Bridge: React.FC = () => {
   const [chainModalTarget, setChainModalTarget] = useState("from");
   const [tokenModalOpen, setTokenModalOpen] = useState(false);
   const [tokenModalTarget, setTokenModalTarget] = useState("from");
-  const [fromChain, setFromChain] = useState<Chain>(networks.ethereum_sepolia);
-  const [toChain, setToChain] = useState<Chain>(networks.reapchain_testnet);
+  const [fromChain, setFromChain] = useState<Chain>(ethereumNetworkConfig);
+  const [toChain, setToChain] = useState<Chain>(reapchainNetworkConfig);
   const [fromToken, setFromToken] = useState<Token>(
-    networks.ethereum_sepolia.tokens[0]
+    ethereumNetworkConfig.tokens[0]
   );
   const [toToken, setToToken] = useState<Token>(
-    networks.reapchain_testnet.tokens[0]
+    reapchainNetworkConfig.tokens[0]
   );
   const [sendAmount, setSendAmount] = useState<string>("");
   const [receiveAmount, setReceiveAmount] = useState<string>("");
@@ -398,28 +395,6 @@ const Bridge: React.FC = () => {
     }
 
     setTxModalOpen(true);
-    // const tempSendAmount = removeLastDot(sendAmount);
-    // const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
-
-    // const sendToEthParams: MessageSendToEthParams = {
-    //   sender: keplr.account.bech32Address,
-    //   ethDest: convertToHex(keplr.account.bech32Address),
-    //   amount: {
-    //     denom: "areap",
-    //     amount: sendAmountBigNumber.toString(),
-    //   },
-    //   bridgeFee: {
-    //     denom: "areap",
-    //     amount: "2000000000000000000",
-    //   },
-    //   chainFee: {
-    //     denom: "areap",
-    //     amount: "2000000000000000000",
-    //   },
-    // };
-
-    // const res = keplrSendTx("SendToEth", fromChain, sendToEthParams);
-    // console.log("res : ", res);
   };
 
   const executeSendToCosmos = async () => {
@@ -447,61 +422,6 @@ const Bridge: React.FC = () => {
 
     setTxModalOpen(true);
     return;
-
-    // try {
-    //   const contractERC20 = new Contract(
-    //     ERC20ContractAddress,
-    //     ERC20ABI,
-    //     provider.getSigner()
-    //   );
-    //   const allowanceResult = await contractERC20.allowance(
-    //     address,
-    //     BridgeContractAddress
-    //   );
-
-    //   const tempSendAmount = removeLastDot(sendAmount);
-    //   const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
-
-    //   if (allowanceResult.lt(sendAmountBigNumber)) {
-    //     messageApi.info("To use the bridge, you must approve ERC20");
-
-    //     const approveResult = await contractERC20.approve(
-    //       BridgeContractAddress,
-    //       BigNumber.from(ApproveAmount),
-    //       {
-    //         gasLimit: 50000,
-    //       }
-    //     );
-    //     console.log("approveResult : ", approveResult);
-    //     return;
-    //   }
-
-    //   const bech32Address = convertToBech32(address, "reap");
-    //   const hexAddress = convertToHex(bech32Address);
-
-    //   if (!compareHexAddress(address, hexAddress)) {
-    //     messageApi.error("Error : address missmatch");
-    //     return;
-    //   }
-
-    //   const contractBridge = new Contract(
-    //     BridgeContractAddress,
-    //     BridgeABI,
-    //     provider?.getSigner()
-    //   );
-
-    //   const sendToCosmosResult = await contractBridge.sendToCosmos(
-    //     ERC20ContractAddress,
-    //     bech32Address,
-    //     sendAmountBigNumber,
-    //     {
-    //       gasLimit: 100000,
-    //     }
-    //   );
-    //   console.log("sendToCosmosResult : ", sendToCosmosResult);
-    // } catch (error) {
-    //   console.error(error);
-    // }
   };
 
   return (

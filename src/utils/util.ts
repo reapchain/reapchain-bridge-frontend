@@ -14,10 +14,6 @@ export const getIconSource = (logo: string) => {
   }
 };
 
-export const getDefaultNetwork = () => {
-  return networks.ethereum_mainnet;
-};
-
 export const displayShortHexAddress = (hexAddress: string) => {
   return hexAddress
     .substring(0, 6)
@@ -67,69 +63,3 @@ export const compareHexAddress = (hexAddress1: string, hexAddress2: string) => {
     hexAddress2.substring(2).toUpperCase()
   );
 };
-
-// export const hexToBech32 = (hex: string) => {
-//   return converter("reap").toBech32(hex);
-// };
-
-// export const bech32ToHex = (bech32: string) => {
-//   return converter("eth").toBech32(bech32);
-// };
-
-// export const makeChecksummedHexEncoder = () => {
-//   return (data: any) => toChecksumAddress(data.toString("hex"), null);
-// };
-
-// export const makeChecksummedHexDecoder = () => {
-//   return (data: any) => {
-//     const stripped = stripHexPrefix(data);
-//     if (
-//       !isValidChecksumAddress(data, null) &&
-//       stripped !== stripped.toLowerCase() &&
-//       stripped !== stripped.toUpperCase()
-//     ) {
-//       throw Error("Invalid address checksum");
-//     }
-//     return Buffer.from(stripHexPrefix(data), "hex");
-//   };
-// };
-
-// const hexChecksumChain = (name: string) => ({
-//   decoder: makeChecksummedHexDecoder(),
-//   encoder: makeChecksummedHexEncoder(),
-//   name,
-// });
-
-// export const ETH = hexChecksumChain("ETH");
-
-// function makeBech32Encoder(prefix: string) {
-//   return (data: any) => encode(prefix, toWords(data));
-// }
-
-// function makeBech32Decoder(currentPrefix: string) {
-//   return (data: any) => {
-//     const { prefix, words } = decode(data);
-//     if (prefix !== currentPrefix) {
-//       throw Error("Unrecognised address format");
-//     }
-//     return Buffer.from(fromWords(words));
-//   };
-// }
-
-// const bech32Chain = (name: string, prefix: string) => ({
-//   decoder: makeBech32Decoder(prefix),
-//   encoder: makeBech32Encoder(prefix),
-//   name,
-// });
-
-// export const REAP = bech32Chain("REAP", "reap");
-
-// export const ethToReap = (ethAddress: string) => {
-//   let data = ETH.decoder(ethAddress);
-//   return REAP.encoder(data);
-// };
-
-// export const reapToEth = (evmosAddress: string) => {
-//   let data = REAP.decoder(evmosAddress);
-//   return ETH.encoder(data);
-// };
