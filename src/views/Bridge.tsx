@@ -17,7 +17,7 @@ import {
   ERC20ContractAddress,
   BridgeContractAddress,
   ApproveAmount,
-} from "constants/contract";
+} from "constants/contractConfig";
 import { BridgeABI, ERC20ABI } from "contracts/abi";
 import { removeLastDot, validateDecimalInput } from "utils/number";
 import { debounce } from "lodash";
@@ -27,15 +27,17 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import { compareHexAddress, convertToBech32, convertToHex } from "utils/util";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useWalletQuery, useWalletMutation } from "queries/useWalletType";
-import { connectKeplrWallet, getKeplrChainConfig } from "utils/keplr";
+import { connectKeplrWallet } from "utils/keplr";
 import { getBankBalance } from "apis/api";
 import {
   useKeplrQuery,
   initKeplrWallet,
   useKeplrMutation,
 } from "queries/useKeplrWallet";
-import { keplrSendTx } from "utils/keplrTx";
-import { MessageSendToEthParams } from "transactions/msgSendToEth";
+// import { keplrSendTx } from "utils/keplrTx";
+// import { MessageSendToEthParams } from "transactions/msgSendToEth";
+import BridgeTxModal from "components/bridge/modal/BridgeTxModal";
+import { reapchainKeplrConfig } from "constants/keplrConfig";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.white};
@@ -100,6 +102,8 @@ const Bridge: React.FC = () => {
     BigNumber.from(0)
   );
   const [messageApi, contextHolder] = message.useMessage();
+
+  const [txModalOpen, setTxModalOpen] = useState<boolean>(false);
 
   const {
     provider,
@@ -196,11 +200,11 @@ const Bridge: React.FC = () => {
     if (!keplrData || !keplrData.isActive) {
       return;
     }
-    const endpoint = getKeplrChainConfig(fromChain).rest;
+
     const balance = await getBankBalance(
-      endpoint,
+      reapchainKeplrConfig.rest,
       keplrWallet.address,
-      "areap"
+      reapchainKeplrConfig.currencies[0].coinMinimalDenom
     );
     if (targetWallet === "Keplr") {
       setAvailableBalance(BigNumber.from(balance));
@@ -345,6 +349,10 @@ const Bridge: React.FC = () => {
     return keplr;
   };
 
+  const executeTransaction = () => {
+    setTxModalOpen(true);
+  };
+
   const handleClickExecute = () => {
     if (targetWallet === "MetaMask") {
       executeSendToCosmos();
@@ -389,28 +397,29 @@ const Bridge: React.FC = () => {
       return;
     }
 
-    const tempSendAmount = removeLastDot(sendAmount);
-    const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
+    setTxModalOpen(true);
+    // const tempSendAmount = removeLastDot(sendAmount);
+    // const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
 
-    const sendToEthParams: MessageSendToEthParams = {
-      sender: keplr.account.bech32Address,
-      ethDest: convertToHex(keplr.account.bech32Address),
-      amount: {
-        denom: "areap",
-        amount: sendAmountBigNumber.toString(),
-      },
-      bridgeFee: {
-        denom: "areap",
-        amount: "2000000000000000000",
-      },
-      chainFee: {
-        denom: "areap",
-        amount: "2000000000000000000",
-      },
-    };
+    // const sendToEthParams: MessageSendToEthParams = {
+    //   sender: keplr.account.bech32Address,
+    //   ethDest: convertToHex(keplr.account.bech32Address),
+    //   amount: {
+    //     denom: "areap",
+    //     amount: sendAmountBigNumber.toString(),
+    //   },
+    //   bridgeFee: {
+    //     denom: "areap",
+    //     amount: "2000000000000000000",
+    //   },
+    //   chainFee: {
+    //     denom: "areap",
+    //     amount: "2000000000000000000",
+    //   },
+    // };
 
-    const res = keplrSendTx("SendToEth", fromChain, sendToEthParams);
-    console.log("res : ", res);
+    // const res = keplrSendTx("SendToEth", fromChain, sendToEthParams);
+    // console.log("res : ", res);
   };
 
   const executeSendToCosmos = async () => {
@@ -436,66 +445,63 @@ const Bridge: React.FC = () => {
       return;
     }
 
-    try {
-      const contractERC20 = new Contract(
-        ERC20ContractAddress,
-        ERC20ABI,
-        provider.getSigner()
-      );
-      const allowanceResult = await contractERC20.allowance(
-        address,
-        BridgeContractAddress
-      );
+    setTxModalOpen(true);
+    return;
 
-      console.log("allowanceResult : ", allowanceResult);
+    // try {
+    //   const contractERC20 = new Contract(
+    //     ERC20ContractAddress,
+    //     ERC20ABI,
+    //     provider.getSigner()
+    //   );
+    //   const allowanceResult = await contractERC20.allowance(
+    //     address,
+    //     BridgeContractAddress
+    //   );
 
-      const tempSendAmount = removeLastDot(sendAmount);
-      const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
+    //   const tempSendAmount = removeLastDot(sendAmount);
+    //   const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
 
-      if (allowanceResult.lt(sendAmountBigNumber)) {
-        messageApi.info("To use the bridge, you must approve ERC20");
+    //   if (allowanceResult.lt(sendAmountBigNumber)) {
+    //     messageApi.info("To use the bridge, you must approve ERC20");
 
-        const approveResult = await contractERC20.approve(
-          BridgeContractAddress,
-          BigNumber.from(ApproveAmount),
-          {
-            gasLimit: 50000,
-          }
-        );
-        console.log("approveResult : ", approveResult);
-        return;
-      }
+    //     const approveResult = await contractERC20.approve(
+    //       BridgeContractAddress,
+    //       BigNumber.from(ApproveAmount),
+    //       {
+    //         gasLimit: 50000,
+    //       }
+    //     );
+    //     console.log("approveResult : ", approveResult);
+    //     return;
+    //   }
 
-      const bech32Address = convertToBech32(address, "reap");
-      const hexAddress = convertToHex(bech32Address);
+    //   const bech32Address = convertToBech32(address, "reap");
+    //   const hexAddress = convertToHex(bech32Address);
 
-      if (!compareHexAddress(address, hexAddress)) {
-        messageApi.error("Error : address missmatch");
-        return;
-      }
+    //   if (!compareHexAddress(address, hexAddress)) {
+    //     messageApi.error("Error : address missmatch");
+    //     return;
+    //   }
 
-      const contractBridge = new Contract(
-        BridgeContractAddress,
-        BridgeABI,
-        provider?.getSigner()
-      );
+    //   const contractBridge = new Contract(
+    //     BridgeContractAddress,
+    //     BridgeABI,
+    //     provider?.getSigner()
+    //   );
 
-      console.log("sendAmountBigNumber : ", sendAmountBigNumber);
-
-      const sendToCosmosResult = await contractBridge.sendToCosmos(
-        ERC20ContractAddress,
-        bech32Address,
-        sendAmountBigNumber,
-        {
-          gasLimit: 100000,
-        }
-      );
-      console.log("sendToCosmosResult : ", sendToCosmosResult);
-    } catch (error) {
-      console.error(error);
-    }
-
-    console.log("next...");
+    //   const sendToCosmosResult = await contractBridge.sendToCosmos(
+    //     ERC20ContractAddress,
+    //     bech32Address,
+    //     sendAmountBigNumber,
+    //     {
+    //       gasLimit: 100000,
+    //     }
+    //   );
+    //   console.log("sendToCosmosResult : ", sendToCosmosResult);
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   return (
@@ -553,6 +559,18 @@ const Bridge: React.FC = () => {
         selected={getTargetToken()}
         onSelect={handleSelectToken}
         onCancel={closeTokenModal}
+      />
+      <BridgeTxModal
+        open={txModalOpen}
+        targetWallet={targetWallet}
+        fromChain={fromChain}
+        toChain={toChain}
+        fromToken={fromToken}
+        toToken={toToken}
+        sendAmount={sendAmount}
+        receiveAmount={receiveAmount}
+        onExecute={executeTransaction}
+        onCancel={() => setTxModalOpen(false)}
       />
       {contextHolder}
     </StyledBridgeCard>

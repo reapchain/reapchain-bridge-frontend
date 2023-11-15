@@ -17,7 +17,7 @@ import {
   ERC20ContractAddress,
   BridgeContractAddress,
   ApproveAmount,
-} from "constants/contract";
+} from "constants/contractConfig";
 import { BridgeABI, ERC20ABI } from "contracts/abi";
 import { removeLastDot, validateDecimalInput } from "utils/number";
 import { debounce } from "lodash";
@@ -340,8 +340,6 @@ const Bridge: React.FC = () => {
         BridgeABI,
         provider?.getSigner()
       );
-
-      console.log("sendAmountBigNumber : ", sendAmountBigNumber);
 
       const sendToCosmosResult = await contractBridge.sendToCosmos(
         ERC20ContractAddress,

@@ -12,7 +12,7 @@ import {
 import detectEthereumProvider from "@metamask/detect-provider";
 import { hashMessage } from "ethers";
 import { Provider } from "@web3-react/types";
-import { Chain, Fee, Sender } from "@tharsis/transactions";
+import { Chain as Web3Chain, Fee, Sender } from "@tharsis/transactions";
 import { convertToBech32 } from "utils/util";
 import { formatEther } from "@ethersproject/units";
 import { arrayify } from "@ethersproject/bytes";
@@ -25,20 +25,22 @@ import {
 } from "transactions/msgSendToEth";
 import * as elliptic from "elliptic";
 import { generateFee } from "@tharsis/eip712";
+import { Chain } from "types/chain";
+import { reapchainKeplrConfig } from "constants/keplrConfig";
+import { reapchainConfig } from "constants/chainConfig";
+import { reapchainNetworkConfig } from "constants/networkConfig";
 
 export interface Balance {
   denom: string;
   amount: string;
 }
 
-// const chain: Chain = {
-//   chainId: 0x3602f,
-//   cosmosChainId: "reapchain_221231-1",
-// };
-
-const testEndpoint = "https://test-lcd.reapchain.org";
-// const testEndpoint = "http://43.201.57.7:1317";
 const pubkeyType = "/ethermint.crypto.v1.ethsecp256k1.PubKey";
+
+const myChain: Web3Chain = {
+  chainId: reapchainConfig.chainId,
+  cosmosChainId: reapchainConfig.cosmosChainId,
+};
 
 export const fetchBankBalance = async (address: string, denom: string) => {
   try {
@@ -46,7 +48,7 @@ export const fetchBankBalance = async (address: string, denom: string) => {
     console.log("addressReap : ", addressReap);
 
     let { data } = await axios.get(
-      `${testEndpoint}/bank/balances/${addressReap}`
+      `${reapchainKeplrConfig.rest}/bank/balances/${addressReap}`
     );
 
     const myBalance = data.result.find(
@@ -76,23 +78,19 @@ export const sendToEth = async (
       return;
     }
 
-    const myChain: Chain = {
-      chainId: 0x3602f,
-      cosmosChainId: "reapchain_221231-1",
-    };
-
     const bech32Address = convertToBech32(hexAddress, "reap");
 
     let { data: myAccount } = await axios.get(
-      `${testEndpoint}/${generateEndpointAccount(bech32Address)}`
+      `${reapchainConfig.restEndpoint}/${generateEndpointAccount(
+        bech32Address
+      )}`
     );
 
     // cannot use origin pubkey
-    if (!myAccount.account.base_account.pub_key || true) {
-      // let pubkey = getLocalPubkey(hexAddress);
+    if (!myAccount.account.base_account.pub_key) {
       let pubkey = getLocalPubkey(hexAddress);
 
-      if (!pubkey || true) {
+      if (!pubkey) {
         pubkey = await setLocalPubkey(hexAddress, provider);
         if (!pubkey) {
           throw new Error("personal sign is required.");
@@ -115,8 +113,13 @@ export const sendToEth = async (
       accountNumber: myAccount.account.base_account.account_number,
       pubkey: myAccount.account.base_account.pub_key.key || "",
     };
+
     console.log("sender : ", sender);
-    const msg = createMetamaskMessageSendToEth(myChain, sender, txData);
+    const msg = createMetamaskMessageSendToEth(
+      reapchainNetworkConfig,
+      sender,
+      txData
+    );
     console.log("msg(sendToEth) : ", msg);
 
     const signature: any = await provider.request({
@@ -134,7 +137,7 @@ export const sendToEth = async (
     console.log("tx data : ", JSON.parse(generatePostBodyBroadcast(rawTx)));
 
     const res = await axios.post(
-      testEndpoint + generateEndpointBroadcast(),
+      reapchainConfig.restEndpoint + generateEndpointBroadcast(),
       JSON.parse(generatePostBodyBroadcast(rawTx))
     );
     console.log("post res : ", res);
@@ -151,8 +154,6 @@ export const sendToEth = async (
       result: true,
       txhash: res.data.tx_response.txhash || "",
     };
-
-    console.log(msg);
   } catch (error) {
     console.error(error);
   }
@@ -168,15 +169,12 @@ export const transferReap = async (
       return;
     }
 
-    const myChain: Chain = {
-      chainId: 0x3602f,
-      cosmosChainId: "reapchain_221231-1",
-    };
-
     const bech32Address = convertToBech32(hexAddress, "reap");
 
     let { data: myAccount } = await axios.get(
-      `${testEndpoint}/${generateEndpointAccount(bech32Address)}`
+      `${reapchainConfig.restEndpoint}/${generateEndpointAccount(
+        bech32Address
+      )}`
     );
 
     if (!myAccount.account.base_account.pub_key) {
@@ -205,7 +203,11 @@ export const transferReap = async (
       pubkey: myAccount.account.base_account.pub_key.key || "",
     };
     console.log("sender : ", sender);
-    const msg = createMetamaskMessageTransferReap(myChain, sender, txData);
+    const msg = createMetamaskMessageTransferReap(
+      reapchainNetworkConfig,
+      sender,
+      txData
+    );
     console.log("msg(transfer) : ", msg);
 
     const signature: any = await provider.request({
@@ -225,7 +227,7 @@ export const transferReap = async (
     console.log("rawTx : ", rawTx);
 
     const res = await axios.post(
-      testEndpoint + generateEndpointBroadcast(),
+      reapchainConfig.restEndpoint + generateEndpointBroadcast(),
       JSON.parse(generatePostBodyBroadcast(rawTx))
     );
     console.log("post res : ", res);
@@ -274,7 +276,7 @@ const createMetamaskMessageSendToEth = (
     },
   };
 
-  return createMessageSendToEth(chain, sender, tempFee, "", testTxData);
+  return createMessageSendToEth(myChain, sender, tempFee, "", testTxData);
 };
 
 const createMetamaskMessageTransferReap = (
@@ -296,7 +298,7 @@ const createMetamaskMessageTransferReap = (
   );
   console.log("myFeeTest : ", myFeeTest);
 
-  return createMessageSend(chain, sender, tempFee, "", {
+  return createMessageSend(myChain, sender, tempFee, "", {
     destinationAddress: "reap1w92fjswvtmg0yds8352de9td2ajy888q2wpcnm",
     amount: "1000000000000000000",
     denom: "areap",

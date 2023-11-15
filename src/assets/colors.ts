@@ -10,6 +10,10 @@ const colors = {
   secondary3: "#5BB6E7",
   secondary4: "#66C4F0",
 
+  red1: "##f44336",
+  blue1: "#4336f4",
+  green1: "#1ADB1A",
+
   realWhite: "#FFFFFF",
   realBlack: "#000",
   darkGray: "#242424",

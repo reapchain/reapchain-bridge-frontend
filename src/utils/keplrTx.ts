@@ -1,7 +1,7 @@
 import { getAuthAccount } from "apis/api";
 import { MessageSendToEthParams } from "transactions/msgSendToEth";
 import { Chain } from "types/chain";
-import { getAccounts, getKeplrChainConfig } from "utils/keplr";
+import { getAccounts } from "utils/keplr";
 import { makeSignDoc } from "@cosmjs/launchpad";
 import {
   AuthInfo,
@@ -12,6 +12,7 @@ import {
 import { PubKey } from "@keplr-wallet/proto-types/cosmos/crypto/secp256k1/keys";
 import { SignMode } from "@keplr-wallet/proto-types/cosmos/tx/signing/v1beta1/signing";
 import { MsgSendToEth as MsgSendToEthTest } from "@chain-clients/gravitybridge/main/codegen/gravity/v1/msgs";
+import { reapchainKeplrConfig } from "constants/keplrConfig";
 
 export enum BroadcastMode {
   Block = "block",
@@ -25,7 +26,7 @@ export const keplrSendTx = async (
   txData: any
 ) => {
   try {
-    const keplrAccount = await getAccounts(chain);
+    const keplrAccount = await getAccounts();
 
     console.log("keplrAccount : ", keplrAccount);
 
@@ -39,15 +40,8 @@ export const keplrSendTx = async (
       return;
     }
 
-    const keplrChainConfig = getKeplrChainConfig(chain);
-
-    if (!keplrChainConfig) {
-      console.log("retry");
-      return;
-    }
-
     const authAccount = await getAuthAccount(
-      keplrChainConfig.rest,
+      reapchainKeplrConfig.rest,
       keplrAccount.address
     );
 
@@ -86,7 +80,7 @@ export const keplrSendTx = async (
     const signDoc = makeSignDoc(
       txMessageSet.aminoMsgs,
       fee,
-      keplrChainConfig.chainId,
+      reapchainKeplrConfig.chainId,
       "ReapChainBridge_SendToETH",
       sender.accountNumber,
       sender.sequence
@@ -94,7 +88,7 @@ export const keplrSendTx = async (
     console.log("signDoc : ", signDoc);
 
     const signResponse = await window.keplr.signAmino(
-      keplrChainConfig.chainId,
+      reapchainKeplrConfig.chainId,
       keplrAccount.address,
       signDoc
     );
@@ -137,7 +131,7 @@ export const keplrSendTx = async (
     }).finish();
 
     const sendTxRes = await window.keplr.sendTx(
-      keplrChainConfig.chainId,
+      reapchainKeplrConfig.chainId,
       signedTx,
       BroadcastMode.Sync
     );

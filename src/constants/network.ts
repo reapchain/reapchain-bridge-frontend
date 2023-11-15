@@ -42,11 +42,47 @@ export const networks: NetworkList = {
     ],
     wallet: "Keplr",
     explorerUrl: "https://test-dashboard.reapchain.org",
+    cosmosChainId: "reapchain_221230-1",
   },
+  // reapchain_testnet: {
+  //   chainId: "0x7e7",
+  //   chainName: "Reapchain Bridge Testnet",
+  //   rpcUrls: ["http://43.201.57.7:27400"],
+  //   blockExplorerUrls: ["https://test-dashboard.reapchain.org"],
+  //   nativeCurrency: {
+  //     name: "Reapchain",
+  //     symbol: "REAP",
+  //     decimals: 18,
+  //   },
+  //   icon: "reapchain",
+  //   iconUrls: ["https://test-dashboard.reapchain.org/reapchain_bg_logo.png"],
+  //   tokens: [
+  //     {
+  //       id: 1,
+  //       name: "Reapchain Test Coin",
+  //       symbol: "REAP",
+  //       decimals: 18,
+  //       contractAddress: "",
+  //       contractOwner: "",
+  //       icon: "reapchain",
+  //     },
+  //     {
+  //       id: 2,
+  //       name: "Reapchain Test Token",
+  //       symbol: "tREAP",
+  //       decimals: 18,
+  //       contractAddress: "",
+  //       contractOwner: "",
+  //       icon: "reapchain",
+  //     },
+  //   ],
+  //   wallet: "Keplr",
+  //   explorerUrl: "https://test-dashboard.reapchain.org",
+  // },
   reapchain_testnet: {
-    chainId: "0x7e7",
-    chainName: "Reapchain Bridge Testnet",
-    rpcUrls: ["http://43.201.57.7:24000"],
+    chainId: "0x3602F",
+    chainName: "Reapchain Testnet",
+    rpcUrls: ["https://test-eth.reapchain.org"],
     blockExplorerUrls: ["https://test-dashboard.reapchain.org"],
     nativeCurrency: {
       name: "Reapchain",
@@ -55,10 +91,6 @@ export const networks: NetworkList = {
     },
     icon: "reapchain",
     iconUrls: ["https://test-dashboard.reapchain.org/reapchain_bg_logo.png"],
-    // setting: {
-    //   useBridge: ['from', "to"],
-    //   useSwap: ['from', "to"]
-    // },
     tokens: [
       {
         id: 1,
@@ -81,45 +113,8 @@ export const networks: NetworkList = {
     ],
     wallet: "Keplr",
     explorerUrl: "https://test-dashboard.reapchain.org",
+    cosmosChainId: "reapchain_221231-1",
   },
-  // reapchain_testnet: {
-  //   chainId: "0x3602F",
-  //   chainName: "Reapchain Testnet",
-  //   rpcUrls: ["https://test-eth.reapchain.org"],
-  //   blockExplorerUrls: ["https://test-dashboard.reapchain.org"],
-  //   nativeCurrency: {
-  //     name: "Reapchain",
-  //     symbol: "REAP",
-  //     decimals: 18,
-  //   },
-  //   icon: "reapchain",
-  //   iconUrls: ["https://test-dashboard.reapchain.org/reapchain_bg_logo.png"],
-  //   // setting: {
-  //   //   useBridge: ['from', "to"],
-  //   //   useSwap: ['from', "to"]
-  //   // },
-  //   tokens: [
-  //     {
-  //       id: 1,
-  //       name: "Reapchain Test Coin",
-  //       symbol: "REAP",
-  //       decimals: 18,
-  //       contractAddress: "",
-  //       contractOwner: "",
-  //       icon: "reapchain",
-  //     },
-  //     {
-  //       id: 2,
-  //       name: "Reapchain Test Token",
-  //       symbol: "tREAP",
-  //       decimals: 18,
-  //       contractAddress: "",
-  //       contractOwner: "",
-  //       icon: "reapchain",
-  //     },
-  //   ],
-  //   wallet: "Keplr",
-  // },
   ethereum_mainnet: {
     chainId: "0x1",
     chainName: "Ethereum Mainnet",
@@ -181,8 +176,5 @@ export const networks: NetworkList = {
   },
 };
 
-/*
-# market
-REACT_APP_COIN_GECKO_URL = "https://api.coingecko.com"
-REACT_APP_GATE_IO_URL = "https://data.gateapi.io"
-*/
+export const defaultReapchainNetwork = networks.reapchain_testnet;
+export const defaultEthereumNetwork = networks.ethereum_sepolia;

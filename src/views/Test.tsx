@@ -3,7 +3,6 @@ import { networks } from "constants/network";
 import { Chain } from "types/chain";
 import { useWeb3React } from "@web3-react/core";
 import { Contract } from "@ethersproject/contracts";
-import { BigNumber } from "@ethersproject/bignumber";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { getEthereumChainObject } from "utils/util";
 import { message } from "antd";
