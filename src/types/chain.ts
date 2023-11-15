@@ -33,6 +33,8 @@ export interface Chain extends EthereumChain {
   setting?: Setting;
   wallet: "MetaMask" | "Keplr";
   explorerUrl: string;
+  cosmosChainId?: string;
+  restEndpoint?: string;
 }
 
 export type SelectedChain = {

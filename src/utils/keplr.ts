@@ -1,3 +1,4 @@
+import { reapchainKeplrConfig } from "constants/keplrConfig";
 import { localStorageKey } from "constants/storage";
 import { Chain } from "types/chain";
 import { setItem } from "utils/localStorage";
@@ -8,9 +9,7 @@ type InitKeplrResponse = {
   account?: any;
 };
 
-export const initKeplr = async (
-  chainConfig: any
-): Promise<InitKeplrResponse> => {
+export const initKeplr = async (): Promise<InitKeplrResponse> => {
   if (!window.getOfflineSigner || !window.keplr) {
     return {
       isError: true,
@@ -19,7 +18,7 @@ export const initKeplr = async (
   } else {
     if (window.keplr.experimentalSuggestChain) {
       try {
-        await window.keplr.experimentalSuggestChain(chainConfig);
+        await window.keplr.experimentalSuggestChain(reapchainKeplrConfig);
         return {
           isError: false,
         };
@@ -40,9 +39,7 @@ export const initKeplr = async (
 };
 
 export const connectKeplrWallet = async (chain: Chain) => {
-  const chainConfig = getKeplrChainConfig(chain);
-
-  const response = await initKeplr(chainConfig);
+  const response = await initKeplr();
   if (response.isError) {
     return response;
   }
@@ -53,13 +50,15 @@ export const connectKeplrWallet = async (chain: Chain) => {
     return null;
   }
 
-  await window.keplr.enable(chainConfig.chainId);
+  await window.keplr.enable(reapchainKeplrConfig.chainId);
 
-  const offlineSigner = window.getOfflineSignerOnlyAmino(chainConfig.chainId);
+  const offlineSigner = window.getOfflineSignerOnlyAmino(
+    reapchainKeplrConfig.chainId
+  );
   const accounts = await offlineSigner.getAccounts();
 
   if (accounts.length > 0) {
-    const keyInfo = await window.keplr.getKey(chainConfig.chainId);
+    const keyInfo = await window.keplr.getKey(reapchainKeplrConfig.chainId);
     setItem(localStorageKey.KEY_KEPLR_ACTIVE, "active");
     if (keyInfo) {
       return {
@@ -73,16 +72,14 @@ export const connectKeplrWallet = async (chain: Chain) => {
   return null;
 };
 
-export const getAccounts = async (chain: Chain) => {
+export const getAccounts = async () => {
   try {
     if (!window.getOfflineSigner || !window.keplr) {
       return null;
     }
 
-    const chainConfig = getKeplrChainConfig(chain);
-
-    await window.keplr.enable(chainConfig.chainId);
-    const offlineSigner = window.getOfflineSigner(chainConfig.chainId);
+    await window.keplr.enable(reapchainKeplrConfig.chainId);
+    const offlineSigner = window.getOfflineSigner(reapchainKeplrConfig.chainId);
     const accounts = await offlineSigner.getAccounts();
 
     return {
@@ -96,165 +93,5 @@ export const getAccounts = async (chain: Chain) => {
   } catch (error) {
     console.error(error);
     return null;
-  }
-};
-
-const testChainConfig = {
-  rpc: "https://test-rpc.reapchain.org",
-  rpcConfig: undefined,
-  rest: "https://test-lcd.reapchain.org",
-  restConfig: undefined,
-  chainId: "reapchain_221231-1",
-  chainName: "Reapchain TestNet",
-  stakeCurrency: {
-    coinDenom: "reap",
-    coinMinimalDenom: "areap",
-    coinDecimals: 18,
-    coinGeckoId: "reap",
-  },
-  walletUrl: "https://test-dashboard.reapchain.org/validators",
-  walletUrlForStaking: "https://test-dashboard.reapchain.org/validators",
-  bip44: {
-    coinType: 60,
-  },
-  bech32Config: {
-    bech32PrefixAccAddr: "reap",
-    bech32PrefixAccPub: "reappub",
-    bech32PrefixValAddr: "reapvaloper",
-    bech32PrefixValPub: "reapvaloperpub",
-    bech32PrefixConsAddr: "reapvalcons",
-    bech32PrefixConsPub: "reapvalconspub",
-  },
-  currencies: [
-    {
-      coinDenom: "REAP",
-      coinMinimalDenom: "areap",
-      coinDecimals: 18,
-    },
-  ],
-  feeCurrencies: [
-    {
-      coinDenom: "REAP",
-      coinMinimalDenom: "areap",
-      coinDecimals: 18,
-    },
-  ],
-  gasPriceStep: {
-    low: 120000000,
-    average: 125000000,
-    high: 130000000,
-  },
-  features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
-  beta: true,
-};
-
-const devChainConfig = {
-  rpc: "http://43.201.57.7:27000",
-  rpcConfig: undefined,
-  rest: "http://43.201.57.7:1317",
-  restConfig: undefined,
-  chainId: "mercury_2023-1",
-  chainName: "Reapchain TestNet",
-  stakeCurrency: {
-    coinDenom: "reap",
-    coinMinimalDenom: "areap",
-    coinDecimals: 18,
-    coinGeckoId: "reap",
-  },
-  walletUrl: "https://test-dashboard.reapchain.org/validators",
-  walletUrlForStaking: "https://test-dashboard.reapchain.org/validators",
-  bip44: {
-    coinType: 60,
-  },
-  bech32Config: {
-    bech32PrefixAccAddr: "reap",
-    bech32PrefixAccPub: "reappub",
-    bech32PrefixValAddr: "reapvaloper",
-    bech32PrefixValPub: "reapvaloperpub",
-    bech32PrefixConsAddr: "reapvalcons",
-    bech32PrefixConsPub: "reapvalconspub",
-  },
-  currencies: [
-    {
-      coinDenom: "REAP",
-      coinMinimalDenom: "areap",
-      coinDecimals: 18,
-    },
-  ],
-  feeCurrencies: [
-    {
-      coinDenom: "REAP",
-      coinMinimalDenom: "areap",
-      coinDecimals: 18,
-    },
-  ],
-  gasPriceStep: {
-    low: 120000000,
-    average: 125000000,
-    high: 130000000,
-  },
-  features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
-  beta: true,
-};
-
-const mainChainConfig = {
-  rpc: "https://rpc.reapchain.org",
-  rpcConfig: undefined,
-  rest: "https://lcd.reapchain.org",
-  restConfig: undefined,
-  chainId: "reapchain_221230-1",
-  chainName: "Reapchain MainNet",
-  stakeCurrency: {
-    coinDenom: "reap",
-    coinMinimalDenom: "areap",
-    coinDecimals: 18,
-    coinGeckoId: "reap",
-  },
-  walletUrl: "https://dashboard.reapchain.org/validators",
-  walletUrlForStaking: "https://dashboard.reapchain.org/validators",
-  bip44: {
-    coinType: 60,
-  },
-  bech32Config: {
-    bech32PrefixAccAddr: "reap",
-    bech32PrefixAccPub: "reappub",
-    bech32PrefixValAddr: "reapvaloper",
-    bech32PrefixValPub: "reapvaloperpub",
-    bech32PrefixConsAddr: "reapvalcons",
-    bech32PrefixConsPub: "reapvalconspub",
-  },
-  currencies: [
-    {
-      coinDenom: "REAP",
-      coinMinimalDenom: "areap",
-      coinDecimals: 18,
-    },
-  ],
-  feeCurrencies: [
-    {
-      coinDenom: "REAP",
-      coinMinimalDenom: "areap",
-      coinDecimals: 18,
-    },
-  ],
-  gasPriceStep: {
-    low: 120000000,
-    average: 125000000,
-    high: 130000000,
-  },
-  features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
-  beta: true,
-};
-
-export const getKeplrChainConfig = (chain: Chain) => {
-  if (chain.chainId === "0x3602E") {
-    return mainChainConfig;
-  } else if (chain.chainId === "0x3602F") {
-    return testChainConfig;
-  } else if (chain.chainId === "0x7e7") {
-    return devChainConfig;
-  } else {
-    return devChainConfig;
-    // throw new Error("Not supported chain.");
   }
 };

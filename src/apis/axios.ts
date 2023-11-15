@@ -1,22 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosInstance } from "axios";
 
-// function setInterceptors(instance: any) {
-//   // request interceptor
-//   instance.interceptors.request.use(
-//     (config: any) => {
-//       config.headers.Authorization = `Bearer ${getItem("accessToken")}`;
-//       return config;
-//     },
-//     (error: any) => Promise.reject(error)
-//   );
-//   // response interceptor
-//   instance.interceptors.response.use(
-//     (response: any) => response,
-//     (error: any) => Promise.reject
-//   );
-//   return instance;
-// }
-
 export const axiosRequestConfiguration: AxiosRequestConfig = {
   baseURL: process.env.REACT_APP_TEST_LCD_URL,
   responseType: "json",
@@ -55,8 +38,6 @@ export const getApi = async (url: string, params?: any) => {
       method: "GET",
       params: params,
     });
-
-    console.log("getApi -", url, res.data);
 
     return res.data;
   } catch (err) {

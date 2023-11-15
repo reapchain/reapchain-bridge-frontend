@@ -5,7 +5,7 @@ import { Modal, message } from "antd";
 import { Chain, Token } from "types/chain";
 import BridgeTxChainItem from "components/bridge/modal/BridgeTxChainItem";
 import FeeDetailInfo from "components/bridge/modal/FeeDetailInfo";
-import { connectKeplrWallet, getKeplrChainConfig } from "utils/keplr";
+import { connectKeplrWallet } from "utils/keplr";
 import { BigNumber } from "@ethersproject/bignumber";
 import { MessageSendToEthParams } from "transactions/msgSendToEth";
 import { keplrSendTx } from "utils/keplrTx";
@@ -18,7 +18,7 @@ import {
   ERC20ContractAddress,
   BridgeContractAddress,
   ApproveAmount,
-} from "constants/contract";
+} from "constants/contractConfig";
 import { WalletType } from "queries/useWalletType";
 import { Contract } from "@ethersproject/contracts";
 

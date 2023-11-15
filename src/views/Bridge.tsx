@@ -17,7 +17,7 @@ import {
   ERC20ContractAddress,
   BridgeContractAddress,
   ApproveAmount,
-} from "constants/contract";
+} from "constants/contractConfig";
 import { BridgeABI, ERC20ABI } from "contracts/abi";
 import { removeLastDot, validateDecimalInput } from "utils/number";
 import { debounce } from "lodash";
@@ -27,16 +27,17 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import { compareHexAddress, convertToBech32, convertToHex } from "utils/util";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useWalletQuery, useWalletMutation } from "queries/useWalletType";
-import { connectKeplrWallet, getKeplrChainConfig } from "utils/keplr";
+import { connectKeplrWallet } from "utils/keplr";
 import { getBankBalance } from "apis/api";
 import {
   useKeplrQuery,
   initKeplrWallet,
   useKeplrMutation,
 } from "queries/useKeplrWallet";
-import { keplrSendTx } from "utils/keplrTx";
-import { MessageSendToEthParams } from "transactions/msgSendToEth";
+// import { keplrSendTx } from "utils/keplrTx";
+// import { MessageSendToEthParams } from "transactions/msgSendToEth";
 import BridgeTxModal from "components/bridge/modal/BridgeTxModal";
+import { reapchainKeplrConfig } from "constants/keplrConfig";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.white};
@@ -199,11 +200,11 @@ const Bridge: React.FC = () => {
     if (!keplrData || !keplrData.isActive) {
       return;
     }
-    const endpoint = getKeplrChainConfig(fromChain).rest;
+
     const balance = await getBankBalance(
-      endpoint,
+      reapchainKeplrConfig.rest,
       keplrWallet.address,
-      "areap"
+      reapchainKeplrConfig.currencies[0].coinMinimalDenom
     );
     if (targetWallet === "Keplr") {
       setAvailableBalance(BigNumber.from(balance));
@@ -501,8 +502,6 @@ const Bridge: React.FC = () => {
     // } catch (error) {
     //   console.error(error);
     // }
-
-    console.log("next...");
   };
 
   return (

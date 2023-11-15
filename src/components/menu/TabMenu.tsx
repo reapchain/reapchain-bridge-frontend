@@ -27,10 +27,10 @@ const items: TabsProps["items"] = [
     key: "bridge/reap",
     label: <TabMenuItem title={"Reap → Token"} link={"/bridge/reap"} />,
   },
-  {
-    key: "test",
-    label: <TabMenuItem title={"Test"} link={"/test"} />,
-  },
+  // {
+  //   key: "test",
+  //   label: <TabMenuItem title={"Test"} link={"/test"} />,
+  // },
 ];
 
 const TabMenu: React.FC = () => {
