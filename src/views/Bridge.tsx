@@ -321,7 +321,7 @@ const Bridge: React.FC = () => {
     }
 
     setReceiveAmount(formatEther(sendAmountBigNumber.mul(ratio)));
-  }, 1000);
+  }, 500);
 
   const handleClickConnectWallet = () => {
     if (targetWallet === "MetaMask") {

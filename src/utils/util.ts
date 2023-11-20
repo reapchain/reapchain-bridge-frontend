@@ -63,3 +63,19 @@ export const compareHexAddress = (hexAddress1: string, hexAddress2: string) => {
     hexAddress2.substring(2).toUpperCase()
   );
 };
+
+export const abbrAddress = (address: string, length = 10) => {
+  return address
+    .substring(0, length)
+    .concat("...", address.substring(address.length - length));
+};
+
+export const abbrAddress2 = (
+  address: string,
+  prefix: number,
+  postfix: number
+) => {
+  return `${address.substring(0, prefix)}...${address.substring(
+    address.length - postfix
+  )}`;
+};

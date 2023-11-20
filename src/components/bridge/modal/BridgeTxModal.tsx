@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import colors from "assets/colors";
 import { Modal, message } from "antd";
@@ -21,6 +21,7 @@ import {
 } from "constants/contractConfig";
 import { WalletType } from "queries/useWalletType";
 import { Contract } from "@ethersproject/contracts";
+import BridgeTxSend, { SendTxInfo } from "components/bridge/modal/BridgeTxSend";
 
 const StyledModal = styled(Modal)`
   & .ant-modal-content {
@@ -58,14 +59,17 @@ const StyledHorizon = styled.div`
 
 const StyledContents = styled.div`
   margin-top: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 0px;
 `;
+
+const StyledInformation = styled.div``;
 
 const StyledButton = styled.div`
   border: 1px solid transparent;
   border-radius: 12px;
   background-color: ${colors.pointPink};
   color: #fff;
+  margin-top: 24px;
   padding: 12px;
   font-size: 18px;
   font-weight: 700;
@@ -108,6 +112,12 @@ const BridgeTxModal: React.FC<Props> = ({
     connectWeb3,
     connectWeb3Signer,
   } = useWeb3Context();
+  const [txInfo, setTxInfo] = useState<SendTxInfo>({
+    isSend: false,
+    hash: "",
+    address: "",
+    error: "",
+  });
 
   const handleClickExecute = () => {
     if (targetWallet === "MetaMask") {
@@ -118,33 +128,57 @@ const BridgeTxModal: React.FC<Props> = ({
   };
 
   const executeSendToEth = async () => {
-    const keplr = await connectKeplrWallet(fromChain);
-    if (!keplr) {
-      return;
+    try {
+      const keplr = await connectKeplrWallet(fromChain);
+      if (!keplr) {
+        return;
+      }
+
+      const tempSendAmount = removeLastDot(sendAmount);
+      const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
+
+      const sendToEthParams: MessageSendToEthParams = {
+        sender: keplr.account.bech32Address,
+        ethDest: convertToHex(keplr.account.bech32Address),
+        amount: {
+          denom: "areap",
+          amount: sendAmountBigNumber.toString(),
+        },
+        bridgeFee: {
+          denom: "areap",
+          amount: "2000000000000000000",
+        },
+        chainFee: {
+          denom: "areap",
+          amount: "2000000000000000000",
+        },
+      };
+
+      const keplrTxResult = await keplrSendTx(
+        "SendToEth",
+        fromChain,
+        sendToEthParams
+      );
+
+      if (!keplrTxResult.result && keplrTxResult.msg === "Request rejected") {
+        messageApi.error(keplrTxResult.msg);
+        return;
+      }
+
+      setTxInfo({
+        isSend: true,
+        hash: keplrTxResult.txHash,
+        address: keplr.account.bech32Address,
+        error: keplrTxResult.msg,
+      });
+    } catch (err) {
+      setTxInfo({
+        ...txInfo,
+        error: err,
+        isSend: true,
+      });
+      console.error(err);
     }
-
-    const tempSendAmount = removeLastDot(sendAmount);
-    const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
-
-    const sendToEthParams: MessageSendToEthParams = {
-      sender: keplr.account.bech32Address,
-      ethDest: convertToHex(keplr.account.bech32Address),
-      amount: {
-        denom: "areap",
-        amount: sendAmountBigNumber.toString(),
-      },
-      bridgeFee: {
-        denom: "areap",
-        amount: "2000000000000000000",
-      },
-      chainFee: {
-        denom: "areap",
-        amount: "2000000000000000000",
-      },
-    };
-
-    const res = keplrSendTx("SendToEth", fromChain, sendToEthParams);
-    console.log("res : ", res);
   };
 
   const executeSendToCosmos = async () => {
@@ -203,16 +237,35 @@ const BridgeTxModal: React.FC<Props> = ({
         }
       );
       console.log("sendToCosmosResult : ", sendToCosmosResult);
-    } catch (error) {
-      console.error(error);
+
+      setTxInfo({
+        isSend: true,
+        hash: sendToCosmosResult.hash,
+        address: hexAddress,
+        error: null,
+      });
+    } catch (error: any) {
+      if (error.code === "ACTION_REJECTED") {
+        messageApi.error("Request rejected");
+      } else {
+        messageApi.error("MetaMask Error");
+      }
     }
+  };
+
+  const handleClickCancel = () => {
+    setTxInfo({
+      ...txInfo,
+      isSend: false,
+    });
+    onCancel();
   };
 
   return (
     <StyledModal
       title={"Transfer"}
       open={open}
-      onCancel={onCancel}
+      onCancel={handleClickCancel}
       closeIcon={false}
       width={550}
       bodyStyle={{
@@ -229,27 +282,34 @@ const BridgeTxModal: React.FC<Props> = ({
       footer={null}
     >
       <StyledContents>
-        <div>
-          <BridgeTxChainItem
-            type={"from"}
-            chainName={fromChain.chainName}
-            icon={fromChain.icon}
-            amount={sendAmount}
-            denom={fromToken.symbol}
-          />
-          <StyledHorizon />
-          <BridgeTxChainItem
-            type={"to"}
-            chainName={toChain.chainName}
-            icon={toChain.icon}
-            amount={receiveAmount}
-            denom={toToken.symbol}
-          />
-          <StyledHorizon />
-        </div>
-        <FeeDetailInfo />
+        {txInfo.isSend ? (
+          <BridgeTxSend targetWallet={targetWallet} txInfo={txInfo} />
+        ) : (
+          <StyledInformation>
+            <BridgeTxChainItem
+              type={"from"}
+              chainName={fromChain.chainName}
+              icon={fromChain.icon}
+              amount={sendAmount}
+              denom={fromToken.symbol}
+            />
+            <StyledHorizon />
+            <BridgeTxChainItem
+              type={"to"}
+              chainName={toChain.chainName}
+              icon={toChain.icon}
+              amount={receiveAmount}
+              denom={toToken.symbol}
+            />
+            <StyledHorizon />
+            <FeeDetailInfo />
+            <StyledButton onClick={handleClickExecute}>
+              Send Transaction
+            </StyledButton>
+          </StyledInformation>
+        )}
       </StyledContents>
-      <StyledButton onClick={handleClickExecute}>Send Transaction</StyledButton>
+      {contextHolder}
     </StyledModal>
   );
 };

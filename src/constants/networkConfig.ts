@@ -36,7 +36,7 @@ export const reapchainNetworkConfig: Chain = {
   ],
   wallet: "Keplr",
   explorerUrl: reapchainConfig.explorerUrl,
-  cosmosChainId: "reapchain_221230-1",
+  cosmosChainId: reapchainConfig.cosmosChainId,
   restEndpoint: reapchainConfig.restEndpoint,
 };
 
@@ -59,6 +59,6 @@ export const ethereumNetworkConfig: Chain = {
     },
   ],
   wallet: "MetaMask",
-  explorerUrl: "https://etherscan.io",
+  explorerUrl: ethereumConfig.explorerUrl,
   restEndpoint: ethereumConfig.restEndpoint,
 };

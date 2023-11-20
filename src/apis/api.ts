@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Coin } from "@tharsis/provider";
+import { ethereumConfig } from "constants/chainConfig";
 
 const commonProcess = (res: any) => {
   if (res && Object.keys(res).includes("result")) {
@@ -69,4 +70,45 @@ export const getAuthAccount = async (
     })
     .catch((e) => {
       console.log("error=>", e);
+    });
+
+export const getReapchainTxInfo = async (
+  endpoint: string,
+  txHash: string
+): Promise<any> =>
+  axios
+    .get(`${endpoint}/cosmos/tx/v1beta1/txs/${txHash}`, { timeout: 1000 })
+    .then((res) => {
+      const data = commonProcess(res.data);
+
+      return true;
+    })
+    .catch((e) => {
+      console.log("error", e);
+      return false;
+    });
+
+export const getEthereumTxInfo = async (txHash: string): Promise<any> =>
+  axios
+    .post(
+      ethereumConfig.rpcEndpoint,
+      {
+        jsonrpc: "2.0",
+        method: "eth_getTransactionByHash",
+        params: [txHash],
+        id: 1,
+      },
+      { timeout: 1000 }
+    )
+    .then((res) => {
+      const data = commonProcess(res);
+      if (data.data.result) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    .catch((e) => {
+      console.log("error", e);
+      return false;
     });

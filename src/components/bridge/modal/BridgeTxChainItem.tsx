@@ -2,6 +2,8 @@ import colors from "assets/colors";
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import { getIconSource } from "utils/util";
+import { formatEther, parseEther } from "@ethersproject/units";
+import { BigNumber } from "@ethersproject/bignumber";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -51,6 +53,12 @@ const BridgeTxChainItem: React.FC<Props> = ({
     return type === "from";
   }, [type]);
 
+  const displayBalance = () => {
+    // const bigNumber = parseEther(amount);
+    // return formatEther(bigNumber);
+    return amount;
+  };
+
   return (
     <StyledContainer>
       <img
@@ -75,9 +83,9 @@ const BridgeTxChainItem: React.FC<Props> = ({
           <ChainTitleText>{chainName}</ChainTitleText>
           {isFrom}
           {isFrom ? (
-            <SourceAmountText>- {amount}</SourceAmountText>
+            <SourceAmountText>- {displayBalance()}</SourceAmountText>
           ) : (
-            <DestinationAmountText>+ {amount}</DestinationAmountText>
+            <DestinationAmountText>+ {displayBalance()}</DestinationAmountText>
           )}
         </div>
         <div

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { getAuthAccount } from "apis/api";
 import { MessageSendToEthParams } from "transactions/msgSendToEth";
 import { Chain } from "types/chain";
@@ -20,24 +21,35 @@ export enum BroadcastMode {
   Async = "async",
 }
 
+interface KeplrTxResult {
+  result: boolean;
+  txHash: string;
+  msg: string;
+}
+
 export const keplrSendTx = async (
   txType: string,
   chain: Chain,
   txData: any
-) => {
+): Promise<KeplrTxResult> => {
   try {
     const keplrAccount = await getAccounts();
-
     console.log("keplrAccount : ", keplrAccount);
 
     if (!window.keplr) {
-      console.log("error : no keplr instance...");
-      return;
+      return {
+        result: false,
+        txHash: "",
+        msg: "No account instance",
+      };
     }
 
     if (!keplrAccount) {
-      console.log("error : account Info...");
-      return;
+      return {
+        result: false,
+        txHash: "",
+        msg: "No account Info",
+      };
     }
 
     const authAccount = await getAuthAccount(
@@ -45,11 +57,12 @@ export const keplrSendTx = async (
       keplrAccount.address
     );
 
-    console.log("authAccount : ", authAccount);
-
     if (!authAccount) {
-      console.log("error : no account Info...");
-      return;
+      return {
+        result: false,
+        txHash: "",
+        msg: "No account Info",
+      };
     }
 
     const sender = {
@@ -72,10 +85,12 @@ export const keplrSendTx = async (
     const txMessageSet = createKeplrMessage(txType, txData);
 
     if (!txMessageSet) {
-      return;
+      return {
+        result: false,
+        txHash: "",
+        msg: "Failed to create message",
+      };
     }
-
-    console.log("txMessageSet : ", txMessageSet);
 
     const signDoc = makeSignDoc(
       txMessageSet.aminoMsgs,
@@ -85,13 +100,13 @@ export const keplrSendTx = async (
       sender.accountNumber,
       sender.sequence
     );
-    console.log("signDoc : ", signDoc);
 
     const signResponse = await window.keplr.signAmino(
       reapchainKeplrConfig.chainId,
       keplrAccount.address,
       signDoc
     );
+
     console.log("signResponse : ", signResponse);
 
     const signedTx = TxRaw.encode({
@@ -130,18 +145,52 @@ export const keplrSendTx = async (
       signatures: [Buffer.from(signResponse.signature.signature, "base64")],
     }).finish();
 
-    const sendTxRes = await window.keplr.sendTx(
-      reapchainKeplrConfig.chainId,
-      signedTx,
-      BroadcastMode.Sync
+    // broadcase tx with keplr
+    // const sendTxRes = await window.keplr.sendTx(
+    //   reapchainKeplrConfig.chainId,
+    //   signedTx,
+    //   BroadcastMode.Sync
+    // );
+
+    const txBytes = Buffer.from(signedTx).toString("base64");
+    const txResponse: any = await axios.post(
+      `${reapchainKeplrConfig.rest}/cosmos/tx/v1beta1/txs`,
+      {
+        tx_bytes: txBytes,
+        mode: "BROADCAST_MODE_SYNC",
+      }
     );
-    console.log("sendTxRes : ", sendTxRes);
-  } catch (e) {
+
+    const txResponseData = txResponse.data.tx_response;
+    console.log("txResponseData : ", txResponseData.data.tx_response);
+
+    if (!txResponseData) {
+      return {
+        result: false,
+        txHash: "",
+        msg: "Connection failed",
+      };
+    }
+
+    if (txResponseData.raw_log && txResponseData.raw_log.length > 0) {
+      return {
+        result: false,
+        txHash: txResponseData.txhash,
+        msg: txResponseData.raw_log,
+      };
+    }
+
+    return {
+      result: true,
+      txHash: txResponseData.txhash,
+      msg: "",
+    };
+  } catch (e: any) {
     console.log(e);
     return {
       result: false,
-      txhash: "no txhash...",
-      msg: e,
+      txHash: "",
+      msg: e.message || "Error",
     };
   }
 };

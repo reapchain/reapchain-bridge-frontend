@@ -175,7 +175,7 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
       const nowChainId = Number(chain.chainId);
 
       if (beforeChainId === nowChainId) {
-        messageApi.success("MetaMask Connected");
+        // messageApi.success("MetaMask Connected");
       } else {
         messageApi.success("Switched");
       }
