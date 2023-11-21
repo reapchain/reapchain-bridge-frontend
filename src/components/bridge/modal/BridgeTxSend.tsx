@@ -113,18 +113,21 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo }) => {
         "_blank"
       );
     } else {
-      window.open(`${ethereumNetworkConfig}/tx/${txInfo.hash}`, "_blank");
+      window.open(
+        `${ethereumNetworkConfig.explorerUrl}/tx/${txInfo.hash}`,
+        "_blank"
+      );
     }
   };
   const handleClickAccount = () => {
     if (targetWallet === "Keplr") {
       window.open(
-        `${networks.reapchain_testnet.explorerUrl}/account/${txInfo.address}`,
+        `${reapchainNetworkConfig.explorerUrl}/account/${txInfo.address}`,
         "_blank"
       );
     } else {
       window.open(
-        `${networks.reapchain_testnet.explorerUrl}/address/${txInfo.address}`,
+        `${ethereumNetworkConfig.explorerUrl}/address/${txInfo.address}`,
         "_blank"
       );
     }
