@@ -6,18 +6,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 import { MetaMask } from "@web3-react/metamask";
-import {
-  Web3ReactProvider,
-  initializeConnector,
-  useWeb3React,
-  Web3ReactHooks,
-} from "@web3-react/core";
-import { ethers } from "ethers";
+import { Web3ReactProvider, initializeConnector } from "@web3-react/core";
 import TabMenu from "components/menu/TabMenu";
 import Bridge from "views/Bridge";
-import { Connector } from "@web3-react/types";
-import { InjectedConnector } from "@web3-react/injected-connector";
 import Web3ContextProvider from "components/common/Web3ContextProvider";
+import GlobalStyles from "assets/styles/GlobalStyles";
 
 const metaMask = initializeConnector<MetaMask>(
   (actions) => new MetaMask({ actions })
@@ -64,11 +57,11 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [metaMaskConnector, metaMaskHooks] = connectors["MetaMask"];
-  // const { connector, chainId, account } = useWeb3React();
 
   return (
     <Web3ReactProvider connectors={[[metaMaskConnector, metaMaskHooks]]}>
       <QueryClientProvider client={queryClient}>
+        <GlobalStyles />
         <Web3ContextProvider>
           <StyledPage>
             <StyledApp>
