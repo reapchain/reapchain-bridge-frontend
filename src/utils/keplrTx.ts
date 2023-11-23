@@ -34,7 +34,6 @@ export const keplrSendTx = async (
 ): Promise<KeplrTxResult> => {
   try {
     const keplrAccount = await getAccounts();
-    console.log("keplrAccount : ", keplrAccount);
 
     if (!window.keplr) {
       return {
