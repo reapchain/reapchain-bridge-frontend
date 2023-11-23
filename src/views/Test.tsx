@@ -10,6 +10,10 @@ import { BridgeABI, ERC20ABI } from "contracts/abi";
 import { RegisteredSubscription } from "web3/lib/commonjs/eth.exports";
 import Web3 from "web3";
 import { fetchBankBalance, sendToEth, transferReap } from "utils/metamask";
+import TopButton from "components/common/button/TopButton";
+import TabButton from "components/common/button/TabButton";
+import TabButton2 from "components/common/button/TabButton2";
+import ExecuteButton from "components/common/button/ExecuteButton";
 
 type Props = {};
 
@@ -222,6 +226,14 @@ const Test: React.FC = (props: Props) => {
     <div>
       <div>
         <h1>Test</h1>
+
+        {/* <div style={{ padding: "24px", flex: "0", gap: "12px" }}>
+          <TopButton text={"rBridge"} />
+          <TabButton active={true} from={"rBridge"} to={"rBridge"} />
+          <TabButton active={false} from={"rBridge"} to={"rBridge"} />
+          <ExecuteButton text={"rBridge"} />
+        </div> */}
+
         <div>
           <div>
             <h3>Address - {account ? account : "No Account Detected"}</h3>

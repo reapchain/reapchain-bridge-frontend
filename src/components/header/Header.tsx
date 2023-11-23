@@ -1,47 +1,54 @@
 import React from "react";
 import styled from "styled-components";
-import HeaderLinkButton from "./HeaderLinkButton";
 import HeaderTitle from "./HeaderTitle";
-import HeaderHomeButton from "./HeaderHomeButton";
 import HeaderOptionButton from "./HeaderOptionButton";
 import HeaderMetamask from "./HeaderMetamask";
+import TopButton from "components/common/button/TopButton";
+import { reapchainNetworkConfig } from "constants/networkConfig";
 
 const StyledHeader = styled.div`
   display: flex;
   width: 100%;
-  padding: 12px 0px;
+  padding: 0px 0px;
   z-index: 10;
   justify-content: space-between;
 `;
 
 const StyledHeaderItemWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-  padding: 8px;
-  gap: 8px;
+  gap: 12px;
+`;
+
+const StyledTitleWrapper = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
 `;
 
 const Header: React.FC = () => {
   return (
     <StyledHeader>
       <StyledHeaderItemWrapper>
-        <HeaderHomeButton />
-        <HeaderLinkButton
-          tooltip="Dashboard"
-          href="https://test-dashboard.reapchain.org/dashboard"
+        {/* <HeaderHomeButton /> */}
+        <TopButton
+          text={"Dashboard"}
+          tooltip={"Dashboard"}
+          href={reapchainNetworkConfig.explorerUrl}
         />
-        <HeaderLinkButton
-          tooltip="Explorer"
-          href="https://test-dashboard.reapchain.org/blocks"
+        <TopButton
+          text={"Explorer"}
+          tooltip={"Explorer"}
+          href={`${reapchainNetworkConfig.explorerUrl}/blocks`}
         />
-        <HeaderLinkButton
-          tooltip="Staking"
-          href="https://test-dashboard.reapchain.org/staking"
+        <TopButton
+          text={"Staking"}
+          tooltip={"Staking"}
+          href={`${reapchainNetworkConfig.explorerUrl}/staking`}
         />
       </StyledHeaderItemWrapper>
-      <StyledHeaderItemWrapper>
+      <StyledTitleWrapper>
         <HeaderTitle title={"rBridge"} />
-      </StyledHeaderItemWrapper>
+      </StyledTitleWrapper>
       <StyledHeaderItemWrapper>
         <HeaderMetamask />
         <HeaderOptionButton />

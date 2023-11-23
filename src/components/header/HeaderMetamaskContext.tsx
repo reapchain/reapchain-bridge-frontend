@@ -5,14 +5,15 @@ import metamaskIcon from "../../assets/images/metamask-logo.svg";
 import keplrIcon from "../../assets/images/keplr-logo.svg";
 
 const StyledImage = styled.img`
-  padding-left: 4px;
-  padding-right: 4px;
+  margin-left: -4px;
+  padding-right: 8px;
 `;
 
 const StyledContent = styled.div`
   padding-left: 4px;
   padding-right: 4px;
-  color: ${colors.godong};
+  font-size: 14px;
+  color: ${colors.white};
 `;
 
 type Props = {

@@ -1,70 +1,111 @@
 import React from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
-import {
-  FileTextOutlined,
-  GithubOutlined,
-  HomeOutlined,
-} from "@ant-design/icons";
-import FooterLinkButton from "./FooterLinkButton";
 import links from "../../assets/links";
+import githubIcon from "assets/images/github.svg";
+import gitbookIcon from "assets/images/gitbook.svg";
+import homeIcon from "assets/images/home.svg";
 
 const StyledFooter = styled.div`
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  color: ${colors.godong};
-  font-weight: 600;
-  font-size: 12px;
-  padding-bottom: 24px;
+  align-items: center;
 `;
 
-const StyledFooterItem = styled.div`
-  display: flex;
-  justify-content: center;
+const StyledContent = styled.div`
   margin-top: 16px;
+  width: 600px;
 `;
 
-const StyledHrefArea = styled.div`
+const StyledTitleText = styled.div`
+  color: ${colors.darkblue01};
+  font-weight: 500;
+  font-size: 14px;
+  margin-left: 8px;
+`;
+
+const StyledLinkText = styled.div`
+  cursor: pointer;
+  color: ${colors.darkblue02};
+  font-weight: 600;
+  font-size: 13px;
+  margin-right: 20px;
+`;
+
+const StyledLinkWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 8px;
+  justify-content: space-between;
 `;
 
-const StyledHrefWrapper = styled.div`
-  margin: 0px 12px;
+const StyledTextLinkItems = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding-top: 12px;
+`;
+
+const StyledIconLinkItems = styled.div`
+  margin-top: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+`;
+
+const StyledLinkIcon = styled.div`
   cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
 `;
 
-const footerIconStyle = { fontSize: "16px", color: colors.godong };
+const StyledIconImage = styled.img`
+  color: ${colors.darkblue01}
+  font-style: bold;
+`;
 
 const Footer: React.FC = () => {
+  const handleClickIconLink = (iconName: string) => {
+    let link = "";
+    if (iconName === "home") {
+      link = links.homepage;
+    } else if (iconName === "github") {
+      link = links.github;
+    } else if (iconName === "gitbook") {
+      link = links.gitbook;
+    }
+
+    window.open(link, "_blank");
+  };
+
   return (
     <StyledFooter>
-      <StyledFooterItem>Powered By Reapchain Network</StyledFooterItem>
-      <StyledFooterItem>
-        <FooterLinkButton
-          href={links.homepage}
-          icon={<HomeOutlined style={footerIconStyle} />}
-        />
-        <FooterLinkButton
-          href={links.github}
-          icon={<GithubOutlined style={footerIconStyle} />}
-        />
-        <FooterLinkButton
-          href={links.gitbook}
-          icon={<FileTextOutlined style={footerIconStyle} />}
-        />
-      </StyledFooterItem>
-      <StyledFooterItem>
-        <StyledHrefArea>
-          <StyledHrefWrapper>Contact Support</StyledHrefWrapper>
-          <StyledHrefWrapper>Terms of Service</StyledHrefWrapper>
-          <StyledHrefWrapper>Site map</StyledHrefWrapper>
-        </StyledHrefArea>
-      </StyledFooterItem>
+      <StyledContent>
+        <StyledTitleText>Powered By Reapchain Network</StyledTitleText>
+        <StyledLinkWrapper>
+          <StyledTextLinkItems>
+            <StyledLinkText>Contact Support</StyledLinkText>
+            <StyledLinkText>Terms of Service</StyledLinkText>
+            <StyledLinkText>Site map</StyledLinkText>
+          </StyledTextLinkItems>
+          <StyledIconLinkItems>
+            <StyledLinkIcon>
+              <StyledIconImage
+                src={homeIcon}
+                onClick={() => handleClickIconLink("home")}
+              />
+            </StyledLinkIcon>
+            <StyledLinkIcon>
+              <StyledIconImage
+                src={githubIcon}
+                onClick={() => handleClickIconLink("github")}
+              />
+            </StyledLinkIcon>
+            <StyledLinkIcon>
+              <StyledIconImage
+                src={gitbookIcon}
+                onClick={() => handleClickIconLink("gitbook")}
+              />
+            </StyledLinkIcon>
+          </StyledIconLinkItems>
+        </StyledLinkWrapper>
+      </StyledContent>
     </StyledFooter>
   );
 };

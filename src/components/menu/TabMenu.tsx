@@ -1,41 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { ConfigProvider, Tabs, TabsProps } from "antd";
 import styled from "styled-components";
-import colors from "assets/colors";
 import { useLocation, useNavigate } from "react-router-dom";
+import TabButton from "components/common/button/TabButton";
 
-type TabMenuItemProps = {
-  title: string;
-  link: string;
-};
-
-const StyledTabItem = styled.div`
-  font-size: 22px;
-  font-weight: 700;
+const StyledTab = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 40px 0px;
 `;
-
-const TabMenuItem: React.FC<TabMenuItemProps> = ({ title }) => {
-  return <StyledTabItem>{title}</StyledTabItem>;
-};
-
-const items: TabsProps["items"] = [
-  {
-    key: "bridge/token",
-    label: <TabMenuItem title={"Token → Reap"} link={"/bridge/token"} />,
-  },
-  {
-    key: "bridge/reap",
-    label: <TabMenuItem title={"Reap → Token"} link={"/bridge/reap"} />,
-  },
-  // {
-  //   key: "test",
-  //   label: <TabMenuItem title={"Test"} link={"/test"} />,
-  // },
-];
 
 const TabMenu: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const [selectedKey, setSelectedKey] = useState("");
 
   useEffect(() => {
@@ -56,26 +34,21 @@ const TabMenu: React.FC = () => {
     setSelectedKey(tempKey);
   }, [location]);
 
-  const handleChange = (key: string) => {
-    navigate(`/${key}`);
-  };
-
   return (
-    <ConfigProvider
-      theme={{
-        token: { colorPrimary: colors.pointPink },
-      }}
-    >
-      <Tabs
-        activeKey={selectedKey}
-        tabBarStyle={{ color: colors.etcGray }}
-        defaultActiveKey={"bridge"}
-        size="large"
-        color={colors.pointPink}
-        items={items}
-        onChange={handleChange}
+    <StyledTab>
+      <TabButton
+        value={"bridge/token"}
+        selected={selectedKey}
+        from={"Token"}
+        to={"Reap"}
       />
-    </ConfigProvider>
+      <TabButton
+        value={"bridge/reap"}
+        selected={selectedKey}
+        from={"Reap"}
+        to={"Token"}
+      />
+    </StyledTab>
   );
 };
 

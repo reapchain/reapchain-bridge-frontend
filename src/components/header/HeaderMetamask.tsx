@@ -15,12 +15,13 @@ import {
 } from "queries/useKeplrWallet";
 import { getItem, setItem } from "utils/localStorage";
 import { localStorageKey } from "constants/storage";
+import { reapchainNetworkConfig } from "constants/networkConfig";
 
 const StyledContainer = styled.div`
-  background-color: ${colors.white};
+  background-color: ${colors.blue};
   border: 1px solid transparent;
   cursor: pointer;
-  width: 165px;
+  width: 200px;
   height: 44px;
   padding: 8px;
   font-size: 14px;
@@ -31,18 +32,13 @@ const StyledContainer = styled.div`
   font-weight: 700;
   border-radius: 12px;
   border: 1.5px solid transparent;
-
-  &: hover {
-    border: 1.5px solid;
-    border-color: ${colors.pointPink};
-  }
 `;
 
 const StyledDropdown = styled(Dropdown)`
-  background-color: ${colors.white};
+  background-color: ${colors.blue};
   border: 1px solid transparent;
   cursor: pointer;
-  width: 165px;
+  width: 200px;
   height: 44px;
   padding: 8px;
   font-size: 14px;
@@ -53,11 +49,6 @@ const StyledDropdown = styled(Dropdown)`
   font-weight: 700;
   border-radius: 12px;
   border: 1.5px solid transparent;
-
-  &: hover {
-    border: 1.5px solid;
-    border-color: ${colors.pointPink};
-  }
 `;
 
 const StyldNotConnected = styled.div`
@@ -68,28 +59,39 @@ const StyldNotConnected = styled.div`
   height: 100%;
   align-items: center;
   justify-content: center;
-  color: ${colors.godong};
+  color: ${colors.white};
 `;
 
-type MenuItemProps = {
-  $first?: boolean | undefined;
-};
+const StyledMenuItem = styled.div`
+  font-weight: 600;
+  color: ${colors.darkblue01};
+  cursor: pointer;
 
-const StyledMenuItem = styled.div<MenuItemProps>`
-  a {
-    font-weight: 600;
-    color: ${colors.darkGray1};
-  }
+  padding: 6px 10px;
+  border-radius: 8px;
 
   &: hover {
+    background-color: ${colors.primary};
 
+    div {
+      color: ${colors.white};
+      font-weight: 600;
+    }
   }
+`;
+
+const StyledButtonText = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 140%;
+  color: ${colors.darkblue01};
 `;
 
 const dropDownStyle = {
-  backgroundColor: colors.realWhite,
-  border: "1.5px solid transparent",
-  borderColor: colors.pointPink,
+  backgroundColor: colors.secondary,
+  border: `1px solid`,
+  borderColor: colors.darkblue01,
+  marginTop: "12px",
 };
 
 type Props = {};
@@ -118,7 +120,7 @@ const HeaderMetamask: React.FC<Props> = () => {
 
   const connectKeplr = async () => {
     try {
-      const keplr = await connectKeplrWallet(networks.reapchain_testnet);
+      const keplr = await connectKeplrWallet(reapchainNetworkConfig);
       if (!keplr) {
         return;
       }
@@ -142,21 +144,7 @@ const HeaderMetamask: React.FC<Props> = () => {
     }
   };
 
-  const disconnectWallet = (wallet: string) => {
-    if (wallet === "MetaMask") {
-      disconnectWeb3();
-    } else if (wallet === "Keplr") {
-      keplrMutate({
-        isActive: false,
-        address: "",
-        name: "",
-      });
-      setItem(localStorageKey.KEY_KEPLR_ACTIVE, "inactive");
-      window.removeEventListener("keplr_keystorechange", () => {});
-    }
-  };
-
-  const disconnectWallet2 = () => {
+  const disconnectWallet = () => {
     if (targetWallet === "MetaMask") {
       disconnectWeb3();
     } else if (targetWallet === "Keplr") {
@@ -202,15 +190,15 @@ const HeaderMetamask: React.FC<Props> = () => {
           {
             label: (
               <StyledMenuItem onClick={handleClickLinkButton}>
-                <a>Account Info</a>
+                <StyledButtonText>Account Info</StyledButtonText>
               </StyledMenuItem>
             ),
             key: 1,
           },
           {
             label: (
-              <StyledMenuItem onClick={disconnectWallet2}>
-                <a>Disconnect</a>
+              <StyledMenuItem onClick={disconnectWallet}>
+                <StyledButtonText>Disconnect</StyledButtonText>
               </StyledMenuItem>
             ),
             key: 2,

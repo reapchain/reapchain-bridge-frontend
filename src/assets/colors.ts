@@ -1,10 +1,8 @@
 const colors = {
-  white: "#FFFFFF",
   black: "#000000",
   tertiary: "#0000FF",
   quaternary: "#FF0000",
 
-  primary: "#00264C",
   secondary1: "#2778BE",
   secondary2: "#489Fd8",
   secondary3: "#5BB6E7",
@@ -36,6 +34,19 @@ const colors = {
   etcBlue: "#1C3F74",
   etcGray: "#7D7979",
   etcRed: "#9F384A",
+
+  // new colors
+  primary: "#00264C",
+  secondary: "#001D3A",
+  blue: "#034C96",
+  background: "#001224",
+  lightblue: "#81A6CA",
+  darkblue01: "#556C8D",
+  darkblue02: "#304864",
+  darkblue03: "#193C5E",
+  darkblue04: "#192A3A",
+  white: "#FFFFFF",
+  monotone: "#262626",
 };
 
 export default colors;

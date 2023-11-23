@@ -4,7 +4,7 @@ import Icon from "@mdi/react";
 import { mdiChevronDown } from "@mdi/js";
 import colors from "../../assets/colors";
 import { Chain } from "types/chain";
-import { getBgIconSource } from "utils/util";
+import { getIconSource } from "utils/util";
 
 type Props = {
   chain: Chain;
@@ -17,38 +17,32 @@ const StyledChainSelectButton = styled.div`
   cursor: pointer;
   border: 1.5px solid transparent;
   border-radius: 12px;
-  background-color: ${colors.background};
-  color: ${colors.white};
-  padding: 8px;
-`;
+  background-color: ${colors.lightSal9};
+  color: ${colors.godong};
+  padding: 6px 4px 6px 10px;
+  margin-left: 12px;
+  margin-right: auto;
+  height: 24px;
 
-const StyledChainText = styled.div`
-  margin-left: 8px;
-  font-weight: 700;
-  font-size: 14px;
+  &: hover {
+    transition: 0.5s;
+    border: 1.5px solid;
+    border-color: ${colors.pointPink};
+  }
 `;
-
-const StyledArrowIcon = styled(Icon)`
-  color: ${colors.darkblue02};
-  margin-left: 4px;
-`;
-
-const StyledIcon = styled.img``;
 
 const ChainSelectButton: React.FC<Props> = ({ chain, onClick }) => {
   return (
     <StyledChainSelectButton onClick={onClick}>
-      <StyledIcon
-        src={getBgIconSource(chain.icon)}
+      <img
+        src={getIconSource(chain.icon)}
         alt="icon"
-        style={{ width: 24, height: 24 }}
+        style={{ width: 20, height: 20 }}
       />
-      <StyledChainText>{chain.chainName}</StyledChainText>
-      <StyledArrowIcon
-        path={mdiChevronDown}
-        size={1}
-        style={{ color: colors.darkblue02 }}
-      />
+      <div style={{ marginLeft: "8px", fontWeight: "600", fontSize: "16px" }}>
+        {chain.chainName}
+      </div>
+      <Icon path={mdiChevronDown} size={1} style={{ opacity: 0.5 }} />
     </StyledChainSelectButton>
   );
 };

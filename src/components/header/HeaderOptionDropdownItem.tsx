@@ -2,19 +2,29 @@ import React from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
 
-type MenuItemProps = {
-  $first?: boolean | undefined;
-};
+const StyledMenuItem = styled.div`
+  font-weight: 600;
+  color: ${colors.darkblue01};
+  cursor: pointer;
 
-const StyledMenuItem = styled.div<MenuItemProps>`
-  a {
-    font-weight: 600;
-    color: ${colors.darkGray1};
-  }
+  padding: 6px 12px;
+  border-radius: 8px;
 
   &: hover {
+    background-color: ${colors.primary};
 
+    div {
+      color: ${colors.white};
+      font-weight: 600;
+    }
   }
+`;
+
+const StyledButtonText = styled.div`
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 140%;
+  color: ${colors.darkblue01};
 `;
 
 type Props = {
@@ -29,7 +39,7 @@ const HeaderOptionDropdownItem: React.FC<Props> = ({ href, text }) => {
 
   return (
     <StyledMenuItem onClick={handleClickLink}>
-      <a>{text}</a>
+      <StyledButtonText>{text}</StyledButtonText>
     </StyledMenuItem>
   );
 };

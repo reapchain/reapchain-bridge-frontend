@@ -10,66 +10,71 @@ type InitKeplrResponse = {
 };
 
 export const initKeplr = async (): Promise<InitKeplrResponse> => {
-  if (!window.getOfflineSigner || !window.keplr) {
-    return {
-      isError: true,
-      message: "Please install keplr extension",
-    };
-  } else {
-    if (window.keplr.experimentalSuggestChain) {
-      try {
+  try {
+    if (!window.getOfflineSigner || !window.keplr) {
+      return {
+        isError: true,
+        message: "Please install keplr extension",
+      };
+    } else {
+      if (window.keplr.experimentalSuggestChain) {
         await window.keplr.experimentalSuggestChain(reapchainKeplrConfig);
         return {
           isError: false,
         };
-      } catch (error) {
-        console.log(error);
+      } else {
         return {
           isError: true,
-          message: "Failed to suggest the chain",
+          message: "Please use the recent version of keplr extension",
         };
       }
-    } else {
-      return {
-        isError: true,
-        message: "Please use the recent version of keplr extension",
-      };
     }
+  } catch (error) {
+    console.log(error);
+    return {
+      isError: true,
+      message: "Failed to suggest the chain",
+    };
   }
 };
 
 export const connectKeplrWallet = async (chain: Chain) => {
-  const response = await initKeplr();
-  if (response.isError) {
-    return response;
-  }
+  try {
+    const response = await initKeplr();
+    if (response.isError) {
+      return response;
+    }
 
-  if (!window.getOfflineSignerOnlyAmino || !window.keplr) {
-    const error = "Please install Keplr extension";
-    console.error(error);
+    if (!window.getOfflineSignerOnlyAmino || !window.keplr) {
+      const error = "Please install Keplr extension";
+      console.error(error);
+      return null;
+    }
+
+    await window.keplr.enable(reapchainKeplrConfig.chainId);
+
+    const offlineSigner = window.getOfflineSignerOnlyAmino(
+      reapchainKeplrConfig.chainId
+    );
+    const accounts = await offlineSigner.getAccounts();
+
+    if (accounts.length > 0) {
+      const keyInfo = await window.keplr.getKey(reapchainKeplrConfig.chainId);
+      setItem(localStorageKey.KEY_KEPLR_ACTIVE, "active");
+      if (keyInfo) {
+        return {
+          isError: false,
+          message: "",
+          account: keyInfo,
+        };
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.log(error);
     return null;
   }
-
-  await window.keplr.enable(reapchainKeplrConfig.chainId);
-
-  const offlineSigner = window.getOfflineSignerOnlyAmino(
-    reapchainKeplrConfig.chainId
-  );
-  const accounts = await offlineSigner.getAccounts();
-
-  if (accounts.length > 0) {
-    const keyInfo = await window.keplr.getKey(reapchainKeplrConfig.chainId);
-    setItem(localStorageKey.KEY_KEPLR_ACTIVE, "active");
-    if (keyInfo) {
-      return {
-        isError: false,
-        message: "",
-        account: keyInfo,
-      };
-    }
-  }
-
-  return null;
 };
 
 export const getAccounts = async () => {

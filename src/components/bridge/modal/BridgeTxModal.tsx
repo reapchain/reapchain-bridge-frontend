@@ -22,19 +22,22 @@ import {
 import { WalletType } from "queries/useWalletType";
 import { Contract } from "@ethersproject/contracts";
 import BridgeTxSend, { SendTxInfo } from "components/bridge/modal/BridgeTxSend";
+import ExecuteButton from "components/common/button/ExecuteButton";
 
 const StyledModal = styled(Modal)`
   & .ant-modal-content {
+    margin-left: -12px;
     border-radius: 12px;
-    border: 1.5px solid transparent;
+    border: 1px solid transparent;
     border-radius: 12px;
-    border-color: ${colors.pointPink};
+    border-color: ${colors.darkblue03};
+    background-color: ${colors.primary};
     padding: 24px;
   }
 
   & .ant-modal-close-x {
     font-size: 24px;
-    color: ${colors.godong};
+    color: ${colors.white};
   }
 
   & .ant-modal-close {
@@ -43,39 +46,38 @@ const StyledModal = styled(Modal)`
   }
 
   & .ant-modal-title {
+    background-color: ${colors.primary};
     text-align: center;
     margin-top: -6px;
     font-size: 20px;
-    color: ${colors.godong};
+    color: ${colors.white};
   }
 `;
 
 const StyledHorizon = styled.div`
-  border: 1.5px solid transparent;
-  border-width: 1.5px 0px 0px 0px;
-  border-color: ${colors.pointPink};
-  margin: 8px 0px;
+  border: 1px solid transparent;
+  border-width: 2px 0px 0px 0px;
+  border-color: ${colors.darkblue03};
+  margin: 12px 0px;
 `;
 
 const StyledContents = styled.div`
-  margin-top: 24px;
+  margin-top: 12px;
   margin-bottom: 0px;
 `;
 
 const StyledInformation = styled.div``;
 
-const StyledButton = styled.div`
-  border: 1px solid transparent;
+const StyledFromToArea = styled.div`
   border-radius: 12px;
-  background-color: ${colors.pointPink};
-  color: #fff;
-  margin-top: 24px;
-  padding: 12px;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
+  margin-top: 8px;
+  padding: 20px;
+  background-color: ${colors.background};
+`;
+
+const StyledFeeWrapper = styled.div`
+  margin-top: 36px;
+  margin-bottom: 36px;
 `;
 
 type Props = {
@@ -267,10 +269,10 @@ const BridgeTxModal: React.FC<Props> = ({
       open={open}
       onCancel={handleClickCancel}
       closeIcon={false}
-      width={550}
+      width={600}
       bodyStyle={{
         padding: 0,
-        color: colors.godong,
+        color: colors.white,
         display: "flex",
         flexDirection: "column",
       }}
@@ -286,26 +288,33 @@ const BridgeTxModal: React.FC<Props> = ({
           <BridgeTxSend targetWallet={targetWallet} txInfo={txInfo} />
         ) : (
           <StyledInformation>
-            <BridgeTxChainItem
-              type={"from"}
-              chainName={fromChain.chainName}
-              icon={fromChain.icon}
-              amount={sendAmount}
-              denom={fromToken.symbol}
+            <StyledFromToArea>
+              <BridgeTxChainItem
+                type={"from"}
+                chainName={fromChain.chainName}
+                icon={fromChain.icon}
+                amount={sendAmount}
+                denom={fromToken.symbol}
+              />
+              <StyledHorizon />
+              <BridgeTxChainItem
+                type={"to"}
+                chainName={toChain.chainName}
+                icon={toChain.icon}
+                amount={receiveAmount}
+                denom={toToken.symbol}
+              />
+            </StyledFromToArea>
+            <StyledFeeWrapper>
+              <FeeDetailInfo />
+            </StyledFeeWrapper>
+            <ExecuteButton
+              text={"Send Transaction"}
+              onClick={handleClickExecute}
             />
-            <StyledHorizon />
-            <BridgeTxChainItem
-              type={"to"}
-              chainName={toChain.chainName}
-              icon={toChain.icon}
-              amount={receiveAmount}
-              denom={toToken.symbol}
-            />
-            <StyledHorizon />
-            <FeeDetailInfo />
-            <StyledButton onClick={handleClickExecute}>
+            {/* <StyledButton onClick={handleClickExecute}>
               Send Transaction
-            </StyledButton>
+            </StyledButton> */}
           </StyledInformation>
         )}
       </StyledContents>
