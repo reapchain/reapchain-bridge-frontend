@@ -31,9 +31,9 @@ const ComponentLoading: React.FC = () => {
 };
 
 const StyledPage = styled.div`
-  background: ${colors.warmWhite};
+  background: ${colors.background};
   min-height: 100vh;
-  padding: 0px 24px;
+  padding: 40px 40px;
 `;
 
 const StyledApp = styled.div`

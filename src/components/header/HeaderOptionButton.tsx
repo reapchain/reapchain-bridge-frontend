@@ -7,30 +7,19 @@ import links from "../../assets/links";
 import HeaderOptionDropdownItem from "components/header/HeaderOptionDropdownItem";
 
 const StyledDropdown = styled(Dropdown)`
-  background-color: ${colors.white};
+  background-color: ${colors.secondary};
   border: 1px solid transparent;
   cursor: pointer;
-  padding: 8px;
   font-size: 14px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
   border-radius: 12px;
   border: 1.5px solid transparent;
-
-  &: hover {
-    transition: 0.5s;
-    border: 1.5px solid;
-    border-color: ${colors.pointPink};
-  }
 `;
 
-const StyledDropdownButton = styled(Button)`
-  width: 44px;
-  height: 44px;
-`;
+const StyledDropdownButton = styled(Button)``;
 
 const DropDownMenu: MenuProps = {
   items: [
@@ -84,9 +73,11 @@ const DropDownMenu: MenuProps = {
     },
   ],
   style: {
-    backgroundColor: colors.realWhite,
-    border: "1.5px solid transparent",
-    borderColor: colors.pointPink,
+    backgroundColor: colors.secondary,
+    border: `1px solid ${colors.darkblue01}`,
+    borderRadius: "12px",
+    marginTop: "12px",
+    padding: "8px 0px",
   },
 };
 
@@ -98,16 +89,15 @@ const HeaderOptionButton: React.FC<Props> = () => {
       menu={DropDownMenu}
       placement={"bottomLeft"}
       trigger={["click"]}
-      overlayStyle={{ color: colors.white }}
     >
       <StyledDropdownButton
         type="link"
         icon={
           <EllipsisOutlined
-            style={{ fontSize: "24px", color: colors.pointPink }}
+            style={{ fontSize: "32px", color: colors.darkblue01 }}
           />
         }
-        style={{ width: "44px", height: "44px" }}
+        style={{ width: "72px", height: "44px" }}
       />
     </StyledDropdown>
   );

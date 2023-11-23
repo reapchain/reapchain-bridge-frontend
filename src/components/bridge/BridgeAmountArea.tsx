@@ -10,9 +10,9 @@ import { BigNumberish } from "@ethersproject/bignumber";
 const StyledBridgeInputArea = styled.div`
   border: 1px solid transparent;
   border-radius: 12px;
-  background-color: ${colors.lightSal9};
-  color: ${colors.godong};
-  padding: 16px;
+  background-color: ${colors.background};
+  padding: 20px;
+  color: ${colors.darkblue01};
 `;
 
 const StyledContentWrapper = styled.div`
@@ -21,9 +21,29 @@ const StyledContentWrapper = styled.div`
   opacity: 0.9;
 `;
 
-const StyledContent = styled.div``;
+const StyledInputAmountWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+`;
 
-const StyledInputAmount = styled.div`
+const StyledTitleText = styled.div`
+  font-size: 12px;
+`;
+
+const StyledInputAmount = styled(Input)`
+  font-size: 24px;
+  font-weight: 600;
+  color: ${colors.white};
+  padding: 0px;
+
+  &:: placeholder {
+    color: ${colors.white};
+    opacity: 0.2;
+  }
+`;
+
+const StyledTokenSelectWrapper = styled.div`
   font-size: 24px;
   font-weight: 600;
   color: ${colors.white};
@@ -57,7 +77,7 @@ const BridgeAmountArea: React.FC<Props> = ({
   };
 
   const getTypeTitle = () => {
-    return type === "send" ? "Send:" : "Receive (estimated):";
+    return type === "send" ? "Send :" : "Receive (estimated) :";
   };
 
   const disabled = () => {
@@ -74,49 +94,34 @@ const BridgeAmountArea: React.FC<Props> = ({
 
   return (
     <StyledBridgeInputArea>
-      <StyledContentWrapper style={{ marginBottom: "12px" }}>
-        <StyledContent>{getTypeTitle()}</StyledContent>
-        {/* <StyledContent>Max: {max}</StyledContent> */}
+      <StyledContentWrapper>
+        <StyledTitleText>{getTypeTitle()}</StyledTitleText>
         {type === "send" && (
-          <StyledContent>
+          <StyledTitleText>
             Balance: {displayBalanceWithDash(availableBalance, token.symbol, 4)}
-            {/* Balance: {displayBalance(availableBalance, token.symbol)} */}
-          </StyledContent>
+          </StyledTitleText>
         )}
       </StyledContentWrapper>
-      <StyledContentWrapper style={{ marginBottom: "4px" }}>
-        <StyledInputAmount>
-          <Input
-            style={{
-              color: colors.pointPink,
-              width: 220,
-              fontWeight: 600,
-              fontSize: 20,
-            }}
-            disabled={disabled()}
-            bordered={false}
-            size={"large"}
-            value={amount}
-            min={0}
-            placeholder={"0.0"}
-            onChange={handleChangeAmount}
-          />
-          {/* <InputNumber
-            style={{ color: colors.godong, width: 220 }}
-            bordered={false}
-            color={"red"}
-            size={"large"}
-            controls={false}
-            value={amount}
-            min={0}
-            placeholder={"값."}
-            onChange={handleChangeAmount}
-          /> */}
-        </StyledInputAmount>
-        <StyledInputAmount>
+      <StyledInputAmountWrapper>
+        <StyledInputAmount
+          style={{
+            color: colors.white,
+            width: 300,
+            fontWeight: 700,
+            fontSize: 24,
+          }}
+          disabled={disabled()}
+          bordered={false}
+          size={"large"}
+          value={amount}
+          min={0}
+          placeholder={"0.0"}
+          onChange={handleChangeAmount}
+        />
+        <StyledTokenSelectWrapper>
           <TokenSelectButton token={token} onClick={handleClick} />
-        </StyledInputAmount>
-      </StyledContentWrapper>
+        </StyledTokenSelectWrapper>
+      </StyledInputAmountWrapper>
     </StyledBridgeInputArea>
   );
 };

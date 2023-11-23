@@ -6,7 +6,7 @@ import BridgeAmountArea from "components/bridge/BridgeAmountArea";
 import ChainSelectButton from "components/bridge/ChainSelectButton";
 import ChainSelectModal from "components/bridge/ChainSelectModal";
 import ExchangeButton from "components/bridge/ExchangeButton";
-import ExecuteButton from "components/bridge/ExecuteButton";
+import TransferButton from "components/bridge/TransferButton";
 import { Chain, Token } from "types/chain";
 import { networks } from "constants/network";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
@@ -408,7 +408,7 @@ const Bridge: React.FC = () => {
         />
       </StyledContentWrapper>
       <StyledConnectWalletWrapper>
-        <ExecuteButton
+        <TransferButton
           onClickExecute={handleClickExecute}
           onClickConnectWallet={handleClickConnectWallet}
         />

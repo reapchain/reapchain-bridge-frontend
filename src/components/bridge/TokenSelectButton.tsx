@@ -5,7 +5,7 @@ import Icon from "@mdi/react";
 import { mdiChevronDown } from "@mdi/js";
 import colors from "../../assets/colors";
 import { Token } from "types/chain";
-import { getIconSource } from "utils/util";
+import { getBgIconSource, getIconSource } from "utils/util";
 
 type Props = {
   token: Token;
@@ -21,25 +21,32 @@ const StyledTokenSelectButton = styled.div`
   height: 100%;
 `;
 
+const StyledArrowIcon = styled(Icon)`
+  color: ${colors.darkblue02};
+  margin-left: 4px;
+`;
+
+const StyledTokenText = styled.div`
+  margin-left: 8px;
+  font-size: 14px;
+  font-weight: 700;
+`;
+
+const StyledIcon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
+
 const TokenSelectButton: React.FC<Props> = ({ token, onClick }) => {
   return (
     <StyledTokenSelectButton onClick={onClick}>
-      <img
-        src={getIconSource(token.icon)}
-        alt="icon"
-        style={{ width: 20, height: 20 }}
+      <StyledIcon src={getBgIconSource(token.icon)} alt="icon" />
+      <StyledTokenText>{token.name}</StyledTokenText>
+      <StyledArrowIcon
+        path={mdiChevronDown}
+        size={1}
+        style={{ color: colors.darkblue02 }}
       />
-      <div
-        style={{
-          marginLeft: "8px",
-          fontWeight: "600",
-          fontSize: "16px",
-          color: colors.godong,
-        }}
-      >
-        {token.name}
-      </div>
-      <Icon path={mdiChevronDown} size={1} style={{ opacity: 1 }} />
     </StyledTokenSelectButton>
   );
 };

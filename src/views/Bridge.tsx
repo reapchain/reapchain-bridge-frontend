@@ -4,13 +4,11 @@ import styled from "styled-components";
 import colors from "assets/colors";
 import BridgeAmountArea from "components/bridge/BridgeAmountArea";
 import ChainSelectButton from "components/bridge/ChainSelectButton";
-import ChainSelectModal from "components/bridge/ChainSelectModal";
 import ExchangeButton from "components/bridge/ExchangeButton";
-import ExecuteButton from "components/bridge/ExecuteButton";
+import TransferButton from "components/bridge/TransferButton";
 import { Chain, Token } from "types/chain";
 import { networks } from "constants/network";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
-import TokenSelectModal from "components/bridge/TokenSelectModal";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Contract } from "@ethersproject/contracts";
 import { ERC20ContractAddress } from "constants/contractConfig";
@@ -29,46 +27,56 @@ import {
   initKeplrWallet,
   useKeplrMutation,
 } from "queries/useKeplrWallet";
-import BridgeTxModal from "components/bridge/modal/BridgeTxModal";
 import { reapchainKeplrConfig } from "constants/keplrConfig";
 import {
   ethereumNetworkConfig,
   reapchainNetworkConfig,
 } from "constants/networkConfig";
+import BridgeTxModal from "components/bridge/modal/BridgeTxModal";
 
 const StyledBridgeCard = styled(Card)`
-  background-color: ${colors.white};
-  border: 1px solid transparent;
+  background-color: ${colors.primary};
+  border: 1px solid;
   border-radius: 12px;
-  border-color: ${colors.pointPink};
+  border-color: ${colors.darkblue03};
   color: ${colors.godong};
-  padding: 12px 12px;
   font-weight: 600;
+  width: 600px;
 `;
 
-const StyledSelectTokenWrapper = styled.div`
+const StyledSelectChainWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const StyledContentWrapper = styled.div`
+  margin-top: 20px;
+`;
+
+const StyledSelectToken = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-bottom: 8px;
 `;
 
-const StyledContentWrapper = styled.div`
-  margin-top: 12px;
-  margin-bottom: 24px;
-`;
-
 const ExchangeButtonWrapper = styled.div`
-  margin-top: 12px;
-  margin-bottom: 24px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
-const StyledConnectWalletWrapper = styled.div`
-  margin-top: 36px;
+const StyledExecuteButtonWrapper = styled.div`
+  width: 600px;
+  margin-top: 40px;
 `;
 
 const StyledFromToText = styled.div`
-  width: 36px;
+  color: ${colors.white};
+  font-size: 28px;
+  font-weight: 800;
+  opacity: 0.2;
+  vertical-align: top;
 `;
 
 const Bridge: React.FC = () => {
@@ -425,61 +433,49 @@ const Bridge: React.FC = () => {
   };
 
   return (
-    <StyledBridgeCard style={{ width: 550 }}>
-      <StyledSelectTokenWrapper>
-        <StyledFromToText>From</StyledFromToText>
-        <ChainSelectButton chain={fromChain} onClick={() => {}} />
-      </StyledSelectTokenWrapper>
-      <StyledContentWrapper>
-        <BridgeAmountArea
-          type={"send"}
-          amount={sendAmount}
-          availableBalance={availableBalance}
-          max={0}
-          token={fromToken}
-          onClick={() => {}}
-          onChange={handleChangeSendAmount}
-        />
-      </StyledContentWrapper>
+    <>
+      <StyledBridgeCard>
+        <StyledSelectChainWrapper>
+          <ChainSelectButton chain={fromChain} onClick={() => {}} />
+          <StyledFromToText>From</StyledFromToText>
+        </StyledSelectChainWrapper>
+        <StyledContentWrapper>
+          <BridgeAmountArea
+            type={"send"}
+            amount={sendAmount}
+            availableBalance={availableBalance}
+            max={0}
+            token={fromToken}
+            onClick={() => {}}
+            onChange={handleChangeSendAmount}
+          />
+        </StyledContentWrapper>
+      </StyledBridgeCard>
       <ExchangeButtonWrapper>
         <ExchangeButton onClick={handleExchange} />
       </ExchangeButtonWrapper>
-      <StyledSelectTokenWrapper>
-        <StyledFromToText>To</StyledFromToText>
-        <ChainSelectButton chain={toChain} onClick={() => {}} />
-      </StyledSelectTokenWrapper>
-      <StyledContentWrapper>
-        <BridgeAmountArea
-          type={"receive"}
-          amount={receiveAmount}
-          availableBalance={"0"}
-          max={0}
-          token={toToken}
-          onClick={() => {}}
-        />
-      </StyledContentWrapper>
-      <StyledConnectWalletWrapper>
-        <ExecuteButton
+      <StyledBridgeCard>
+        <StyledSelectChainWrapper>
+          <ChainSelectButton chain={toChain} onClick={() => {}} />
+          <StyledFromToText>To</StyledFromToText>
+        </StyledSelectChainWrapper>
+        <StyledContentWrapper>
+          <BridgeAmountArea
+            type={"receive"}
+            amount={receiveAmount}
+            availableBalance={"0"}
+            max={0}
+            token={toToken}
+            onClick={() => {}}
+          />
+        </StyledContentWrapper>
+      </StyledBridgeCard>
+      <StyledExecuteButtonWrapper>
+        <TransferButton
           onClickExecute={handleClickExecute}
           onClickConnectWallet={handleClickConnectWallet}
         />
-      </StyledConnectWalletWrapper>
-      {receiveAmount && <FeeInfo />}
-      <ChainSelectModal
-        open={chainModalOpen}
-        target={chainModalTarget}
-        selected={getTargetChain()}
-        onSelect={handleSelectChain}
-        onCancel={closeChainModal}
-      />
-      <TokenSelectModal
-        open={tokenModalOpen}
-        target={tokenModalTarget}
-        chain={getTargetTokenChain()}
-        selected={getTargetToken()}
-        onSelect={handleSelectToken}
-        onCancel={closeTokenModal}
-      />
+      </StyledExecuteButtonWrapper>
       <BridgeTxModal
         open={txModalOpen}
         targetWallet={targetWallet}
@@ -493,8 +489,81 @@ const Bridge: React.FC = () => {
         onCancel={() => setTxModalOpen(false)}
       />
       {contextHolder}
-    </StyledBridgeCard>
+    </>
   );
 };
 
 export default Bridge;
+
+/*
+<StyledBridgeCard style={{ width: 550 }}>
+<StyledSelectTokenWrapper>
+  <StyledFromToText>From</StyledFromToText>
+  <ChainSelectButton chain={fromChain} onClick={() => {}} />
+</StyledSelectTokenWrapper>
+<StyledContentWrapper>
+  <BridgeAmountArea
+    type={"send"}
+    amount={sendAmount}
+    availableBalance={availableBalance}
+    max={0}
+    token={fromToken}
+    onClick={() => {}}
+    onChange={handleChangeSendAmount}
+  />
+</StyledContentWrapper>
+<ExchangeButtonWrapper>
+  <ExchangeButton onClick={handleExchange} />
+</ExchangeButtonWrapper>
+<StyledSelectTokenWrapper>
+  <StyledFromToText>To</StyledFromToText>
+  <ChainSelectButton chain={toChain} onClick={() => {}} />
+</StyledSelectTokenWrapper>
+<StyledContentWrapper>
+  <BridgeAmountArea
+    type={"receive"}
+    amount={receiveAmount}
+    availableBalance={"0"}
+    max={0}
+    token={toToken}
+    onClick={() => {}}
+  />
+</StyledContentWrapper>
+<StyledConnectWalletWrapper>
+  <ExecuteButton
+    onClickExecute={handleClickExecute}
+    onClickConnectWallet={handleClickConnectWallet}
+  />
+</StyledConnectWalletWrapper>
+{receiveAmount && <FeeInfo />}
+<ChainSelectModal
+  open={chainModalOpen}
+  target={chainModalTarget}
+  selected={getTargetChain()}
+  onSelect={handleSelectChain}
+  onCancel={closeChainModal}
+/>
+<TokenSelectModal
+  open={tokenModalOpen}
+  target={tokenModalTarget}
+  chain={getTargetTokenChain()}
+  selected={getTargetToken()}
+  onSelect={handleSelectToken}
+  onCancel={closeTokenModal}
+/>
+<BridgeTxModal
+  open={txModalOpen}
+  targetWallet={targetWallet}
+  fromChain={fromChain}
+  toChain={toChain}
+  fromToken={fromToken}
+  toToken={toToken}
+  sendAmount={sendAmount}
+  receiveAmount={receiveAmount}
+  onExecute={executeTransaction}
+  onCancel={() => setTxModalOpen(false)}
+/>
+{contextHolder}
+</StyledBridgeCard>
+
+*/
