@@ -1,7 +1,7 @@
 import colors from "assets/colors";
 import React, { useMemo } from "react";
 import styled from "styled-components";
-import { getIconSource } from "utils/util";
+import { getBgIconSource } from "utils/util";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
 
@@ -9,14 +9,14 @@ const StyledContainer = styled.div`
   display: flex;
 `;
 const ChainTitleText = styled.div`
-  color: ${colors.godong};
-  font-size: 16px;
-  font-weight: 700;
-`;
-const ChainSideText = styled.div`
-  color: ${colors.godong};
+  color: ${colors.white};
   font-size: 14px;
   font-weight: 600;
+`;
+const ChainSideText = styled.div`
+  color: ${colors.darkblue01};
+  font-size: 13px;
+  font-weight: 500;
 `;
 const SourceAmountText = styled.div`
   color: ${colors.quaternary};
@@ -29,10 +29,11 @@ const DestinationAmountText = styled.div`
   font-weight: 600;
 `;
 const StyledDenomText = styled.div`
-color: ${colors.godong}
-font-size: 14px;
-font-weight: 600;
+  color: ${colors.darkblue01};
+  font-size: 14px;
+  font-weight: 600;
 `;
+const StyledIcon = styled.img``;
 
 interface Props {
   type: "from" | "to";
@@ -61,8 +62,8 @@ const BridgeTxChainItem: React.FC<Props> = ({
 
   return (
     <StyledContainer>
-      <img
-        src={getIconSource(icon)}
+      <StyledIcon
+        src={getBgIconSource(icon)}
         alt="icon"
         style={{ width: 40, height: 40 }}
       />

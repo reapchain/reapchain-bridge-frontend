@@ -5,7 +5,7 @@ import Icon from "@mdi/react";
 import { mdiChevronRight } from "@mdi/js";
 import { useNavigate } from "react-router-dom";
 
-const StyledButton = styled.div<{ active: boolean }>`
+const StyledButton = styled.div<{ active?: string }>`
   height: 48px;
   padding-left: 24px;
   padding-right: 24px;
@@ -22,7 +22,7 @@ const StyledButton = styled.div<{ active: boolean }>`
   color: white;
 `;
 
-const StyledButtonText = styled.div<{ active: boolean }>`
+const StyledButtonText = styled.div<{ active?: string }>`
   text-align: left;
   vertical-align: top;
   font-size: 18px;
@@ -31,7 +31,7 @@ const StyledButtonText = styled.div<{ active: boolean }>`
   color: ${(props) => (props.active ? colors.white : colors.darkblue01)};
 `;
 
-const StyledIcon = styled(Icon)<{ active: boolean }>`
+const StyledIcon = styled(Icon)<{ active?: string }>`
   color: ${(props) => (props.active ? colors.lightblue : colors.darkblue01)};
 `;
 
@@ -53,11 +53,21 @@ const TabButton: React.FC<Props> = ({ value, selected, from, to }) => {
     return value === selected;
   }, [value, selected]);
 
+  if (value === selected) {
+    return (
+      <StyledButton active={"true"} onClick={handleClick}>
+        <StyledButtonText active={"true"}>{from}</StyledButtonText>
+        <StyledIcon active={"true"} path={mdiChevronRight} size={1} />
+        <StyledButtonText active={"true"}>{to}</StyledButtonText>
+      </StyledButton>
+    );
+  }
+
   return (
-    <StyledButton active={isActive} onClick={handleClick}>
-      <StyledButtonText active={isActive}>{from}</StyledButtonText>
-      <StyledIcon active={isActive} path={mdiChevronRight} size={1} />
-      <StyledButtonText active={isActive}>{to}</StyledButtonText>
+    <StyledButton onClick={handleClick}>
+      <StyledButtonText>{from}</StyledButtonText>
+      <StyledIcon path={mdiChevronRight} size={1} />
+      <StyledButtonText>{to}</StyledButtonText>
     </StyledButton>
   );
 };

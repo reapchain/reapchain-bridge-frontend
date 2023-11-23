@@ -15,6 +15,7 @@ import {
 } from "queries/useKeplrWallet";
 import { getItem, setItem } from "utils/localStorage";
 import { localStorageKey } from "constants/storage";
+import { reapchainNetworkConfig } from "constants/networkConfig";
 
 const StyledContainer = styled.div`
   background-color: ${colors.blue};
@@ -119,7 +120,7 @@ const HeaderMetamask: React.FC<Props> = () => {
 
   const connectKeplr = async () => {
     try {
-      const keplr = await connectKeplrWallet(networks.reapchain_testnet);
+      const keplr = await connectKeplrWallet(reapchainNetworkConfig);
       if (!keplr) {
         return;
       }

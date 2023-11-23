@@ -18,24 +18,27 @@ const conicColors = { "0%": "#87d068", "50%": "#ffe58f", "100%": "#ffccc7" };
 const StyledContainer = styled.div`
   flex: 1;
   margin-top: -12px;
+  color: ${colors.white};
 `;
 const TitleWrapper = styled.div`
   margin-top: 8px;
   margin-bottom: 12px;
 `;
 const StyledTitleText = styled.div`
-  color: ${colors.godong};
+  color: ${colors.lightblue};
   font-size: 18px;
   font-weight: 700;
 `;
 const StyledSubTitleText = styled.span`
-  color: ${colors.godong};
+  color: ${colors.darkblue01};
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
 `;
 const ProgressWrapper = styled.div`
   width: 125px;
   height: 125px;
+  margin-left: 12px;
+  margin-right: 12px;
 `;
 const LinkArea = styled.div`
   flex-direction: column;
@@ -48,7 +51,7 @@ const StyledLinkButton = styled(Link)`
   padding: 0px;
   font-size: 16px;
   font-weight: 700;
-  text-underline-offset: 3px;
+  text-underline-offset: 4px;
 `;
 
 const StyledTxSendWrapper = styled(Link)`
@@ -76,7 +79,6 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo }) => {
   useInterval(() => fetchTxStatus(), 1000);
 
   const fetchTxStatus = async () => {
-    console.log("fetchTxStatus");
     if (!showInfo) {
       if (targetWallet === "Keplr") {
         const res = await getReapchainTxInfo(
@@ -151,7 +153,7 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo }) => {
             <StyledSubTitleText>Tx Hash : </StyledSubTitleText>
             <StyledLinkButton
               style={{
-                color: colors.pointPink,
+                color: colors.white,
                 textDecorationLine: "underline",
               }}
               onClick={handleClickTxHash}
@@ -163,7 +165,7 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo }) => {
             <StyledSubTitleText>Account Info : </StyledSubTitleText>
             <StyledLinkButton
               style={{
-                color: colors.pointPink,
+                color: colors.white,
                 textDecorationLine: "underline",
               }}
               onClick={handleClickAccount}

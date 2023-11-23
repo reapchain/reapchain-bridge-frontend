@@ -26,7 +26,7 @@ const StyledButtonText = styled.div`
 
 type Props = {
   text: string;
-  onClick?: () => {};
+  onClick?: () => void;
 };
 
 const ExecuteButton: React.FC<Props> = ({ text, onClick }) => {

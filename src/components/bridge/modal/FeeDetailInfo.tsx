@@ -7,10 +7,7 @@ import { Popover } from "antd";
 
 type Props = {};
 
-const StyledContainer = styled.div`
-  margin-top: 28px;
-  margin-bottom: 20px;
-`;
+const StyledContainer = styled.div``;
 
 const StyledList = styled.div`
   margin: 24px auto 0px auto;
@@ -29,7 +26,8 @@ const StyledToken = styled.div`
 `;
 
 const StyledRatio = styled.div`
-  color: ${colors.pointPink};
+  color: ${colors.white};
+  font-size: 16px;
   font-weight: 800;
 `;
 

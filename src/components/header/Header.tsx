@@ -20,7 +20,6 @@ const StyledHeaderItemWrapper = styled.div`
 `;
 
 const StyledTitleWrapper = styled.div`
-  margin-top: 5px;
   position: absolute;
   left: 50%;
   transform: translate(-50%);
@@ -50,16 +49,6 @@ const Header: React.FC = () => {
       <StyledTitleWrapper>
         <HeaderTitle title={"rBridge"} />
       </StyledTitleWrapper>
-      {/* <StyledHeaderItemWrapper
-        style={{
-          position: "absolute",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        {/* <HeaderHomeButton /> 
-        <HeaderTitle title={"rBridge"} />
-      </StyledHeaderItemWrapper> */}
       <StyledHeaderItemWrapper>
         <HeaderMetamask />
         <HeaderOptionButton />

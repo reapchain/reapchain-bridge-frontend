@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import colors from "../../assets/colors";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import ExecuteButton from "components/common/button/ExecuteButton";
 
