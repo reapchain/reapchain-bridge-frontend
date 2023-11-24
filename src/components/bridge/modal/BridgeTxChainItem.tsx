@@ -34,6 +34,16 @@ const StyledDenomText = styled.div`
   font-weight: 600;
 `;
 const StyledIcon = styled.img``;
+const StyledTransferInfo = styled.div`
+  flex: 1;
+  flex-direction: column;
+  margin-left: 8px;
+  margin-top: -4px;
+`;
+const StyledTransferInfoItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 interface Props {
   type: "from" | "to";
@@ -67,20 +77,8 @@ const BridgeTxChainItem: React.FC<Props> = ({
         alt="icon"
         style={{ width: 40, height: 40 }}
       />
-      <div
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          marginLeft: "8px",
-          marginTop: "-4px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
+      <StyledTransferInfo>
+        <StyledTransferInfoItem>
           <ChainTitleText>{chainName}</ChainTitleText>
           {isFrom}
           {isFrom ? (
@@ -88,19 +86,14 @@ const BridgeTxChainItem: React.FC<Props> = ({
           ) : (
             <DestinationAmountText>+ {displayBalance()}</DestinationAmountText>
           )}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
+        </StyledTransferInfoItem>
+        <StyledTransferInfoItem>
           <ChainSideText>
             {isFrom ? "Source" : "Destination"} Chain
           </ChainSideText>
           <StyledDenomText>{denom}</StyledDenomText>
-        </div>
-      </div>
+        </StyledTransferInfoItem>
+      </StyledTransferInfo>
     </StyledContainer>
   );
 };
