@@ -7,30 +7,32 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 const StyledContainer = styled.div`
   display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 const ChainTitleText = styled.div`
   color: ${colors.white};
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
 `;
 const ChainSideText = styled.div`
   color: ${colors.darkblue01};
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
 `;
 const SourceAmountText = styled.div`
-  color: ${colors.quaternary};
+  color: ${colors.red01};
   font-size: 16px;
   font-weight: 600;
 `;
 const DestinationAmountText = styled.div`
-  color: ${colors.green1};
+  color: ${colors.blue01};
   font-size: 16px;
   font-weight: 600;
 `;
 const StyledDenomText = styled.div`
   color: ${colors.darkblue01};
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 `;
 const StyledIcon = styled.img``;
@@ -38,7 +40,6 @@ const StyledTransferInfo = styled.div`
   flex: 1;
   flex-direction: column;
   margin-left: 8px;
-  margin-top: -4px;
 `;
 const StyledTransferInfoItem = styled.div`
   display: flex;
@@ -75,19 +76,18 @@ const BridgeTxChainItem: React.FC<Props> = ({
       <StyledIcon
         src={getBgIconSource(icon)}
         alt="icon"
-        style={{ width: 40, height: 40 }}
+        style={{ width: 35, height: 35 }}
       />
       <StyledTransferInfo>
-        <StyledTransferInfoItem>
+        <StyledTransferInfoItem style={{ marginBottom: "-2px" }}>
           <ChainTitleText>{chainName}</ChainTitleText>
-          {isFrom}
           {isFrom ? (
             <SourceAmountText>- {displayBalance()}</SourceAmountText>
           ) : (
             <DestinationAmountText>+ {displayBalance()}</DestinationAmountText>
           )}
         </StyledTransferInfoItem>
-        <StyledTransferInfoItem>
+        <StyledTransferInfoItem style={{ marginTop: "-4px" }}>
           <ChainSideText>
             {isFrom ? "Source" : "Destination"} Chain
           </ChainSideText>

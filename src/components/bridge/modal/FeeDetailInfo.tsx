@@ -4,38 +4,48 @@ import colors from "assets/colors";
 import { getIconSource } from "utils/util";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Popover } from "antd";
+import icon from "assets/images/ellipse.svg";
 
 type Props = {};
 
 const StyledContainer = styled.div``;
-
 const StyledList = styled.div`
-  margin: 24px auto 0px auto;
-  width: 80%;
+  padding: 0px 20px;
 `;
-
 const StyledItem = styled.div`
   margin-top: 4px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
-
 const StyledToken = styled.div`
   display: flex;
   align-items: center;
 `;
-
 const StyledRatio = styled.div`
   color: ${colors.white};
   font-size: 16px;
   font-weight: 800;
 `;
-
 const StyledImageIcon = styled.img`
   width: 16px;
   height: 16px;
   margin-left: 2px;
   margin-right: 2px;
+`;
+const StyledItemTitle = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const StyledItemValue = styled.div`
+  font-weight: 700;
+`;
+const StyledIcon = styled.img`
+  margin-top: 2px;
+  width: 4px;
+  height: 4px;
+  margin-right: 6px;
 `;
 
 const FeeDetailInfo: React.FC<Props> = () => {
@@ -43,16 +53,21 @@ const FeeDetailInfo: React.FC<Props> = () => {
     <StyledContainer>
       <StyledList>
         <StyledItem>
-          <div>Bridge Rate</div>
+          <StyledItemTitle>
+            <StyledIcon src={icon} />
+            Bridge Rate
+          </StyledItemTitle>
           <StyledToken>
             <StyledImageIcon src={getIconSource("reapchain")} alt="icon" />
-            cREAP&nbsp;:&nbsp;
+            <StyledItemValue>REAP&nbsp;:&nbsp;</StyledItemValue>
             <StyledImageIcon src={getIconSource("reapchain")} alt="icon" />
-            tREAP&nbsp;=&nbsp;<StyledRatio>1 : 1</StyledRatio>
+            <StyledItemValue>REAPt&nbsp;=&nbsp;</StyledItemValue>
+            <StyledRatio>1 : 1</StyledRatio>
           </StyledToken>
         </StyledItem>
         <StyledItem>
-          <div>
+          <StyledItemTitle>
+            <StyledIcon src={icon} />
             Fee
             <Popover
               style={{
@@ -61,13 +76,14 @@ const FeeDetailInfo: React.FC<Props> = () => {
               content={<div>Fee...</div>}
               title="Fee"
             >
-              <InfoCircleOutlined style={{ marginLeft: "4px" }} />
+              <InfoCircleOutlined style={{ marginLeft: "6px" }} />
             </Popover>
-          </div>
-          <div>2 REAP</div>
+          </StyledItemTitle>
+          <StyledItemValue>2 REAP</StyledItemValue>
         </StyledItem>
         <StyledItem>
-          <div>
+          <StyledItemTitle>
+            <StyledIcon src={icon} />
             Minimum Received
             <Popover
               style={{
@@ -76,28 +92,14 @@ const FeeDetailInfo: React.FC<Props> = () => {
               content={<div>Minimum Received...</div>}
               title="Minimum Received"
             >
-              <InfoCircleOutlined style={{ marginLeft: "4px" }} />
+              <InfoCircleOutlined style={{ marginLeft: "6px" }} />
             </Popover>
-          </div>
-          <div>2 REAP</div>
+          </StyledItemTitle>
+          <StyledItemValue>2 REAP</StyledItemValue>
         </StyledItem>
         <StyledItem>
-          <div>
-            Slippage Tolerance
-            <Popover
-              style={{
-                backgroundColor: colors.pointPink,
-              }}
-              content={<div>Slippage Tolerance...</div>}
-              title="Slippage Tolerance"
-            >
-              <InfoCircleOutlined style={{ marginLeft: "4px" }} />
-            </Popover>
-          </div>
-          <div>1.00%</div>
-        </StyledItem>
-        <StyledItem>
-          <div>
+          <StyledItemTitle>
+            <StyledIcon src={icon} />
             Estimated Time of Arrival
             <Popover
               style={{
@@ -108,8 +110,8 @@ const FeeDetailInfo: React.FC<Props> = () => {
             >
               <InfoCircleOutlined style={{ marginLeft: "4px" }} />
             </Popover>
-          </div>
-          <div>20 minutes</div>
+          </StyledItemTitle>
+          <StyledItemValue>20 minutes</StyledItemValue>
         </StyledItem>
       </StyledList>
     </StyledContainer>

@@ -29,7 +29,6 @@ const StyledModal = styled(Modal)`
     margin-left: -12px;
     border-radius: 12px;
     border: 1px solid transparent;
-    border-radius: 12px;
     border-color: ${colors.darkblue03};
     background-color: ${colors.primary};
     padding: 24px;
@@ -50,13 +49,15 @@ const StyledModal = styled(Modal)`
     text-align: center;
     margin-top: -6px;
     font-size: 20px;
+    font-weight: 700;
     color: ${colors.white};
   }
 `;
 
 const StyledHorizon = styled.div`
+  height: 0px;
   border: 1px solid transparent;
-  border-width: 2px 0px 0px 0px;
+  border-width: 1px 0px 0px 0px;
   border-color: ${colors.darkblue03};
   margin: 12px 0px;
 `;
@@ -69,15 +70,17 @@ const StyledContents = styled.div`
 const StyledInformation = styled.div``;
 
 const StyledFromToArea = styled.div`
-  border-radius: 12px;
   margin-top: 8px;
   padding: 20px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  border-color: ${colors.darkblue03};
   background-color: ${colors.background};
 `;
 
 const StyledFeeWrapper = styled.div`
-  margin-top: 36px;
-  margin-bottom: 36px;
+  margin-top: 40px;
+  margin-bottom: 40px;
 `;
 
 type Props = {
@@ -106,14 +109,7 @@ const BridgeTxModal: React.FC<Props> = ({
   onCancel,
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
-  const {
-    provider,
-    address,
-    isActive,
-    signer,
-    connectWeb3,
-    connectWeb3Signer,
-  } = useWeb3Context();
+  const { provider, address } = useWeb3Context();
   const [txInfo, setTxInfo] = useState<SendTxInfo>({
     isSend: false,
     hash: "",
@@ -158,11 +154,14 @@ const BridgeTxModal: React.FC<Props> = ({
 
       const keplrTxResult = await keplrSendTx(
         "SendToEth",
-        fromChain,
-        sendToEthParams
+        sendToEthParams,
+        fromChain
       );
 
       if (!keplrTxResult.result && keplrTxResult.msg === "Request rejected") {
+        messageApi.error(keplrTxResult.msg);
+        return;
+      } else if (!keplrTxResult.result && keplrTxResult.msg !== "[]") {
         messageApi.error(keplrTxResult.msg);
         return;
       }
@@ -312,9 +311,6 @@ const BridgeTxModal: React.FC<Props> = ({
               text={"Send Transaction"}
               onClick={handleClickExecute}
             />
-            {/* <StyledButton onClick={handleClickExecute}>
-              Send Transaction
-            </StyledButton> */}
           </StyledInformation>
         )}
       </StyledContents>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Coin } from "@tharsis/provider";
-import { ethereumConfig } from "constants/chainConfig";
+import { ethereumConfig, reapchainConfig } from "constants/chainConfig";
+import { reapchainKeplrConfig } from "constants/keplrConfig";
 
 const commonProcess = (res: any) => {
   if (res && Object.keys(res).includes("result")) {
@@ -80,6 +81,7 @@ export const getReapchainTxInfo = async (
     .get(`${endpoint}/cosmos/tx/v1beta1/txs/${txHash}`, { timeout: 1000 })
     .then((res) => {
       const data = commonProcess(res.data);
+      // console.log("getReapchainTxInfo data : ", data);
 
       return true;
     })
@@ -111,4 +113,55 @@ export const getEthereumTxInfo = async (txHash: string): Promise<any> =>
     .catch((e) => {
       console.log("error", e);
       return false;
+    });
+
+export const broadcastReapchainTx = async (txBytes: string): Promise<any> =>
+  axios
+    .post(`${reapchainKeplrConfig.rest}/cosmos/tx/v1beta1/txs`, {
+      tx_bytes: txBytes,
+      mode: "BROADCAST_MODE_SYNC",
+    })
+    .then((res) => {
+      const data = commonProcess(res);
+      return data;
+    })
+    .catch((e) => {
+      console.log("error", e);
+      return null;
+    });
+
+export const getPendingSendToEth = async (address: string): Promise<any> =>
+  axios
+    .get(
+      `${reapchainKeplrConfig.rest}/gravity/v1beta/query_pending_send_to_eth`,
+      {
+        params: {
+          sender_address: address,
+        },
+      }
+    )
+    .then((res) => {
+      const data = commonProcess(res.data);
+      return data;
+    })
+    .catch((e) => {
+      console.log("error=>", e);
+    });
+
+export const getPendingBatchSendToEth = async (address: string): Promise<any> =>
+  axios
+    .get(
+      `${reapchainKeplrConfig.rest}/gravity/v1beta/batch/last_pending_request_by_addr`,
+      {
+        params: {
+          address,
+        },
+      }
+    )
+    .then((res) => {
+      const data = commonProcess(res.data);
+      return data;
+    })
+    .catch((e) => {
+      console.log("error=>", e);
     });

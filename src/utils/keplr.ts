@@ -38,7 +38,7 @@ export const initKeplr = async (): Promise<InitKeplrResponse> => {
   }
 };
 
-export const connectKeplrWallet = async (chain: Chain) => {
+export const connectKeplrWallet = async (chain?: Chain) => {
   try {
     const response = await initKeplr();
     if (response.isError) {

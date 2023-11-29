@@ -1,5 +1,4 @@
-import axios from "axios";
-import { getAuthAccount } from "apis/api";
+import { broadcastReapchainTx, getAuthAccount } from "apis/api";
 import { MessageSendToEthParams } from "transactions/msgSendToEth";
 import { Chain } from "types/chain";
 import { getAccounts } from "utils/keplr";
@@ -12,8 +11,12 @@ import {
 } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
 import { PubKey } from "@keplr-wallet/proto-types/cosmos/crypto/secp256k1/keys";
 import { SignMode } from "@keplr-wallet/proto-types/cosmos/tx/signing/v1beta1/signing";
-import { MsgSendToEth as MsgSendToEthTest } from "@chain-clients/gravitybridge/main/codegen/gravity/v1/msgs";
+import {
+  MsgSendToEth,
+  MsgCancelSendToEth,
+} from "@chain-clients/gravitybridge/main/codegen/gravity/v1/msgs";
 import { reapchainKeplrConfig } from "constants/keplrConfig";
+import { MessageCancelSendToEthParams } from "transactions/msgCancelSendToEth";
 
 export enum BroadcastMode {
   Block = "block",
@@ -29,8 +32,8 @@ interface KeplrTxResult {
 
 export const keplrSendTx = async (
   txType: string,
-  chain: Chain,
-  txData: any
+  txData: any,
+  chain?: Chain
 ): Promise<KeplrTxResult> => {
   try {
     const keplrAccount = await getAccounts();
@@ -95,7 +98,7 @@ export const keplrSendTx = async (
       txMessageSet.aminoMsgs,
       fee,
       reapchainKeplrConfig.chainId,
-      "ReapChainBridge_SendToETH",
+      getKeplrTxMemo(txType),
       sender.accountNumber,
       sender.sequence
     );
@@ -152,24 +155,17 @@ export const keplrSendTx = async (
     // );
 
     const txBytes = Buffer.from(signedTx).toString("base64");
-    const txResponse: any = await axios.post(
-      `${reapchainKeplrConfig.rest}/cosmos/tx/v1beta1/txs`,
-      {
-        tx_bytes: txBytes,
-        mode: "BROADCAST_MODE_SYNC",
-      }
-    );
+    const txResponse: any = await broadcastReapchainTx(txBytes);
 
-    const txResponseData = txResponse.data.tx_response;
-    console.log("txResponseData : ", txResponseData.data.tx_response);
-
-    if (!txResponseData) {
+    if (!txResponse || !txResponse.data) {
       return {
         result: false,
         txHash: "",
         msg: "Connection failed",
       };
     }
+
+    const txResponseData = txResponse.data.tx_response;
 
     if (txResponseData.raw_log && txResponseData.raw_log.length > 0) {
       return {
@@ -197,9 +193,15 @@ export const keplrSendTx = async (
 const createKeplrMessage = (txType: string, txData: any) => {
   if (txType === "SendToEth") {
     return createKeplrSendToEthMessage(txData);
+  } else if (txType === "CancelSendToEth") {
+    return createKeplrCancelSendToEthMessage(txData);
   } else {
     return null;
   }
+};
+
+const getKeplrTxMemo = (txType: string) => {
+  return `ReapChainBridge_${txType}`;
 };
 
 const createKeplrSendToEthMessage = (params: MessageSendToEthParams) => {
@@ -219,12 +221,37 @@ const createKeplrSendToEthMessage = (params: MessageSendToEthParams) => {
     protoMsgs: [
       {
         typeUrl: "/gravity.v1.MsgSendToEth",
-        value: MsgSendToEthTest.encode({
+        value: MsgSendToEth.encode({
           sender: params.sender,
           ethDest: params.ethDest,
           amount: params.amount,
           bridgeFee: params.bridgeFee,
           chainFee: params.chainFee,
+        }).finish(),
+      },
+    ],
+  };
+};
+
+const createKeplrCancelSendToEthMessage = (
+  params: MessageCancelSendToEthParams
+) => {
+  return {
+    aminoMsgs: [
+      {
+        type: "gravity/MsgCancelSendToEth",
+        value: {
+          transaction_id: params.transactionId,
+          sender: params.sender,
+        },
+      },
+    ],
+    protoMsgs: [
+      {
+        typeUrl: "/gravity.v1.MsgCancelSendToEth",
+        value: MsgCancelSendToEth.encode({
+          transactionId: params.transactionId,
+          sender: params.sender,
         }).finish(),
       },
     ],

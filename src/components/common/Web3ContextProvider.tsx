@@ -181,7 +181,7 @@ const Web3ContextProvider: React.FC<Web3ContextProviderProps> = ({
       }
     } catch (switchError: any) {
       console.log("switchError : ", switchError, chain);
-      messageApi.error("Cancled");
+      messageApi.error("Canceled");
 
       if (switchError.code && switchError.code === 4902) {
         try {

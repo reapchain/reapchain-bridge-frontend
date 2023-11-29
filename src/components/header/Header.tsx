@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import HeaderTitle from "./HeaderTitle";
 import HeaderOptionButton from "./HeaderOptionButton";
 import HeaderMetamask from "./HeaderMetamask";
 import TopButton from "components/common/button/TopButton";
 import { reapchainNetworkConfig } from "constants/networkConfig";
+import HistoryButton from "components/bridge/history/HistoryButton";
+import HistoryModal from "components/bridge/history/HistoryModal";
+import { getPendingSendToEthTxs, useTestQuery } from "queries/useTxsHistory";
+import { useWalletQuery } from "queries/useWalletType";
+import { useWeb3Context } from "components/common/Web3ContextProvider";
+import { initKeplrWallet, useKeplrQuery } from "queries/useKeplrWallet";
+import { useQuery } from "react-query";
 
 const StyledHeader = styled.div`
   display: flex;
@@ -26,6 +33,27 @@ const StyledTitleWrapper = styled.div`
 `;
 
 const Header: React.FC = () => {
+  const [historyModalOpen, setHistoryModalOpen] = useState<boolean>(false);
+
+  const { data: walletData } = useWalletQuery();
+  const targetWallet = walletData ?? "MetaMask";
+  const { provider, address, isActive, connectWeb3, disconnectWeb3 } =
+    useWeb3Context();
+  const { data: keplrData } = useKeplrQuery();
+  const keplrWallet = keplrData ?? initKeplrWallet;
+
+  const { data: pendingSendToEthTxs } = useQuery(
+    ["/history/txs", keplrWallet.address],
+    () => getPendingSendToEthTxs(keplrWallet.address),
+    {
+      enabled: targetWallet === "Keplr" && keplrWallet.address ? true : false,
+    }
+  );
+
+  const handleClickHistory = () => {
+    setHistoryModalOpen(true);
+  };
+
   return (
     <StyledHeader>
       <StyledHeaderItemWrapper>
@@ -47,12 +75,19 @@ const Header: React.FC = () => {
         />
       </StyledHeaderItemWrapper>
       <StyledTitleWrapper>
-        <HeaderTitle title={"rBridge"} />
+        <HeaderTitle title={"RBG"} />
       </StyledTitleWrapper>
       <StyledHeaderItemWrapper>
+        <HistoryButton text={"History"} onClick={handleClickHistory} />
         <HeaderMetamask />
         <HeaderOptionButton />
       </StyledHeaderItemWrapper>
+      <HistoryModal
+        pendingSendToEthTxs={pendingSendToEthTxs || null}
+        pendingSendToCosmosTxs={null}
+        open={historyModalOpen}
+        onCancel={() => setHistoryModalOpen(false)}
+      />
     </StyledHeader>
   );
 };

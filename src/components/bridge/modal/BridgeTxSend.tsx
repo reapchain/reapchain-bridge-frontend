@@ -1,9 +1,8 @@
 import colors from "assets/colors";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Progress, Typography } from "antd";
 import { abbrAddress, abbrAddress2 } from "utils/util";
-import { networks } from "constants/network";
 import { getEthereumTxInfo, getReapchainTxInfo } from "apis/api";
 import { reapchainKeplrConfig } from "constants/keplrConfig";
 import { useInterval } from "react-use";
@@ -11,41 +10,60 @@ import {
   ethereumNetworkConfig,
   reapchainNetworkConfig,
 } from "constants/networkConfig";
+import dotIcon from "assets/images/ellipse.svg";
+import checkIcon from "assets/images/progress_check.svg";
 const { Link } = Typography;
 
-const conicColors = { "0%": "#87d068", "50%": "#ffe58f", "100%": "#ffccc7" };
-
-const StyledContainer = styled.div`
-  flex: 1;
-  margin-top: -12px;
-  color: ${colors.white};
+const StyledContainer = styled.div``;
+const StyledTxSendWrapper = styled(Link)`
+  padding: 0px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 const TitleWrapper = styled.div`
   margin-top: 8px;
   margin-bottom: 12px;
+  text-align: center;
 `;
 const StyledTitleText = styled.div`
+  color: ${colors.lightblue};
+  font-size: 16px;
+  font-weight: 700;
+`;
+const StyledTokenText = styled.div`
   color: ${colors.lightblue};
   font-size: 18px;
   font-weight: 700;
 `;
-const StyledSubTitleText = styled.span`
-  color: ${colors.darkblue01};
-  font-size: 16px;
-  font-weight: 700;
+const TokenTransferWrapper = styled.div`
+  border-radius: 24px;
+  width: 160px;
+  padding: 8px 12px;
+  margin-bottom: 32px;
+  text-align: center;
+  background-color: ${colors.background};
+`;
+const StyledSubTitleText = styled.div`
+  color: ${colors.white};
+  font-size: 14px;
+  font-weight: 600;
 `;
 const ProgressWrapper = styled.div`
-  width: 125px;
-  height: 125px;
-  margin-left: 12px;
-  margin-right: 12px;
+  padding-bottom: 12px;
 `;
-const LinkArea = styled.div`
-  flex-direction: column;
-  padding-left: 20px;
+const ProgressCheckIcon = styled.img`
+  position: absolute;
+  margin-top: 52px;
+  left: 50%;
+  transform: translate(-50%);
+  color: ${colors.linear01};
 `;
 const LinkWrapper = styled.div`
-  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
 `;
 const StyledLinkButton = styled(Link)`
   padding: 0px;
@@ -53,11 +71,16 @@ const StyledLinkButton = styled(Link)`
   font-weight: 700;
   text-underline-offset: 4px;
 `;
-
-const StyledTxSendWrapper = styled(Link)`
+const StyledItemTitle = styled.div`
   display: flex;
-  flex-direction: row;
-  padding-bottom: 16px;
+  justify-content: center;
+  align-items: center;
+`;
+const StyledDotIcon = styled.img`
+  margin-top: 2px;
+  width: 4px;
+  height: 4px;
+  margin-right: 6px;
 `;
 
 export interface SendTxInfo {
@@ -142,43 +165,54 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo }) => {
           <Progress
             percent={percent}
             type="circle"
-            strokeWidth={8}
-            size={125}
-            strokeColor={conicColors}
-            showInfo={showInfo}
+            strokeWidth={10}
+            size={135}
+            trailColor={colors.background}
+            strokeColor={colors.linear01}
+            showInfo={false}
           />
+          {showInfo && <ProgressCheckIcon src={checkIcon} />}
         </ProgressWrapper>
-        <LinkArea>
-          <TitleWrapper>
-            <StyledTitleText>Tx Sending[Reap → Token]</StyledTitleText>
-          </TitleWrapper>
-          <LinkWrapper>
-            <StyledSubTitleText>Tx Hash : </StyledSubTitleText>
-            <StyledLinkButton
-              style={{
-                color: colors.white,
-                textDecorationLine: "underline",
-              }}
-              onClick={handleClickTxHash}
-            >
-              {abbrAddress(txInfo.hash, 12)}
-            </StyledLinkButton>
-          </LinkWrapper>
-          <LinkWrapper>
+        <TitleWrapper>
+          <StyledTitleText>Tx Sending</StyledTitleText>
+        </TitleWrapper>
+        <TokenTransferWrapper>
+          <StyledTokenText>
+            {targetWallet === "Keplr" ? "REAP → REAPt" : "REAPt → REAP"}
+          </StyledTokenText>
+        </TokenTransferWrapper>
+        <LinkWrapper>
+          <StyledItemTitle>
+            <StyledDotIcon src={dotIcon} />
+            <StyledSubTitleText>Tx Hash :</StyledSubTitleText>
+          </StyledItemTitle>
+          <StyledLinkButton
+            style={{
+              color: colors.white,
+              textDecorationLine: "underline",
+            }}
+            onClick={handleClickTxHash}
+          >
+            {abbrAddress(txInfo.hash, 12)}
+          </StyledLinkButton>
+        </LinkWrapper>
+        <LinkWrapper>
+          <StyledItemTitle>
+            <StyledDotIcon src={dotIcon} />
             <StyledSubTitleText>Account Info : </StyledSubTitleText>
-            <StyledLinkButton
-              style={{
-                color: colors.white,
-                textDecorationLine: "underline",
-              }}
-              onClick={handleClickAccount}
-            >
-              {targetWallet === "Keplr"
-                ? abbrAddress2(txInfo.address, 16, 8)
-                : abbrAddress2(txInfo.address, 12, 8)}
-            </StyledLinkButton>
-          </LinkWrapper>
-        </LinkArea>
+          </StyledItemTitle>
+          <StyledLinkButton
+            style={{
+              color: colors.white,
+              textDecorationLine: "underline",
+            }}
+            onClick={handleClickAccount}
+          >
+            {targetWallet === "Keplr"
+              ? abbrAddress2(txInfo.address, 16, 8)
+              : abbrAddress2(txInfo.address, 12, 8)}
+          </StyledLinkButton>
+        </LinkWrapper>
       </StyledTxSendWrapper>
     </StyledContainer>
   );

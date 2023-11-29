@@ -47,6 +47,9 @@ const colors = {
   darkblue04: "#192A3A",
   white: "#FFFFFF",
   monotone: "#262626",
+  red01: "#AF1B16",
+  blue01: "#0EA2D1",
+  linear01: "#6BC8F2",
 };
 
 export default colors;
