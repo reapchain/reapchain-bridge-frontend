@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import colors from "assets/colors";
 import { Modal, message } from "antd";
@@ -7,6 +7,7 @@ import SendToEthListItem from "components/bridge/history/SendToEthListItem";
 import { connectKeplrWallet } from "utils/keplr";
 import { MessageCancelSendToEthParams } from "transactions/msgCancelSendToEth";
 import { keplrSendTx } from "utils/keplrTx";
+import { ReloadOutlined } from "@ant-design/icons";
 
 const StyledModal = styled(Modal)`
   & .ant-modal-content {
@@ -38,8 +39,23 @@ const StyledModal = styled(Modal)`
   }
 `;
 const StyledContents = styled.div``;
-const StyledSettingWrapper = styled.div``;
+const StyledSettingWrapper = styled.div`
+  display: flex;
+  justify-content: right;
+  margin-top: 8px;
+`;
 const StyledPaginationWrapper = styled.div``;
+const StyledEmptyWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const StyledNoTxText = styled.div`
+  margin-top: -40px;
+  font-size: 18px;
+  font-weight: 600px;
+`;
 const StyledHistoryList = styled.div`
   margin-top: 20px;
   height: 550px;
@@ -81,6 +97,19 @@ const HistoryModal: React.FC<Props> = ({
     onCancel();
   };
 
+  const isNoTxHistory = useMemo(() => {
+    if (!pendingSendToEthTxs) {
+      return true;
+    } else if (
+      pendingSendToEthTxs.transfers_in_batches.length === 0 &&
+      pendingSendToEthTxs.unbatched_transfers.length === 0
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [open, pendingSendToEthTxs, pendingSendToCosmosTxs]);
+
   const handleClickRefund = async (item: SendToEthTransfer) => {
     try {
       const keplr = await connectKeplrWallet();
@@ -110,17 +139,6 @@ const HistoryModal: React.FC<Props> = ({
     }
   };
 
-  // if (
-  //   (targetWallet === "MetaMask" && !isActive) ||
-  //   (targetWallet === "Keplr" && !keplrWallet.isActive)
-  // ) {
-  //   return (
-  //     <StyledContainer onClick={connectWallet}>
-  //       <StyldNotConnected>Connect {targetWallet}</StyldNotConnected>
-  //     </StyledContainer>
-  //   );
-  // }
-
   return (
     <StyledModal
       title={"Bridge Tx History"}
@@ -142,10 +160,14 @@ const HistoryModal: React.FC<Props> = ({
       footer={null}
     >
       <StyledContents>
-        <StyledSettingWrapper />
+        <StyledSettingWrapper>
+          <ReloadOutlined style={{ fontSize: "20px", color: colors.white }} />
+        </StyledSettingWrapper>
         <StyledHistoryList>
-          {!pendingSendToEthTxs ? (
-            <>no tx history...</>
+          {!pendingSendToEthTxs || isNoTxHistory ? (
+            <StyledEmptyWrapper>
+              <StyledNoTxText>No tx history</StyledNoTxText>
+            </StyledEmptyWrapper>
           ) : (
             <>
               {pendingSendToEthTxs.unbatched_transfers.map((transfer) => (
@@ -174,5 +196,4 @@ const HistoryModal: React.FC<Props> = ({
   );
 };
 
-// <HistoryListItem item={{}} />
 export default HistoryModal;

@@ -16,9 +16,10 @@ export interface MessageCancelSendToEthParams {
 
 const MSG_CANCEL_SEND_TO_ETH_TYPES = {
   MsgValue: [
-    { name: "transaction_id", type: "string" },
+    { name: "transaction_id", type: "number" },
     { name: "sender", type: "string" },
   ],
+  TypeAmount: [],
 };
 
 export const createCancelSendToEth = (
@@ -47,11 +48,14 @@ export const createCancelSendToEth = (
     feeObject,
     msg
   );
+  console.log("messages : ", messages);
   const eipToSign = createEIP712(types, chain.chainId, messages);
+  console.log("eipToSign : ", eipToSign);
   const msgCancelSendToEth = proto_createMsgCancelSendToEth(
     params.transactionId,
-    sender.accountAddress
+    params.sender
   );
+  console.log("msgCancelSendToEth : ", msgCancelSendToEth);
   const tx = createTransaction(
     msgCancelSendToEth,
     memo,
@@ -64,6 +68,7 @@ export const createCancelSendToEth = (
     sender.accountNumber,
     chain.cosmosChainId
   );
+  console.log("tx : ", tx);
   return {
     signDirect: tx.signDirect,
     legacyAmino: tx.legacyAmino,

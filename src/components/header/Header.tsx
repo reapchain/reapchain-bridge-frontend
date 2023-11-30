@@ -7,7 +7,7 @@ import TopButton from "components/common/button/TopButton";
 import { reapchainNetworkConfig } from "constants/networkConfig";
 import HistoryButton from "components/bridge/history/HistoryButton";
 import HistoryModal from "components/bridge/history/HistoryModal";
-import { getPendingSendToEthTxs, useTestQuery } from "queries/useTxsHistory";
+import { getPendingSendToEthTxs } from "queries/useTxsHistory";
 import { useWalletQuery } from "queries/useWalletType";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import { initKeplrWallet, useKeplrQuery } from "queries/useKeplrWallet";
@@ -57,7 +57,6 @@ const Header: React.FC = () => {
   return (
     <StyledHeader>
       <StyledHeaderItemWrapper>
-        {/* <HeaderHomeButton /> */}
         <TopButton
           text={"Dashboard"}
           tooltip={"Dashboard"}
