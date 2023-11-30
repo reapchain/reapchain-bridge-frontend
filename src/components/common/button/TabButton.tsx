@@ -46,12 +46,11 @@ const TabButton: React.FC<Props> = ({ value, selected, from, to }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
+    if (value === selected) {
+      return;
+    }
     navigate(`/${value}`);
   };
-
-  const isActive = useMemo(() => {
-    return value === selected;
-  }, [value, selected]);
 
   if (value === selected) {
     return (

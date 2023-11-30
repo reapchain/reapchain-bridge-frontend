@@ -19,12 +19,12 @@ export type PendingSendToEthTxs = {
   unbatched_transfers: SendToEthTransfer[];
 } | null;
 
-export type HistoryTxs = {
+export type TxsHistory = {
   sendToEthTxs: PendingSendToEthTxs;
   sendToCosmosTxs: any;
 };
 
-let historyTxs: HistoryTxs = {
+let historyTxs: TxsHistory = {
   sendToEthTxs: {
     transfers_in_batches: [],
     unbatched_transfers: [],
@@ -33,6 +33,28 @@ let historyTxs: HistoryTxs = {
 };
 
 const TXS_HISTORY_QUERY_KEY = "/history/txs";
+
+// export const useWalletQuery = () =>
+//   useQuery<WalletType>(WALLET_QUERY_KEY, () => {
+//     return walletType as WalletType;
+//   });
+
+// const setWallet = async (type: WalletType) => {
+//   walletType = type;
+// };
+
+// export const useWalletMutation = () => {
+//   const queryClient = useQueryClient();
+
+//   return useMutation(setWallet, {
+//     onSuccess: () => {
+//       queryClient.invalidateQueries(WALLET_QUERY_KEY);
+//     },
+//     onError: () => {
+//       console.log("setWallet onError");
+//     },
+//   });
+// };
 
 export const getPendingSendToEthTxs = async (
   address: string
@@ -45,10 +67,24 @@ export const getPendingSendToEthTxs = async (
   return data;
 };
 
-export const useTestQuery = async (targetWallet: string, address: string) =>
-  useQuery(["/history/txs", address], () => getPendingSendToEthTxs(address), {
-    enabled: targetWallet === "Keplr" && address ? true : false,
-  });
+export const useTxsHistory = (address: string) =>
+  useQuery<PendingSendToEthTxs>(
+    [TXS_HISTORY_QUERY_KEY, address],
+    () => getPendingSendToEthTxs(address),
+    {
+      enabled: !!address,
+    }
+  );
+
+// export const useTxsHistoryTest = (address: string) =>
+//   useQuery<TxsHistory>([TXS_HISTORY_QUERY_KEY, address], () =>
+//     getPendingSendToEthTxs(address)
+//   );
+
+// export const useTestQuery = async (targetWallet: string, address: string) =>
+//   useQuery(["/history/txs", address], () => getPendingSendToEthTxs(address), {
+//     enabled: targetWallet === "Keplr" && address ? true : false,
+//   });
 
 // export const usePendingSendToEthTxs = async (
 //   targetWallet: string,
@@ -62,8 +98,8 @@ export const useTestQuery = async (targetWallet: string, address: string) =>
 // };
 
 export const useTxsHistoryQuery = () =>
-  useQuery<HistoryTxs>(TXS_HISTORY_QUERY_KEY, () => {
-    return historyTxs as HistoryTxs;
+  useQuery<TxsHistory>(TXS_HISTORY_QUERY_KEY, () => {
+    return historyTxs as TxsHistory;
   });
 
 const setSendToEthHistory = async (txs: PendingSendToEthTxs) => {

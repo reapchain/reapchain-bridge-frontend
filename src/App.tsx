@@ -33,11 +33,11 @@ const ComponentLoading: React.FC = () => {
 const StyledPage = styled.div`
   background: ${colors.background};
   min-height: 100vh;
-  padding: 40px 40px;
 `;
 
 const StyledApp = styled.div`
   width: 100%;
+  padding: 40px 40px;
   flex-direction: column;
   justify-content: center;
 `;

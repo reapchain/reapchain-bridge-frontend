@@ -31,15 +31,14 @@ const StyledTitleText = styled.div`
   font-size: 16px;
   font-weight: 700;
 `;
-const StyledTokenText = styled.div`
+const StyledTxDesc = styled.div`
   color: ${colors.lightblue};
   font-size: 18px;
   font-weight: 700;
 `;
 const TokenTransferWrapper = styled.div`
   border-radius: 24px;
-  width: 160px;
-  padding: 8px 12px;
+  padding: 8px 16px;
   margin-bottom: 32px;
   text-align: center;
   background-color: ${colors.background};
@@ -85,6 +84,7 @@ const StyledDotIcon = styled.img`
 
 export interface SendTxInfo {
   isSend: boolean;
+  type: "SendToEth" | "SendToCosmos" | "ERC20Approve" | null;
   hash: string;
   address: string;
   error: any;
@@ -157,6 +157,17 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo }) => {
       );
     }
   };
+  const displayTxDesc = () => {
+    if (txInfo.type === "SendToCosmos") {
+      return "REAPt → REAP";
+    } else if (txInfo.type === "SendToEth") {
+      return "REAP → REAPt";
+    } else if (txInfo.type === "ERC20Approve") {
+      return "Approve ERC20 Token";
+    } else {
+      return txInfo.type;
+    }
+  };
 
   return (
     <StyledContainer>
@@ -177,9 +188,7 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo }) => {
           <StyledTitleText>Tx Sending</StyledTitleText>
         </TitleWrapper>
         <TokenTransferWrapper>
-          <StyledTokenText>
-            {targetWallet === "Keplr" ? "REAP → REAPt" : "REAPt → REAP"}
-          </StyledTokenText>
+          <StyledTxDesc>{displayTxDesc()}</StyledTxDesc>
         </TokenTransferWrapper>
         <LinkWrapper>
           <StyledItemTitle>

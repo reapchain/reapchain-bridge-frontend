@@ -112,6 +112,7 @@ const BridgeTxModal: React.FC<Props> = ({
   const { provider, address } = useWeb3Context();
   const [txInfo, setTxInfo] = useState<SendTxInfo>({
     isSend: false,
+    type: null,
     hash: "",
     address: "",
     error: "",
@@ -168,6 +169,7 @@ const BridgeTxModal: React.FC<Props> = ({
 
       setTxInfo({
         isSend: true,
+        type: "SendToEth",
         hash: keplrTxResult.txHash,
         address: keplr.account.bech32Address,
         error: keplrTxResult.msg,
@@ -202,7 +204,7 @@ const BridgeTxModal: React.FC<Props> = ({
       const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
 
       if (allowanceResult.lt(sendAmountBigNumber)) {
-        messageApi.info("To use the bridge, you must approve ERC20");
+        messageApi.info("To use the bridge, you must approve ERC20.");
 
         const approveResult = await contractERC20.approve(
           BridgeContractAddress,
@@ -211,7 +213,15 @@ const BridgeTxModal: React.FC<Props> = ({
             gasLimit: 50000,
           }
         );
-        console.log("approveResult : ", approveResult);
+        if (approveResult.hash) {
+          setTxInfo({
+            isSend: true,
+            type: "ERC20Approve",
+            hash: approveResult.hash,
+            address: address,
+            error: null,
+          });
+        }
         return;
       }
 
@@ -241,6 +251,7 @@ const BridgeTxModal: React.FC<Props> = ({
 
       setTxInfo({
         isSend: true,
+        type: "SendToCosmos",
         hash: sendToCosmosResult.hash,
         address: hexAddress,
         error: null,

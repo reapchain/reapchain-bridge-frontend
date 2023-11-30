@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import colors from "assets/colors";
 import { Modal, message } from "antd";
@@ -8,6 +8,7 @@ import { connectKeplrWallet } from "utils/keplr";
 import { MessageCancelSendToEthParams } from "transactions/msgCancelSendToEth";
 import { keplrSendTx } from "utils/keplrTx";
 import { ReloadOutlined } from "@ant-design/icons";
+import StatusTabButton from "components/bridge/history/StatusTabButton";
 
 const StyledModal = styled(Modal)`
   & .ant-modal-content {
@@ -43,6 +44,17 @@ const StyledSettingWrapper = styled.div`
   display: flex;
   justify-content: right;
   margin-top: 8px;
+  gap: 12px;
+`;
+const StyledReloadWrapper = styled.div`
+  height: 32px;
+  width: 32px;
+  background-color: ${colors.blue};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 12px;
 `;
 const StyledPaginationWrapper = styled.div``;
 const StyledEmptyWrapper = styled.div`
@@ -53,12 +65,12 @@ const StyledEmptyWrapper = styled.div`
 `;
 const StyledNoTxText = styled.div`
   margin-top: -40px;
-  font-size: 18px;
-  font-weight: 600px;
+  font-size: 16px;
+  font-weight: 600;
 `;
 const StyledHistoryList = styled.div`
   margin-top: 20px;
-  height: 550px;
+  height: 500px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -83,6 +95,7 @@ type Props = {
   pendingSendToEthTxs: PendingSendToEthTxs | null;
   pendingSendToCosmosTxs: null;
   onCancel: () => void;
+  onRefetch: () => void;
 };
 
 const HistoryModal: React.FC<Props> = ({
@@ -90,13 +103,13 @@ const HistoryModal: React.FC<Props> = ({
   pendingSendToEthTxs,
   pendingSendToCosmosTxs,
   onCancel,
+  onRefetch,
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
-
   const handleClickCancel = () => {
     onCancel();
   };
-
+  const [filterStatus, setFilterStatus] = useState<string>("All");
   const isNoTxHistory = useMemo(() => {
     if (!pendingSendToEthTxs) {
       return true;
@@ -109,7 +122,6 @@ const HistoryModal: React.FC<Props> = ({
       return false;
     }
   }, [open, pendingSendToEthTxs, pendingSendToCosmosTxs]);
-
   const handleClickRefund = async (item: SendToEthTransfer) => {
     try {
       const keplr = await connectKeplrWallet();
@@ -138,6 +150,9 @@ const HistoryModal: React.FC<Props> = ({
       messageApi.error("Error");
     }
   };
+  const handleClickTabButton = (status: string) => {
+    setFilterStatus(status);
+  };
 
   return (
     <StyledModal
@@ -161,7 +176,27 @@ const HistoryModal: React.FC<Props> = ({
     >
       <StyledContents>
         <StyledSettingWrapper>
-          <ReloadOutlined style={{ fontSize: "20px", color: colors.white }} />
+          <StatusTabButton
+            value={"All"}
+            selected={filterStatus}
+            onClick={() => handleClickTabButton("All")}
+          />
+          <StatusTabButton
+            value={"Pending"}
+            selected={filterStatus}
+            onClick={() => handleClickTabButton("Pending")}
+          />
+          <StatusTabButton
+            value={"Complete"}
+            selected={filterStatus}
+            onClick={() => handleClickTabButton("Complete")}
+          />
+          <StyledReloadWrapper>
+            <ReloadOutlined
+              onClick={onRefetch}
+              style={{ fontSize: "20px", color: colors.white, padding: "8px" }}
+            />
+          </StyledReloadWrapper>
         </StyledSettingWrapper>
         <StyledHistoryList>
           {!pendingSendToEthTxs || isNoTxHistory ? (

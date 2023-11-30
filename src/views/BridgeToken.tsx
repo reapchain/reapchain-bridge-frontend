@@ -355,8 +355,6 @@ const Bridge: React.FC = () => {
     }
 
     console.log("next...");
-
-    // approve and sendtoCosmos......
   };
 
   return (

@@ -15,7 +15,6 @@ import { ERC20ContractAddress } from "constants/contractConfig";
 import { ERC20ABI } from "contracts/abi";
 import { removeLastDot, validateDecimalInput } from "utils/number";
 import { debounce } from "lodash";
-import FeeInfo from "components/bridge/FeeInfo";
 import { useWeb3React } from "@web3-react/core";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -292,12 +291,13 @@ const Bridge: React.FC = () => {
     setSendAmount("");
     setReceiveAmount("");
     setAvailableBalance(BigNumber.from(0));
-  }, [isActive, keplrWallet, fromChain, fromToken]);
+  }, [isActive, keplrWallet, fromChain, fromToken, address]);
 
   useEffect(() => debouncedChangeSendAmount(), [sendAmount]);
 
   useEffect(() => {
     selectFromToChain();
+    setAvailableBalance(BigNumber.from(0));
   }, [location]);
 
   const handleChangeSendAmount = (value: string) => {

@@ -7,7 +7,7 @@ import TopButton from "components/common/button/TopButton";
 import { reapchainNetworkConfig } from "constants/networkConfig";
 import HistoryButton from "components/bridge/history/HistoryButton";
 import HistoryModal from "components/bridge/history/HistoryModal";
-import { getPendingSendToEthTxs } from "queries/useTxsHistory";
+import { getPendingSendToEthTxs, useTxsHistory } from "queries/useTxsHistory";
 import { useWalletQuery } from "queries/useWalletType";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import { initKeplrWallet, useKeplrQuery } from "queries/useKeplrWallet";
@@ -41,13 +41,8 @@ const Header: React.FC = () => {
     useWeb3Context();
   const { data: keplrData } = useKeplrQuery();
   const keplrWallet = keplrData ?? initKeplrWallet;
-
-  const { data: pendingSendToEthTxs } = useQuery(
-    ["/history/txs", keplrWallet.address],
-    () => getPendingSendToEthTxs(keplrWallet.address),
-    {
-      enabled: targetWallet === "Keplr" && keplrWallet.address ? true : false,
-    }
+  const { data: pendingSendToEthTxs, refetch } = useTxsHistory(
+    keplrWallet.address
   );
 
   const handleClickHistory = () => {
@@ -86,6 +81,7 @@ const Header: React.FC = () => {
         pendingSendToCosmosTxs={null}
         open={historyModalOpen}
         onCancel={() => setHistoryModalOpen(false)}
+        onRefetch={refetch}
       />
     </StyledHeader>
   );
