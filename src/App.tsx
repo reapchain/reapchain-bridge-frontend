@@ -36,8 +36,7 @@ const StyledPage = styled.div`
 `;
 
 const StyledApp = styled.div`
-  width: 100%;
-  padding: 40px 40px;
+  padding: 40px 40px 0px 40px;
   flex-direction: column;
   justify-content: center;
 `;

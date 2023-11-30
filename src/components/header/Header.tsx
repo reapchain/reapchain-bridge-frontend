@@ -15,8 +15,6 @@ import { useQuery } from "react-query";
 
 const StyledHeader = styled.div`
   display: flex;
-  width: 100%;
-  padding: 0px 0px;
   z-index: 10;
   justify-content: space-between;
 `;
