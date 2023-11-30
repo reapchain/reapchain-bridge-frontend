@@ -2,7 +2,10 @@ import React from "react";
 import { Tooltip } from "antd";
 import { styled } from "styled-components";
 import colors from "assets/colors";
-import icon from "assets/images/logo.png";
+import reapchainIcon from "assets/images/logo.png";
+import dashboardIcon from "assets/images/dashboard_icon.svg";
+import explorerIcon from "assets/images/explorer_icon.svg";
+import stakingIcon from "assets/images/staking_icon.svg";
 
 const StyledButton = styled.div`
   max-width: 140px;
@@ -37,21 +40,32 @@ type Props = {
   text: string;
   tooltip: string;
   href: string;
-  Icon?: React.ReactElement;
 };
 
-const TopButton: React.FC<Props> = ({ text, tooltip, href, Icon }) => {
+const TopButton: React.FC<Props> = ({ text, tooltip, href }) => {
   const handleClickLink = () => {
     window.open(href, "_blank");
+  };
+
+  const getIcon = () => {
+    if (text === "Dashboard") {
+      return dashboardIcon;
+    } else if (text === "Explorer") {
+      return explorerIcon;
+    } else if (text === "Staking") {
+      return stakingIcon;
+    } else {
+      return reapchainIcon;
+    }
   };
 
   return (
     <Tooltip placement="bottom" title={tooltip}>
       <StyledButton onClick={handleClickLink}>
         <StyledIcon
-          src={icon}
+          src={getIcon()}
           alt="icon"
-          style={{ width: "20px", height: "20px" }}
+          style={{ width: "16px", height: "16px" }}
         />
         <StyledButtonText>{text}</StyledButtonText>
       </StyledButton>
