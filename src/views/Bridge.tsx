@@ -374,17 +374,14 @@ const Bridge: React.FC = () => {
       return false;
     }
 
-    const tempSendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
+    const tempSendAmountOrigin = BigNumber.from(parseEther(tempSendAmount));
 
-    if (tempSendAmountBigNumber.lte(0)) {
+    if (tempSendAmountOrigin.lte(0)) {
       messageApi.error("Send amount must be greater than 0");
       return false;
     }
 
-    if (
-      availableBalance.lte(0) ||
-      availableBalance.lt(tempSendAmountBigNumber)
-    ) {
+    if (availableBalance.lte(0) || availableBalance.lt(tempSendAmountOrigin)) {
       messageApi.error("Insufficient available amount");
       return false;
     }
@@ -485,6 +482,7 @@ const Bridge: React.FC = () => {
         toToken={toToken}
         sendAmount={sendAmount}
         receiveAmount={receiveAmount}
+        availableBalance={availableBalance}
         onExecute={executeTransaction}
         onCancel={() => setTxModalOpen(false)}
       />
@@ -494,76 +492,3 @@ const Bridge: React.FC = () => {
 };
 
 export default Bridge;
-
-/*
-<StyledBridgeCard style={{ width: 550 }}>
-<StyledSelectTokenWrapper>
-  <StyledFromToText>From</StyledFromToText>
-  <ChainSelectButton chain={fromChain} onClick={() => {}} />
-</StyledSelectTokenWrapper>
-<StyledContentWrapper>
-  <BridgeAmountArea
-    type={"send"}
-    amount={sendAmount}
-    availableBalance={availableBalance}
-    max={0}
-    token={fromToken}
-    onClick={() => {}}
-    onChange={handleChangeSendAmount}
-  />
-</StyledContentWrapper>
-<ExchangeButtonWrapper>
-  <ExchangeButton onClick={handleExchange} />
-</ExchangeButtonWrapper>
-<StyledSelectTokenWrapper>
-  <StyledFromToText>To</StyledFromToText>
-  <ChainSelectButton chain={toChain} onClick={() => {}} />
-</StyledSelectTokenWrapper>
-<StyledContentWrapper>
-  <BridgeAmountArea
-    type={"receive"}
-    amount={receiveAmount}
-    availableBalance={"0"}
-    max={0}
-    token={toToken}
-    onClick={() => {}}
-  />
-</StyledContentWrapper>
-<StyledConnectWalletWrapper>
-  <ExecuteButton
-    onClickExecute={handleClickExecute}
-    onClickConnectWallet={handleClickConnectWallet}
-  />
-</StyledConnectWalletWrapper>
-{receiveAmount && <FeeInfo />}
-<ChainSelectModal
-  open={chainModalOpen}
-  target={chainModalTarget}
-  selected={getTargetChain()}
-  onSelect={handleSelectChain}
-  onCancel={closeChainModal}
-/>
-<TokenSelectModal
-  open={tokenModalOpen}
-  target={tokenModalTarget}
-  chain={getTargetTokenChain()}
-  selected={getTargetToken()}
-  onSelect={handleSelectToken}
-  onCancel={closeTokenModal}
-/>
-<BridgeTxModal
-  open={txModalOpen}
-  targetWallet={targetWallet}
-  fromChain={fromChain}
-  toChain={toChain}
-  fromToken={fromToken}
-  toToken={toToken}
-  sendAmount={sendAmount}
-  receiveAmount={receiveAmount}
-  onExecute={executeTransaction}
-  onCancel={() => setTxModalOpen(false)}
-/>
-{contextHolder}
-</StyledBridgeCard>
-
-*/

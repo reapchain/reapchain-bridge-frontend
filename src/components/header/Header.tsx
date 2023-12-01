@@ -2,16 +2,15 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import HeaderTitle from "./HeaderTitle";
 import HeaderOptionButton from "./HeaderOptionButton";
-import HeaderMetamask from "./HeaderMetamask";
+import HeaderWallet from "./HeaderWallet";
 import TopButton from "components/common/button/TopButton";
 import { reapchainNetworkConfig } from "constants/networkConfig";
 import HistoryButton from "components/bridge/history/HistoryButton";
 import HistoryModal from "components/bridge/history/HistoryModal";
-import { getPendingSendToEthTxs, useTxsHistory } from "queries/useTxsHistory";
+import { useTxsHistory } from "queries/useTxsHistory";
 import { useWalletQuery } from "queries/useWalletType";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import { initKeplrWallet, useKeplrQuery } from "queries/useKeplrWallet";
-import { useQuery } from "react-query";
 
 const StyledHeader = styled.div`
   display: flex;
@@ -71,7 +70,7 @@ const Header: React.FC = () => {
       </StyledTitleWrapper>
       <StyledHeaderItemWrapper>
         <HistoryButton text={"History"} onClick={handleClickHistory} />
-        <HeaderMetamask />
+        <HeaderWallet />
         <HeaderOptionButton />
       </StyledHeaderItemWrapper>
       <HistoryModal

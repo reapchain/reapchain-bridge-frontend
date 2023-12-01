@@ -22,7 +22,7 @@ type Props = {
   displayAddress: string;
 };
 
-const HeaderMetamaskContext: React.FC<Props> = ({
+const HeaderWalletContext: React.FC<Props> = ({
   walletType,
   address,
   displayAddress,
@@ -43,10 +43,9 @@ const HeaderMetamaskContext: React.FC<Props> = ({
         height={24}
         alt="walletImage"
       />
-      {/* <StyledImage src={metamaskIcon} width={24} height={24} alt="metamask" /> */}
       <StyledContent>{displayAddress}</StyledContent>
     </>
   );
 };
 
-export default HeaderMetamaskContext;
+export default HeaderWalletContext;

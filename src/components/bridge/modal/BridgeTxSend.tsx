@@ -12,11 +12,12 @@ import {
 } from "constants/networkConfig";
 import dotIcon from "assets/images/ellipse.svg";
 import checkIcon from "assets/images/progress_check.svg";
+import ExecuteButton from "components/common/button/ExecuteButton";
 const { Link } = Typography;
 
 const StyledContainer = styled.div``;
 const StyledTxSendWrapper = styled(Link)`
-  padding: 0px 24px;
+  padding: 0px 24px 24px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -93,9 +94,10 @@ export interface SendTxInfo {
 type Props = {
   targetWallet: string;
   txInfo: SendTxInfo;
+  onClose: () => void;
 };
 
-const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo }) => {
+const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo, onClose }) => {
   const [percent, setPercent] = useState<number>(20);
   const [showInfo, setShowInfo] = useState<boolean>(false);
 
@@ -223,6 +225,7 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo }) => {
           </StyledLinkButton>
         </LinkWrapper>
       </StyledTxSendWrapper>
+      <ExecuteButton text={"Close"} onClick={onClose} />
     </StyledContainer>
   );
 };

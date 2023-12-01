@@ -2,7 +2,6 @@ import reapchainIcon from "assets/images/reapchain.png";
 import ethereumIcon from "assets/images/ethereum.png";
 import bgReapchainIcon from "assets/images/icon/reap_bg.svg";
 import bgEthereumIcon from "assets/images/icon/eth_bg.svg";
-import { networks } from "constants/network";
 import { Chain } from "types/chain";
 import { fromHex, toBech32, fromBech32, toHex } from "@cosmjs/encoding";
 

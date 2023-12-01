@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
-import { Button, Dropdown, MenuProps, message } from "antd";
-import HeaderMetamaskContext from "components/header/HeaderMetamaskContext";
+import { Button, Dropdown, message } from "antd";
+import HeaderWalletContext from "components/header/HeaderWalletContext";
 import { useWalletQuery } from "queries/useWalletType";
 import { networks } from "constants/network";
 import { connectKeplrWallet } from "utils/keplr";
@@ -96,7 +96,7 @@ const dropDownStyle = {
 
 type Props = {};
 
-const HeaderMetamask: React.FC<Props> = () => {
+const HeaderWallet: React.FC<Props> = () => {
   const { data: walletData } = useWalletQuery();
   const targetWallet = walletData ?? "MetaMask";
   const { provider, address, isActive, connectWeb3, disconnectWeb3 } =
@@ -212,13 +212,13 @@ const HeaderMetamask: React.FC<Props> = () => {
     >
       <Button type="link">
         {targetWallet === "MetaMask" ? (
-          <HeaderMetamaskContext
+          <HeaderWalletContext
             walletType={targetWallet}
             address={address}
             displayAddress={displayShortHexAddress(address)}
           />
         ) : (
-          <HeaderMetamaskContext
+          <HeaderWalletContext
             walletType={targetWallet}
             address={keplrWallet.address}
             displayAddress={keplrWallet.name}
@@ -229,4 +229,4 @@ const HeaderMetamask: React.FC<Props> = () => {
   );
 };
 
-export default HeaderMetamask;
+export default HeaderWallet;

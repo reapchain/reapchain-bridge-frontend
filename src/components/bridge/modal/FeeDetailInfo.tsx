@@ -5,8 +5,8 @@ import { getIconSource } from "utils/util";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Popover } from "antd";
 import icon from "assets/images/ellipse.svg";
-
-type Props = {};
+import { WalletType } from "queries/useWalletType";
+import { Token } from "types/chain";
 
 const StyledContainer = styled.div``;
 const StyledList = styled.div`
@@ -48,7 +48,60 @@ const StyledIcon = styled.img`
   margin-right: 6px;
 `;
 
-const FeeDetailInfo: React.FC<Props> = () => {
+type Props = {
+  targetWallet: WalletType;
+  fromToken: Token;
+  toToken: Token;
+  sendAmount: string;
+  receiveAmount: string;
+};
+
+const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
+  if (targetWallet === "MetaMask") {
+    return (
+      <StyledContainer>
+        <StyledList>
+          <StyledItem>
+            <StyledItemTitle>
+              <StyledIcon src={icon} />
+              Bridge Rate
+            </StyledItemTitle>
+            <StyledToken>
+              <StyledImageIcon src={getIconSource("reapchain")} alt="icon" />
+              <StyledItemValue>REAPt&nbsp;=&nbsp;</StyledItemValue>
+              <StyledImageIcon src={getIconSource("reapchain")} alt="icon" />
+              <StyledItemValue>REAP&nbsp;:&nbsp;</StyledItemValue>
+              <StyledRatio>1 : 1</StyledRatio>
+            </StyledToken>
+          </StyledItem>
+          <StyledItem>
+            <StyledItemTitle>
+              <StyledIcon src={icon} />
+              Fee
+              <Popover content={<div>Fee...</div>} title="Fee">
+                <InfoCircleOutlined style={{ marginLeft: "6px" }} />
+              </Popover>
+            </StyledItemTitle>
+            <StyledItemValue>Ethereum Tx Fee</StyledItemValue>
+          </StyledItem>
+          <StyledItem>
+            <StyledItemTitle>
+              <StyledIcon src={icon} />
+              Estimated Time of Arrival
+              <Popover
+                content={<div>Estimated Time of Arrival</div>}
+                title="Estimated Time of Arrival"
+              >
+                <InfoCircleOutlined style={{ marginLeft: "4px" }} />
+              </Popover>
+            </StyledItemTitle>
+            <StyledItemValue>20 minutes</StyledItemValue>
+          </StyledItem>
+        </StyledList>
+      </StyledContainer>
+    );
+  }
+
   return (
     <StyledContainer>
       <StyledList>
@@ -68,14 +121,8 @@ const FeeDetailInfo: React.FC<Props> = () => {
         <StyledItem>
           <StyledItemTitle>
             <StyledIcon src={icon} />
-            Fee
-            <Popover
-              style={{
-                backgroundColor: colors.pointPink,
-              }}
-              content={<div>Fee...</div>}
-              title="Fee"
-            >
+            Fee(Bridge)
+            <Popover content={<div>Bridge Fee</div>} title="Fee">
               <InfoCircleOutlined style={{ marginLeft: "6px" }} />
             </Popover>
           </StyledItemTitle>
@@ -84,28 +131,19 @@ const FeeDetailInfo: React.FC<Props> = () => {
         <StyledItem>
           <StyledItemTitle>
             <StyledIcon src={icon} />
-            Minimum Received
-            <Popover
-              style={{
-                backgroundColor: colors.pointPink,
-              }}
-              content={<div>Minimum Received...</div>}
-              title="Minimum Received"
-            >
+            Fee(Chain)
+            <Popover content={<div>Chain Fee</div>} title="Fee">
               <InfoCircleOutlined style={{ marginLeft: "6px" }} />
             </Popover>
           </StyledItemTitle>
-          <StyledItemValue>2 REAP</StyledItemValue>
+          <StyledItemValue>1 REAP</StyledItemValue>
         </StyledItem>
         <StyledItem>
           <StyledItemTitle>
             <StyledIcon src={icon} />
             Estimated Time of Arrival
             <Popover
-              style={{
-                backgroundColor: colors.pointPink,
-              }}
-              content={<div>Estimated Time of Arrival...</div>}
+              content={<div>Estimated Time of Arrival</div>}
               title="Estimated Time of Arrival"
             >
               <InfoCircleOutlined style={{ marginLeft: "4px" }} />

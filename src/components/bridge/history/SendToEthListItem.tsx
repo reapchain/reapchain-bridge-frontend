@@ -131,10 +131,10 @@ const SendToEthListItem: React.FC<Props> = ({
           </StyledTokenTransferAmount>
         </StyledTokenTransfer>
         <div>
-          <RefundButton
+          {/* <RefundButton
             active={refundActive(status)}
             onClick={handleClickRefund}
-          />
+          /> */}
         </div>
       </StyledItemWrapper>
     </StyledContainer>

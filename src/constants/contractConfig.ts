@@ -2,7 +2,7 @@
 export const ERC20ContractAddress =
   "0x89b7284C67B30e8E85A930B8A07c4943286D0D1d";
 export const BridgeContractAddress =
-  "0x3b2B5B6C4B72b84BAcaF50376e03E51e6103AAe3";
+  "0x9C83f7f0B206017622e218688D92dA72f5E4295e";
 
 // for debug
 // export const ERC20ContractAddress =

@@ -23,6 +23,7 @@ import { WalletType } from "queries/useWalletType";
 import { Contract } from "@ethersproject/contracts";
 import BridgeTxSend, { SendTxInfo } from "components/bridge/modal/BridgeTxSend";
 import ExecuteButton from "components/common/button/ExecuteButton";
+import { calcFee } from "utils/fee";
 
 const StyledModal = styled(Modal)`
   & .ant-modal-content {
@@ -92,6 +93,7 @@ type Props = {
   toToken: Token;
   sendAmount: string;
   receiveAmount: string;
+  availableBalance: BigNumber;
   onExecute: () => void;
   onCancel: () => void;
 };
@@ -105,6 +107,7 @@ const BridgeTxModal: React.FC<Props> = ({
   toToken,
   sendAmount,
   receiveAmount,
+  availableBalance,
   onExecute,
   onCancel,
 }) => {
@@ -118,7 +121,35 @@ const BridgeTxModal: React.FC<Props> = ({
     error: "",
   });
 
+  const checkSendAmount = (): boolean => {
+    const tempSendAmount = removeLastDot(sendAmount);
+
+    if (!tempSendAmount || Number(tempSendAmount) === 0) {
+      messageApi.error("Invalid send amount");
+      return false;
+    }
+
+    const tempSendAmountOrigin = BigNumber.from(parseEther(tempSendAmount));
+    const amountAddedFee = calcFee(tempSendAmount, targetWallet);
+
+    if (tempSendAmountOrigin.lte(0)) {
+      messageApi.error("Send amount must be greater than 0");
+      return false;
+    }
+
+    if (availableBalance.lte(0) || availableBalance.lt(amountAddedFee)) {
+      messageApi.error("Insufficient available amount");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleClickExecute = () => {
+    if (!checkSendAmount()) {
+      return;
+    }
+
     if (targetWallet === "MetaMask") {
       executeSendToCosmos();
     } else if (targetWallet === "Keplr") {
@@ -132,10 +163,8 @@ const BridgeTxModal: React.FC<Props> = ({
       if (!keplr) {
         return;
       }
-
       const tempSendAmount = removeLastDot(sendAmount);
       const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
-
       const sendToEthParams: MessageSendToEthParams = {
         sender: keplr.account.bech32Address,
         ethDest: convertToHex(keplr.account.bech32Address),
@@ -149,7 +178,7 @@ const BridgeTxModal: React.FC<Props> = ({
         },
         chainFee: {
           denom: "areap",
-          amount: "2000000000000000000",
+          amount: "1000000000000000000",
         },
       };
 
@@ -295,7 +324,11 @@ const BridgeTxModal: React.FC<Props> = ({
     >
       <StyledContents>
         {txInfo.isSend ? (
-          <BridgeTxSend targetWallet={targetWallet} txInfo={txInfo} />
+          <BridgeTxSend
+            targetWallet={targetWallet}
+            txInfo={txInfo}
+            onClose={handleClickCancel}
+          />
         ) : (
           <StyledInformation>
             <StyledFromToArea>
@@ -316,7 +349,13 @@ const BridgeTxModal: React.FC<Props> = ({
               />
             </StyledFromToArea>
             <StyledFeeWrapper>
-              <FeeDetailInfo />
+              <FeeDetailInfo
+                targetWallet={targetWallet}
+                fromToken={fromToken}
+                toToken={toToken}
+                sendAmount={sendAmount}
+                receiveAmount={receiveAmount}
+              />
             </StyledFeeWrapper>
             <ExecuteButton
               text={"Send Transaction"}

@@ -2,8 +2,9 @@ import colors from "assets/colors";
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import { getBgIconSource } from "utils/util";
-import { formatEther, parseEther } from "@ethersproject/units";
-import { BigNumber } from "@ethersproject/bignumber";
+import { formatEther } from "@ethersproject/units";
+import { useWalletQuery } from "queries/useWalletType";
+import { calcFee } from "utils/fee";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -61,15 +62,21 @@ const BridgeTxChainItem: React.FC<Props> = ({
   amount,
   denom,
 }) => {
+  const { data: walletData } = useWalletQuery();
+  const targetWallet = walletData ?? "MetaMask";
+
   const isFrom = useMemo(() => {
     return type === "from";
   }, [type]);
 
   const displayBalance = () => {
-    // const bigNumber = parseEther(amount);
-    // return formatEther(bigNumber);
     return amount;
   };
+
+  const sourceAmount = useMemo(() => {
+    const amountAddedFee = calcFee(amount, targetWallet);
+    return formatEther(amountAddedFee);
+  }, [amount, targetWallet]);
 
   return (
     <StyledContainer>
@@ -82,7 +89,7 @@ const BridgeTxChainItem: React.FC<Props> = ({
         <StyledTransferInfoItem style={{ marginBottom: "-2px" }}>
           <ChainTitleText>{chainName}</ChainTitleText>
           {isFrom ? (
-            <SourceAmountText>- {displayBalance()}</SourceAmountText>
+            <SourceAmountText>- {sourceAmount}</SourceAmountText>
           ) : (
             <DestinationAmountText>+ {displayBalance()}</DestinationAmountText>
           )}
