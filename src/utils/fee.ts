@@ -1,15 +1,6 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { parseEther } from "@ethersproject/units";
-
-export const removeTrailingZeros = (value: number | string): string => {
-  const stringValue = typeof value === "number" ? value.toString() : value;
-
-  if (!stringValue.includes(".") || /^[^.]+0+$/.test(stringValue)) {
-    return stringValue;
-  }
-
-  return stringValue.replace(/(?:\.0*|(\.\d+?)0+)$/, "$1");
-};
+import { removeTrailingZeros } from "utils/number";
 
 export const calcFee = (
   amount: string,

@@ -1,5 +1,7 @@
 import { getPendingSendToEth } from "apis/api";
 import { useQuery, useMutation, useQueryClient } from "react-query";
+import { TxHistory, getTxHistory, updateSendToEthTxs } from "utils/txsHistory";
+import { convertToBech32, convertToHex } from "utils/util";
 
 export type ERC20Token = {
   contract: string;
@@ -34,43 +36,25 @@ let historyTxs: TxsHistory = {
 
 const TXS_HISTORY_QUERY_KEY = "/history/txs";
 
-// export const useWalletQuery = () =>
-//   useQuery<WalletType>(WALLET_QUERY_KEY, () => {
-//     return walletType as WalletType;
-//   });
-
-// const setWallet = async (type: WalletType) => {
-//   walletType = type;
-// };
-
-// export const useWalletMutation = () => {
-//   const queryClient = useQueryClient();
-
-//   return useMutation(setWallet, {
-//     onSuccess: () => {
-//       queryClient.invalidateQueries(WALLET_QUERY_KEY);
-//     },
-//     onError: () => {
-//       console.log("setWallet onError");
-//     },
-//   });
-// };
-
-export const getPendingSendToEthTxs = async (
-  address: string
-): Promise<PendingSendToEthTxs> => {
+export const getTxsHistory = async (address: string): Promise<TxHistory[]> => {
   if (!address) {
-    return null;
+    return [];
   }
-  const data = await getPendingSendToEth(address);
-  console.log("getPendingSendToEthTxs : ", data);
-  return data;
+
+  if (address.substring(0, 2) === "0x") {
+    address = convertToBech32(address, "reap");
+  }
+
+  const sendToEthTxs = await getPendingSendToEth(address);
+  updateSendToEthTxs(address, sendToEthTxs);
+
+  return getTxHistory(address);
 };
 
 export const useTxsHistory = (address: string) =>
-  useQuery<PendingSendToEthTxs>(
+  useQuery<TxHistory[]>(
     [TXS_HISTORY_QUERY_KEY, address],
-    () => getPendingSendToEthTxs(address),
+    () => getTxsHistory(address),
     {
       enabled: !!address,
     }

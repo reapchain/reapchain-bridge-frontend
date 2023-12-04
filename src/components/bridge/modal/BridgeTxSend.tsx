@@ -1,11 +1,12 @@
 import colors from "assets/colors";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Progress, Typography } from "antd";
 import { abbrAddress, abbrAddress2 } from "utils/util";
 import { getEthereumTxInfo, getReapchainTxInfo } from "apis/api";
 import { reapchainKeplrConfig } from "constants/keplrConfig";
 import { useInterval } from "react-use";
+import { BigNumber } from "@ethersproject/bignumber";
 import {
   ethereumNetworkConfig,
   reapchainNetworkConfig,
@@ -13,6 +14,7 @@ import {
 import dotIcon from "assets/images/ellipse.svg";
 import checkIcon from "assets/images/progress_check.svg";
 import ExecuteButton from "components/common/button/ExecuteButton";
+import { formatEther } from "@ethersproject/units";
 const { Link } = Typography;
 
 const StyledContainer = styled.div``;
@@ -89,6 +91,7 @@ export interface SendTxInfo {
   hash: string;
   address: string;
   error: any;
+  txResult: any;
 }
 
 type Props = {
@@ -133,6 +136,19 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo, onClose }) => {
     }
   };
 
+  // useEffect(() => {
+  //   if (txInfo.isSend && targetWallet === "MetaMask") {
+  //     fetchEthereumTx(txInfo.txResult);
+  //   }
+  // }, [txInfo]);
+
+  // const fetchEthereumTx = async (sendToCosmosResult: any) => {
+  //   const txReceipt = await sendToCosmosResult.wait();
+  //   const gasUsed = BigNumber.from(txReceipt.gasUsed);
+  //   const gasPrice = BigNumber.from(txReceipt.effectiveGasPrice);
+  //   const txFee = formatEther(gasUsed.mul(gasPrice));
+  // };
+
   const handleClickTxHash = () => {
     if (targetWallet === "Keplr") {
       window.open(
@@ -159,6 +175,7 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo, onClose }) => {
       );
     }
   };
+
   const displayTxDesc = () => {
     if (txInfo.type === "SendToCosmos") {
       return "REAPt → REAP";

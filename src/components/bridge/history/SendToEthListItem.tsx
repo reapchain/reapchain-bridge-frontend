@@ -3,10 +3,10 @@ import styled from "styled-components";
 import colors from "assets/colors";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { getBgIconSource } from "utils/util";
-import { SendToEthTransfer } from "queries/useTxsHistory";
-import { BigNumber } from "@ethersproject/bignumber";
 import { formatEther } from "@ethersproject/units";
 import RefundButton from "components/bridge/history/RefundButton";
+import { TxHistory } from "utils/txsHistory";
+import { getBigNumber } from "utils/number";
 
 const StyledContainer = styled.div`
   border-radius: 12px;
@@ -23,7 +23,6 @@ const StyledTokenTransfer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: -10%;
 `;
 const StyledTokenTransferAmount = styled.div`
   display: flex;
@@ -46,31 +45,31 @@ const TokenTitleText = styled.div`
   font-weight: 600;
 `;
 const SourceAmountText = styled.div`
-  color: ${colors.quaternary};
+  color: ${colors.red01};
   font-size: 16px;
   font-weight: 600;
 `;
 const DestinationAmountText = styled.div`
-  color: ${colors.green1};
+  color: ${colors.blue01};
   font-size: 16px;
   font-weight: 600;
 `;
 
-type Props = {
-  status: string;
-  item: SendToEthTransfer;
-  onClickRefund: (item: SendToEthTransfer) => void;
-};
-
-const displayStatus = (status: string) => {
-  if (status === "unbatched_transfers") {
-    return "Pending";
-  } else if (status === "transfers_in_batches") {
-    return "In Progress";
-  } else if (status === "test1") {
-    return "Refunding";
-  } else if (status === "test2") {
-    return "Refunded";
+const displayStatus = (item: TxHistory) => {
+  if (item.type === "SendToEth") {
+    if (item.status === "unbatched") {
+      return "Pending";
+    } else if (item.status === "inbatches") {
+      return "In Progress";
+    } else if (item.status === "completed") {
+      return "Completed";
+    } else if (item.status === "refunding??") {
+      return "Refunding?";
+    } else {
+      return "Completed";
+    }
+  } else if (item.type === "SendToCosmos") {
+    return item.status;
   } else {
     return "-";
   }
@@ -84,33 +83,64 @@ const refundActive = (status: string) => {
   }
 };
 
-const SendToEthListItem: React.FC<Props> = ({
-  status,
-  item,
-  onClickRefund,
-}) => {
+type Props = {
+  item: TxHistory;
+  onClickRefund: (item: TxHistory) => void;
+};
+
+const SendToEthListItem: React.FC<Props> = ({ item, onClickRefund }) => {
   const handleClick = () => {};
 
   const sumAmount = () => {
-    const tokenAmount = BigNumber.from(item.erc20_token.amount);
-    const feeAmount = BigNumber.from(item.erc20_fee.amount);
+    const tokenAmount = getBigNumber(item.transferAmount);
+    const feeAmount = getBigNumber(item.feeAmount);
     const sum = formatEther(tokenAmount.add(feeAmount));
     return sum;
   };
 
   const toAmount = () => {
     const ratio = 1;
-    return formatEther(BigNumber.from(item.erc20_token.amount).mul(ratio));
+    return formatEther(getBigNumber(item.transferAmount).mul(ratio));
   };
 
   const handleClickRefund = () => {
     onClickRefund(item);
   };
 
+  if (item.type === "SendToCosmos") {
+    return (
+      <StyledContainer>
+        <StyledItemWrapper>
+          <StatusText>{displayStatus(item)}</StatusText>
+          <StyledTokenTransfer>
+            <StyledTokenIcon src={getBgIconSource("reapchain")} alt="icon" />
+            <StyledTokenTransferAmount>
+              <TokenTitleText>{"REAP"}</TokenTitleText>
+              <SourceAmountText>{`-${sumAmount()}`}</SourceAmountText>
+            </StyledTokenTransferAmount>
+            <ArrowRightOutlined
+              style={{
+                fontSize: "20px",
+                color: colors.darkblue01,
+                padding: "0px 20px",
+              }}
+            />
+            <StyledTokenIcon src={getBgIconSource("ethereum")} alt="icon" />
+            <StyledTokenTransferAmount>
+              <TokenTitleText>{"tREAP"}</TokenTitleText>
+              <DestinationAmountText>{`+${toAmount()}`}</DestinationAmountText>
+            </StyledTokenTransferAmount>
+          </StyledTokenTransfer>
+          <div></div>
+        </StyledItemWrapper>
+      </StyledContainer>
+    );
+  }
+
   return (
     <StyledContainer>
       <StyledItemWrapper>
-        <StatusText>{displayStatus(status)}</StatusText>
+        <StatusText>{displayStatus(item)}</StatusText>
         <StyledTokenTransfer>
           <StyledTokenIcon src={getBgIconSource("ethereum")} alt="icon" />
           <StyledTokenTransferAmount>

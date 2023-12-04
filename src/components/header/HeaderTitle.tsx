@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
+import reapchainIcon from "assets/images/main_logo.png";
 
 type Props = {
   title: string;
@@ -19,6 +20,8 @@ const StyledHeaderTitle = styled.div`
   vertical-align: top;
 `;
 
+const StyledMainIcon = styled.img``;
+
 /*
 const  text1 = styled.div`
   text-align: left;
@@ -30,7 +33,12 @@ const  text1 = styled.div`
 */
 
 const HeaderItem: React.FC<Props> = ({ title }) => {
-  return <StyledHeaderTitle>{title}</StyledHeaderTitle>;
+  return (
+    <StyledHeaderTitle>
+      {/* {title} */}
+      <StyledMainIcon src={reapchainIcon} />
+    </StyledHeaderTitle>
+  );
 };
 
 export default HeaderItem;

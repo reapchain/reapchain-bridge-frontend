@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
@@ -21,7 +21,7 @@ const StyledContainer = styled.div`
   background-color: ${colors.blue};
   border: 1px solid transparent;
   cursor: pointer;
-  width: 200px;
+  width: 160px;
   height: 44px;
   padding: 8px;
   font-size: 14px;
@@ -38,7 +38,7 @@ const StyledDropdown = styled(Dropdown)`
   background-color: ${colors.blue};
   border: 1px solid transparent;
   cursor: pointer;
-  width: 200px;
+  width: 180px;
   height: 44px;
   padding: 8px;
   font-size: 14px;

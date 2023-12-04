@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-import { formatEther } from "@ethersproject/units";
+import { formatEther, parseEther } from "@ethersproject/units";
 
 export const applyLocaleString = (value: number) => {
   return ("" + value).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -49,4 +49,22 @@ export const removeLastDot = (input: string) => {
   }
 
   return input;
+};
+
+export const removeTrailingZeros = (value: number | string): string => {
+  const stringValue = typeof value === "number" ? value.toString() : value;
+
+  if (!stringValue.includes(".") || /^[^.]+0+$/.test(stringValue)) {
+    return stringValue;
+  }
+
+  return stringValue.replace(/(?:\.0*|(\.\d+?)0+)$/, "$1");
+};
+
+export const getBigNumber = (value: string): BigNumber => {
+  if (!value) {
+    return BigNumber.from("0");
+  }
+
+  return BigNumber.from(removeTrailingZeros(value));
 };

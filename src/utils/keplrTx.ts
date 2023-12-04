@@ -103,14 +103,11 @@ export const keplrSendTx = async (
       sender.sequence
     );
 
-    // error???
     const signResponse = await window.keplr.signAmino(
       reapchainKeplrConfig.chainId,
       keplrAccount.address,
       signDoc
     );
-
-    console.log("signResponse : ", signResponse);
 
     const signedTx = TxRaw.encode({
       bodyBytes: TxBody.encode(
@@ -147,7 +144,6 @@ export const keplrSendTx = async (
       }).finish(),
       signatures: [Buffer.from(signResponse.signature.signature, "base64")],
     }).finish();
-    console.log("signedTx : ", signedTx);
 
     // broadcase tx with keplr
     // const sendTxRes = await window.keplr.sendTx(
@@ -158,7 +154,7 @@ export const keplrSendTx = async (
 
     const txBytes = Buffer.from(signedTx).toString("base64");
     const txResponse: any = await broadcastReapchainTx(txBytes);
-    console.log("txResponse : ", txResponse);
+    // console.log("txResponse : ", txResponse);
 
     if (!txResponse || !txResponse.data) {
       return {

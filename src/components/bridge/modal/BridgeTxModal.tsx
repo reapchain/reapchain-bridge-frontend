@@ -9,8 +9,8 @@ import { connectKeplrWallet } from "utils/keplr";
 import { BigNumber } from "@ethersproject/bignumber";
 import { MessageSendToEthParams } from "transactions/msgSendToEth";
 import { keplrSendTx } from "utils/keplrTx";
-import { removeLastDot } from "utils/number";
-import { parseEther } from "@ethersproject/units";
+import { removeLastDot, removeTrailingZeros } from "utils/number";
+import { formatEther, parseEther } from "@ethersproject/units";
 import { compareHexAddress, convertToBech32, convertToHex } from "utils/util";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import { BridgeABI, ERC20ABI } from "contracts/abi";
@@ -24,6 +24,7 @@ import { Contract } from "@ethersproject/contracts";
 import BridgeTxSend, { SendTxInfo } from "components/bridge/modal/BridgeTxSend";
 import ExecuteButton from "components/common/button/ExecuteButton";
 import { calcFee } from "utils/fee";
+import { TxHistory, updateSendToCosmosTxs } from "utils/txsHistory";
 
 const StyledModal = styled(Modal)`
   & .ant-modal-content {
@@ -119,6 +120,7 @@ const BridgeTxModal: React.FC<Props> = ({
     hash: "",
     address: "",
     error: "",
+    txResult: null,
   });
 
   const checkSendAmount = (): boolean => {
@@ -146,9 +148,11 @@ const BridgeTxModal: React.FC<Props> = ({
   };
 
   const handleClickExecute = () => {
+    console.log("handleClickExecute");
     if (!checkSendAmount()) {
       return;
     }
+    console.log("targetWallet : ", targetWallet);
 
     if (targetWallet === "MetaMask") {
       executeSendToCosmos();
@@ -188,6 +192,8 @@ const BridgeTxModal: React.FC<Props> = ({
         fromChain
       );
 
+      console.log("keplrTxResult : ", keplrTxResult);
+
       if (!keplrTxResult.result && keplrTxResult.msg === "Request rejected") {
         messageApi.error(keplrTxResult.msg);
         return;
@@ -202,14 +208,15 @@ const BridgeTxModal: React.FC<Props> = ({
         hash: keplrTxResult.txHash,
         address: keplr.account.bech32Address,
         error: keplrTxResult.msg,
+        txResult: keplrTxResult,
       });
     } catch (err) {
+      console.error(err);
       setTxInfo({
         ...txInfo,
         error: err,
         isSend: true,
       });
-      console.error(err);
     }
   };
 
@@ -249,6 +256,7 @@ const BridgeTxModal: React.FC<Props> = ({
             hash: approveResult.hash,
             address: address,
             error: null,
+            txResult: approveResult,
           });
         }
         return;
@@ -276,7 +284,23 @@ const BridgeTxModal: React.FC<Props> = ({
           gasLimit: 100000,
         }
       );
-      console.log("sendToCosmosResult : ", sendToCosmosResult);
+      // const txReceipt = await sendToCosmosResult.wait();
+      // const gasUsed = BigNumber.from(txReceipt.gasUsed);
+      // const gasPrice = BigNumber.from(txReceipt.effectiveGasPrice);
+      // const txFee = formatEther(gasUsed.mul(gasPrice))
+
+      const txHistory: TxHistory = {
+        id: sendToCosmosResult.hash,
+        sender: sendToCosmosResult.from,
+        destAddress: "",
+        type: "SendToCosmos",
+        status: "Submitted",
+        transferAmount: sendAmountBigNumber.toString(),
+        feeAmount: "",
+        txHash: sendToCosmosResult.hash,
+        createdAt: "",
+      };
+      updateSendToCosmosTxs(txHistory);
 
       setTxInfo({
         isSend: true,
@@ -284,6 +308,7 @@ const BridgeTxModal: React.FC<Props> = ({
         hash: sendToCosmosResult.hash,
         address: hexAddress,
         error: null,
+        txResult: sendToCosmosResult,
       });
     } catch (error: any) {
       if (error.code === "ACTION_REJECTED") {

@@ -38,9 +38,10 @@ const Header: React.FC = () => {
     useWeb3Context();
   const { data: keplrData } = useKeplrQuery();
   const keplrWallet = keplrData ?? initKeplrWallet;
-  const { data: pendingSendToEthTxs, refetch } = useTxsHistory(
-    keplrWallet.address
-  );
+  const getWalletAddress = () => {
+    return targetWallet === "MetaMask" ? address : keplrWallet.address;
+  };
+  const { data: txList, refetch } = useTxsHistory(getWalletAddress());
 
   const handleClickHistory = () => {
     setHistoryModalOpen(true);
@@ -66,7 +67,7 @@ const Header: React.FC = () => {
         />
       </StyledHeaderItemWrapper>
       <StyledTitleWrapper>
-        <HeaderTitle title={"RBG"} />
+        <HeaderTitle title={"rBridge"} />
       </StyledTitleWrapper>
       <StyledHeaderItemWrapper>
         <HistoryButton text={"History"} onClick={handleClickHistory} />
@@ -74,9 +75,8 @@ const Header: React.FC = () => {
         <HeaderOptionButton />
       </StyledHeaderItemWrapper>
       <HistoryModal
-        pendingSendToEthTxs={pendingSendToEthTxs || null}
-        pendingSendToCosmosTxs={null}
         open={historyModalOpen}
+        txList={txList || []}
         onCancel={() => setHistoryModalOpen(false)}
         onRefetch={refetch}
       />

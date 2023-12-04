@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import colors from "assets/colors";
 import { Modal, message } from "antd";
@@ -9,6 +9,7 @@ import { MessageCancelSendToEthParams } from "transactions/msgCancelSendToEth";
 import { keplrSendTx } from "utils/keplrTx";
 import { ReloadOutlined } from "@ant-design/icons";
 import StatusTabButton from "components/bridge/history/StatusTabButton";
+import { TxHistory } from "utils/txsHistory";
 
 const StyledModal = styled(Modal)`
   & .ant-modal-content {
@@ -92,16 +93,14 @@ const StyledHistoryList = styled.div`
 
 type Props = {
   open: boolean;
-  pendingSendToEthTxs: PendingSendToEthTxs | null;
-  pendingSendToCosmosTxs: null;
+  txList: TxHistory[];
   onCancel: () => void;
   onRefetch: () => void;
 };
 
 const HistoryModal: React.FC<Props> = ({
   open,
-  pendingSendToEthTxs,
-  pendingSendToCosmosTxs,
+  txList,
   onCancel,
   onRefetch,
 }) => {
@@ -110,19 +109,21 @@ const HistoryModal: React.FC<Props> = ({
     onCancel();
   };
   const [filterStatus, setFilterStatus] = useState<string>("All");
-  const isNoTxHistory = useMemo(() => {
-    if (!pendingSendToEthTxs) {
-      return true;
-    } else if (
-      pendingSendToEthTxs.transfers_in_batches.length === 0 &&
-      pendingSendToEthTxs.unbatched_transfers.length === 0
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  }, [open, pendingSendToEthTxs, pendingSendToCosmosTxs]);
-  const handleClickRefund = async (item: SendToEthTransfer) => {
+
+  // const isNoTxHistory = useMemo(() => {
+  //   if (!pendingSendToEthTxs) {
+  //     return true;
+  //   } else if (
+  //     pendingSendToEthTxs.transfers_in_batches.length === 0 &&
+  //     pendingSendToEthTxs.unbatched_transfers.length === 0
+  //   ) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }, [open, , filterStatus]);
+
+  const handleClickRefund = async (item: TxHistory) => {
     try {
       const keplr = await connectKeplrWallet();
       if (!keplr) {
@@ -150,9 +151,16 @@ const HistoryModal: React.FC<Props> = ({
       messageApi.error("Error");
     }
   };
+
   const handleClickTabButton = (status: string) => {
     setFilterStatus(status);
   };
+
+  useEffect(() => {
+    if (open) {
+      onRefetch();
+    }
+  }, [open]);
 
   return (
     <StyledModal
@@ -176,7 +184,7 @@ const HistoryModal: React.FC<Props> = ({
     >
       <StyledContents>
         <StyledSettingWrapper>
-          <StatusTabButton
+          {/* <StatusTabButton
             value={"All"}
             selected={filterStatus}
             onClick={() => handleClickTabButton("All")}
@@ -190,7 +198,7 @@ const HistoryModal: React.FC<Props> = ({
             value={"Complete"}
             selected={filterStatus}
             onClick={() => handleClickTabButton("Complete")}
-          />
+          /> */}
           <StyledReloadWrapper>
             <ReloadOutlined
               onClick={onRefetch}
@@ -199,26 +207,17 @@ const HistoryModal: React.FC<Props> = ({
           </StyledReloadWrapper>
         </StyledSettingWrapper>
         <StyledHistoryList>
-          {!pendingSendToEthTxs || isNoTxHistory ? (
+          {txList.length < 1 ? (
             <StyledEmptyWrapper>
               <StyledNoTxText>No tx history</StyledNoTxText>
             </StyledEmptyWrapper>
           ) : (
             <>
-              {pendingSendToEthTxs.unbatched_transfers.map((transfer) => (
+              {txList.map((tx) => (
                 <SendToEthListItem
-                  key={transfer.id}
-                  status={"unbatched_transfers"}
-                  item={transfer}
+                  key={tx.id}
+                  item={tx}
                   onClickRefund={handleClickRefund}
-                />
-              ))}
-              {pendingSendToEthTxs.transfers_in_batches.map((transfer) => (
-                <SendToEthListItem
-                  key={transfer.id}
-                  status={"transfers_in_batches"}
-                  item={transfer}
-                  onClickRefund={() => {}}
                 />
               ))}
             </>
