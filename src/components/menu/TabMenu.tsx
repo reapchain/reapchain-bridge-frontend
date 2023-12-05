@@ -39,14 +39,14 @@ const TabMenu: React.FC = () => {
       <TabButton
         value={"bridge/token"}
         selected={selectedKey}
-        from={"Token"}
-        to={"Reap"}
+        from={"cREAP"}
+        to={"REAP"}
       />
       <TabButton
         value={"bridge/reap"}
         selected={selectedKey}
-        from={"Reap"}
-        to={"Token"}
+        from={"REAP"}
+        to={"cREAP"}
       />
     </StyledTab>
   );
