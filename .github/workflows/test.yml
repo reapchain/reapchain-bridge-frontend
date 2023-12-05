@@ -22,8 +22,12 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
+      - name: "Create env file"
+        run: |
+          echo "${{ secrets.AWS_ENV_TEST }}" > .env
+
       - name: Build
-        run: npm run build
+        run: CI='false' npm run build
 
       - name: Deploy
         env:
