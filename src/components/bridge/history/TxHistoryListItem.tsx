@@ -7,6 +7,7 @@ import { formatEther } from "@ethersproject/units";
 import RefundButton from "components/bridge/history/RefundButton";
 import { TxHistory } from "utils/txsHistory";
 import { getBigNumber } from "utils/number";
+import { addSendToEthFee } from "utils/fee";
 
 const StyledContainer = styled.div`
   border-radius: 12px;
@@ -88,14 +89,12 @@ type Props = {
   onClickRefund: (item: TxHistory) => void;
 };
 
-const SendToEthListItem: React.FC<Props> = ({ item, onClickRefund }) => {
+const TxHistoryListItem: React.FC<Props> = ({ item, onClickRefund }) => {
   const handleClick = () => {};
 
-  const sumAmount = () => {
-    const tokenAmount = getBigNumber(item.transferAmount);
-    const feeAmount = getBigNumber(item.feeAmount);
-    const sum = formatEther(tokenAmount.add(feeAmount));
-    return sum;
+  const fromAmount = () => {
+    const ratio = 1;
+    return formatEther(getBigNumber(item.transferAmount).mul(ratio));
   };
 
   const toAmount = () => {
@@ -107,7 +106,7 @@ const SendToEthListItem: React.FC<Props> = ({ item, onClickRefund }) => {
     onClickRefund(item);
   };
 
-  if (item.type === "SendToCosmos") {
+  if (item.type === "SendToEth") {
     return (
       <StyledContainer>
         <StyledItemWrapper>
@@ -116,7 +115,9 @@ const SendToEthListItem: React.FC<Props> = ({ item, onClickRefund }) => {
             <StyledTokenIcon src={getBgIconSource("reapchain")} alt="icon" />
             <StyledTokenTransferAmount>
               <TokenTitleText>{"REAP"}</TokenTitleText>
-              <SourceAmountText>{`-${sumAmount()}`}</SourceAmountText>
+              <SourceAmountText>{`-${addSendToEthFee(
+                item.transferAmount
+              )}`}</SourceAmountText>
             </StyledTokenTransferAmount>
             <ArrowRightOutlined
               style={{
@@ -127,7 +128,7 @@ const SendToEthListItem: React.FC<Props> = ({ item, onClickRefund }) => {
             />
             <StyledTokenIcon src={getBgIconSource("ethereum")} alt="icon" />
             <StyledTokenTransferAmount>
-              <TokenTitleText>{"tREAP"}</TokenTitleText>
+              <TokenTitleText>{"cREAP"}</TokenTitleText>
               <DestinationAmountText>{`+${toAmount()}`}</DestinationAmountText>
             </StyledTokenTransferAmount>
           </StyledTokenTransfer>
@@ -144,8 +145,8 @@ const SendToEthListItem: React.FC<Props> = ({ item, onClickRefund }) => {
         <StyledTokenTransfer>
           <StyledTokenIcon src={getBgIconSource("ethereum")} alt="icon" />
           <StyledTokenTransferAmount>
-            <TokenTitleText>{"tREAP"}</TokenTitleText>
-            <SourceAmountText>{`-${sumAmount()}`}</SourceAmountText>
+            <TokenTitleText>{"cREAP"}</TokenTitleText>
+            <SourceAmountText>{`-${fromAmount()}`}</SourceAmountText>
           </StyledTokenTransferAmount>
           <ArrowRightOutlined
             style={{
@@ -171,4 +172,4 @@ const SendToEthListItem: React.FC<Props> = ({ item, onClickRefund }) => {
   );
 };
 
-export default SendToEthListItem;
+export default TxHistoryListItem;

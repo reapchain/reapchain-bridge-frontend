@@ -178,9 +178,9 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo, onClose }) => {
 
   const displayTxDesc = () => {
     if (txInfo.type === "SendToCosmos") {
-      return "REAPt → REAP";
+      return "cREAP → REAP";
     } else if (txInfo.type === "SendToEth") {
-      return "REAP → REAPt";
+      return "REAP → cREAP";
     } else if (txInfo.type === "ERC20Approve") {
       return "Approve ERC20 Token";
     } else {

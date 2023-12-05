@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import colors from "assets/colors";
-import { getIconSource } from "utils/util";
+import { getBgIconSource, getIconSource } from "utils/util";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Popover } from "antd";
 import icon from "assets/images/ellipse.svg";
@@ -47,6 +47,11 @@ const StyledIcon = styled.img`
   height: 4px;
   margin-right: 6px;
 `;
+const StyledTokenIcon = styled.img`
+  width: 12px;
+  height: 12px;
+  padding-right: 4px;
+`;
 
 type Props = {
   targetWallet: WalletType;
@@ -67,9 +72,9 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
               Bridge Rate
             </StyledItemTitle>
             <StyledToken>
-              <StyledImageIcon src={getIconSource("reapchain")} alt="icon" />
-              <StyledItemValue>REAPt&nbsp;=&nbsp;</StyledItemValue>
-              <StyledImageIcon src={getIconSource("reapchain")} alt="icon" />
+              <StyledTokenIcon src={getBgIconSource("ethereum")} alt="icon" />
+              <StyledItemValue>cREAP&nbsp;=&nbsp;</StyledItemValue>
+              <StyledTokenIcon src={getBgIconSource("reapchain")} alt="icon" />
               <StyledItemValue>REAP&nbsp;:&nbsp;</StyledItemValue>
               <StyledRatio>1 : 1</StyledRatio>
             </StyledToken>
@@ -111,10 +116,10 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
             Bridge Rate
           </StyledItemTitle>
           <StyledToken>
-            <StyledImageIcon src={getIconSource("reapchain")} alt="icon" />
+            <StyledTokenIcon src={getBgIconSource("reapchain")} alt="icon" />
             <StyledItemValue>REAP&nbsp;:&nbsp;</StyledItemValue>
-            <StyledImageIcon src={getIconSource("reapchain")} alt="icon" />
-            <StyledItemValue>REAPt&nbsp;=&nbsp;</StyledItemValue>
+            <StyledTokenIcon src={getBgIconSource("ethereum")} alt="icon" />
+            <StyledItemValue>cREAP&nbsp;=&nbsp;</StyledItemValue>
             <StyledRatio>1 : 1</StyledRatio>
           </StyledToken>
         </StyledItem>

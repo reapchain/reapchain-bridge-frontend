@@ -72,8 +72,10 @@ const App = () => {
                     <Routes>
                       <Route path="/" element={<Bridge />} />
                       <Route path="/bridge/*" element={<Bridge />} />
-                      <Route path="/swap" element={<Swap />} />
-                      <Route path="/test" element={<Test />} />
+                      <Route path="/bridge/token" element={<Bridge />} />
+                      <Route path="/bridge/reap" element={<Bridge />} />
+                      {/* <Route path="/swap" element={<Swap />} /> */}
+                      {/* <Route path="/test" element={<Test />} /> */}
                       <Route path="/*" element={<Swap />} />
                     </Routes>
                   </Suspense>

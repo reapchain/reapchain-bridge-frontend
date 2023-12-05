@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import colors from "assets/colors";
-import { Modal } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { getBgIconSource } from "utils/util";
 
@@ -72,8 +71,6 @@ const displayStatus = (type: string) => {
 };
 
 const HistoryModal: React.FC<Props> = ({ type, item }) => {
-  const handleClick = () => {};
-
   return (
     <StyledContainer>
       <StyledItemWrapper>

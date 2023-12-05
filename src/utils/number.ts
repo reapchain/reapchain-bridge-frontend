@@ -68,3 +68,11 @@ export const getBigNumber = (value: string): BigNumber => {
 
   return BigNumber.from(removeTrailingZeros(value));
 };
+
+export const getBigNumberEth = (value: string): BigNumber => {
+  if (!value) {
+    return BigNumber.from("0");
+  }
+
+  return parseEther(removeTrailingZeros(value));
+};

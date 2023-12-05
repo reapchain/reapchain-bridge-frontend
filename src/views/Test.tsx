@@ -98,7 +98,7 @@ const Test: React.FC = (props: Props) => {
 
     const contract = new Contract(ERC20ContractAddress, ERC20ABI, provider);
     const result = await contract.balanceOf(myAccount1);
-    console.log("balanceOf result : ", formatEther(result), " REAPt");
+    console.log("balanceOf result : ", formatEther(result), " cREAP");
   };
 
   const handleClickERC20Transfer = async () => {

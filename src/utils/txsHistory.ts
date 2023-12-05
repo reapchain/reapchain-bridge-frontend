@@ -40,6 +40,8 @@ export const getTxHistory = (address: string): TxHistory[] => {
     return [];
   }
 
+  //   console.log("getTxHistory Result : ", data[address]);
+
   return data[address] || [];
 };
 

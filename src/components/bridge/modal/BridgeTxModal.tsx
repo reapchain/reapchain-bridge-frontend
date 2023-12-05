@@ -23,7 +23,11 @@ import { WalletType } from "queries/useWalletType";
 import { Contract } from "@ethersproject/contracts";
 import BridgeTxSend, { SendTxInfo } from "components/bridge/modal/BridgeTxSend";
 import ExecuteButton from "components/common/button/ExecuteButton";
-import { calcFee } from "utils/fee";
+import {
+  applySendToEthFee,
+  applySendToEthFeeBigNumber,
+  calcFee,
+} from "utils/fee";
 import { TxHistory, updateSendToCosmosTxs } from "utils/txsHistory";
 
 const StyledModal = styled(Modal)`
@@ -97,6 +101,7 @@ type Props = {
   availableBalance: BigNumber;
   onExecute: () => void;
   onCancel: () => void;
+  clearForm: () => void;
 };
 
 const BridgeTxModal: React.FC<Props> = ({
@@ -111,6 +116,7 @@ const BridgeTxModal: React.FC<Props> = ({
   availableBalance,
   onExecute,
   onCancel,
+  clearForm,
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const { provider, address } = useWeb3Context();
@@ -122,6 +128,7 @@ const BridgeTxModal: React.FC<Props> = ({
     error: "",
     txResult: null,
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   const checkSendAmount = (): boolean => {
     const tempSendAmount = removeLastDot(sendAmount);
@@ -148,11 +155,17 @@ const BridgeTxModal: React.FC<Props> = ({
   };
 
   const handleClickExecute = () => {
-    console.log("handleClickExecute");
+    if (loading === true) {
+      return;
+    }
+    setLoading(true);
     if (!checkSendAmount()) {
       return;
     }
-    console.log("targetWallet : ", targetWallet);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
 
     if (targetWallet === "MetaMask") {
       executeSendToCosmos();
@@ -174,7 +187,7 @@ const BridgeTxModal: React.FC<Props> = ({
         ethDest: convertToHex(keplr.account.bech32Address),
         amount: {
           denom: "areap",
-          amount: sendAmountBigNumber.toString(),
+          amount: applySendToEthFeeBigNumber(sendAmountBigNumber).toString(),
         },
         bridgeFee: {
           denom: "areap",
@@ -324,6 +337,10 @@ const BridgeTxModal: React.FC<Props> = ({
       ...txInfo,
       isSend: false,
     });
+
+    if (txInfo.isSend) {
+      clearForm();
+    }
     onCancel();
   };
 

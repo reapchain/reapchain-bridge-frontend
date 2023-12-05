@@ -94,7 +94,7 @@ export const networks: NetworkList = {
     tokens: [
       {
         id: 1,
-        name: "Reapchain Test Coin",
+        name: "REAP",
         symbol: "REAP",
         decimals: 18,
         contractAddress: "",
@@ -163,8 +163,8 @@ export const networks: NetworkList = {
     tokens: [
       {
         id: 1,
-        name: "REAP Token",
-        symbol: "REAPt",
+        name: "cREAP",
+        symbol: "cREAP",
         decimals: 18,
         contractAddress: "0x89b7284C67B30e8E85A930B8A07c4943286D0D1d",
         contractOwner: "",

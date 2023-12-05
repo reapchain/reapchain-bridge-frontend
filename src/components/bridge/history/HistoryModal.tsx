@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import colors from "assets/colors";
 import { Modal, message } from "antd";
-import { PendingSendToEthTxs, SendToEthTransfer } from "queries/useTxsHistory";
-import SendToEthListItem from "components/bridge/history/SendToEthListItem";
+import TxHistoryListItem from "components/bridge/history/TxHistoryListItem";
 import { connectKeplrWallet } from "utils/keplr";
 import { MessageCancelSendToEthParams } from "transactions/msgCancelSendToEth";
 import { keplrSendTx } from "utils/keplrTx";
@@ -77,17 +76,17 @@ const StyledHistoryList = styled.div`
   gap: 12px;
   overflow-y: auto;
 
-  scrollbar-color: ${colors.darkblue03} ${colors.darkblue01};
+  scrollbar-color: ${colors.lightblue} ${colors.darkblue03};
   scrollbar-width: thin;
 
   &::-webkit-scrollbar {
     width: 12px;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: ${colors.darkblue03};
+    background-color: ${colors.lightblue};
   }
   &::-webkit-scrollbar-track {
-    background-color: ${colors.darkblue01};
+    background-color: ${colors.darkblue03};
   }
 `;
 
@@ -110,19 +109,6 @@ const HistoryModal: React.FC<Props> = ({
   };
   const [filterStatus, setFilterStatus] = useState<string>("All");
 
-  // const isNoTxHistory = useMemo(() => {
-  //   if (!pendingSendToEthTxs) {
-  //     return true;
-  //   } else if (
-  //     pendingSendToEthTxs.transfers_in_batches.length === 0 &&
-  //     pendingSendToEthTxs.unbatched_transfers.length === 0
-  //   ) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }, [open, , filterStatus]);
-
   const handleClickRefund = async (item: TxHistory) => {
     try {
       const keplr = await connectKeplrWallet();
@@ -134,7 +120,6 @@ const HistoryModal: React.FC<Props> = ({
         transactionId: Number(item.id),
         sender: keplr.account.bech32Address,
       };
-      console.log("MessageCancelSendToEthParams : ", params);
 
       const keplrTxResult = await keplrSendTx("CancelSendToEth", params);
 
@@ -214,7 +199,7 @@ const HistoryModal: React.FC<Props> = ({
           ) : (
             <>
               {txList.map((tx) => (
-                <SendToEthListItem
+                <TxHistoryListItem
                   key={tx.id}
                   item={tx}
                   onClickRefund={handleClickRefund}

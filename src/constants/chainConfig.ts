@@ -81,8 +81,8 @@ export const ethereumConfig: EthereumConfig = {
   restEndpoint: "https://test-lcd.reapchain.org",
 
   token: {
-    name: "REAP Token",
-    symbol: "REAPt",
+    name: "cREAP",
+    symbol: "cREAP",
     decimals: 18,
     contractAddress: "",
   },

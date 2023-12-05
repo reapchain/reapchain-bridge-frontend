@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { getBgIconSource } from "utils/util";
 import { formatEther } from "@ethersproject/units";
 import { useWalletQuery } from "queries/useWalletType";
-import { calcFee } from "utils/fee";
+import { getBigNumberEth } from "utils/number";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -74,8 +74,8 @@ const BridgeTxChainItem: React.FC<Props> = ({
   };
 
   const sourceAmount = useMemo(() => {
-    const amountAddedFee = calcFee(amount, targetWallet);
-    return formatEther(amountAddedFee);
+    const num = getBigNumberEth(amount).mul(1);
+    return formatEther(num);
   }, [amount, targetWallet]);
 
   return (

@@ -32,6 +32,7 @@ import {
   reapchainNetworkConfig,
 } from "constants/networkConfig";
 import BridgeTxModal from "components/bridge/modal/BridgeTxModal";
+import { applySendToEthFee } from "utils/fee";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.primary};
@@ -285,12 +286,16 @@ const Bridge: React.FC = () => {
     }
   };
 
-  useEffect(() => {
+  const clearForm = () => {
     connectWallet();
     fetchBalance();
     setSendAmount("");
     setReceiveAmount("");
     setAvailableBalance(BigNumber.from(0));
+  };
+
+  useEffect(() => {
+    clearForm();
   }, [isActive, keplrWallet, fromChain, fromToken, address]);
 
   useEffect(() => debouncedChangeSendAmount(), [sendAmount]);
@@ -328,7 +333,11 @@ const Bridge: React.FC = () => {
       return;
     }
 
-    setReceiveAmount(formatEther(sendAmountBigNumber.mul(ratio)));
+    if (targetWallet === "Keplr") {
+      setReceiveAmount(applySendToEthFee(sendAmountBigNumber));
+    } else {
+      setReceiveAmount(formatEther(sendAmountBigNumber.mul(ratio)));
+    }
   }, 500);
 
   const handleClickConnectWallet = () => {
@@ -359,6 +368,17 @@ const Bridge: React.FC = () => {
   };
 
   const handleClickExecute = () => {
+    if (!receiveAmount) {
+      return;
+    }
+
+    if (targetWallet === "Keplr" && receiveAmount === "-") {
+      messageApi.warning(
+        "The amount you are trying to send is too low. Please set it higher."
+      );
+      return;
+    }
+
     if (targetWallet === "MetaMask") {
       executeSendToCosmos();
     } else if (targetWallet === "Keplr") {
@@ -429,6 +449,10 @@ const Bridge: React.FC = () => {
     return;
   };
 
+  const handleClickModalClose = () => {
+    setTxModalOpen(false);
+  };
+
   return (
     <>
       <StyledBridgeCard>
@@ -484,7 +508,8 @@ const Bridge: React.FC = () => {
         receiveAmount={receiveAmount}
         availableBalance={availableBalance}
         onExecute={executeTransaction}
-        onCancel={() => setTxModalOpen(false)}
+        onCancel={handleClickModalClose}
+        clearForm={clearForm}
       />
       {contextHolder}
     </>
