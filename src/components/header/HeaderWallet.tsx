@@ -21,7 +21,7 @@ const StyledContainer = styled.div`
   background-color: ${colors.blue};
   border: 1px solid transparent;
   cursor: pointer;
-  width: 160px;
+  width: 200px;
   height: 44px;
   padding: 8px;
   font-size: 14px;
@@ -38,7 +38,7 @@ const StyledDropdown = styled(Dropdown)`
   background-color: ${colors.blue};
   border: 1px solid transparent;
   cursor: pointer;
-  width: 180px;
+  width: 200px;
   height: 44px;
   padding: 8px;
   font-size: 14px;

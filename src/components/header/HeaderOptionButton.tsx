@@ -24,52 +24,26 @@ const StyledDropdownButton = styled(Button)``;
 const DropDownMenu: MenuProps = {
   items: [
     {
-      label: <HeaderOptionDropdownItem href={links.gitbook} text={"Docs"} />,
+      label: <HeaderOptionDropdownItem href={links.faucet} text={"Faucet"} />,
       key: 1,
     },
     {
       label: (
-        <HeaderOptionDropdownItem href={links.gitbook} text={"Tutorial"} />
+        <HeaderOptionDropdownItem
+          href={links.erc20Etherscan}
+          text={"ERC-20 Token"}
+        />
       ),
       key: 2,
     },
     {
-      label: <HeaderOptionDropdownItem href={links.gitbook} text={"FAQ"} />,
+      label: (
+        <HeaderOptionDropdownItem
+          href={links.bridgeEtherscan}
+          text={"Bridge Contract"}
+        />
+      ),
       key: 3,
-    },
-    {
-      label: (
-        <HeaderOptionDropdownItem href={links.gitbook} text={"Audit Reports"} />
-      ),
-      key: 4,
-    },
-    {
-      label: <HeaderOptionDropdownItem href={links.gitbook} text={"SDK"} />,
-      key: 5,
-    },
-    {
-      label: (
-        <HeaderOptionDropdownItem
-          href={links.gitbook}
-          text={"Contect Support"}
-        />
-      ),
-      key: 6,
-    },
-    {
-      label: (
-        <HeaderOptionDropdownItem
-          href={links.gitbook}
-          text={"Contect Address"}
-        />
-      ),
-      key: 7,
-    },
-    {
-      label: (
-        <HeaderOptionDropdownItem href={links.gitbook} text={"Bug Bounty"} />
-      ),
-      key: 8,
     },
   ],
   style: {
