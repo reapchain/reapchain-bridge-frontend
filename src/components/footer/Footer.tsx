@@ -21,7 +21,6 @@ const StyledTitleText = styled.div`
   color: ${colors.darkblue01};
   font-weight: 500;
   font-size: 14px;
-  margin-left: 8px;
 `;
 
 const StyledLinkText = styled.div`

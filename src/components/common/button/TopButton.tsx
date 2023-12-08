@@ -25,7 +25,10 @@ const StyledButton = styled.div`
   gap: 8px;
 `;
 
-const StyledIcon = styled.img``;
+const StyledIcon = styled.img`
+  width: 16px;
+  height: 16px;
+`;
 
 const StyledButtonText = styled.div`
   text-align: left;
@@ -62,11 +65,7 @@ const TopButton: React.FC<Props> = ({ text, tooltip, href }) => {
   return (
     <Tooltip placement="bottom" title={tooltip}>
       <StyledButton onClick={handleClickLink}>
-        <StyledIcon
-          src={getIcon()}
-          alt="icon"
-          style={{ width: "16px", height: "16px" }}
-        />
+        <StyledIcon src={getIcon()} alt="icon" />
         <StyledButtonText>{text}</StyledButtonText>
       </StyledButton>
     </Tooltip>

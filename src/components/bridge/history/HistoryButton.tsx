@@ -2,6 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import colors from "assets/colors";
 import { HistoryOutlined } from "@ant-design/icons";
+import icon from "assets/images/history.svg";
 
 const StyledButton = styled.div`
   max-width: 140px;
@@ -27,6 +28,12 @@ const StyledButtonText = styled.div`
   color: ${colors.white};
 `;
 
+const StyledIcon = styled.img`
+  width: 16px;
+  height: 16px;
+  color: ${colors.white};
+`;
+
 type Props = {
   text: string;
   onClick: () => void;
@@ -41,7 +48,8 @@ const HistoryButton: React.FC<Props> = ({ text, onClick }) => {
 
   return (
     <StyledButton onClick={handleClickLink}>
-      <HistoryOutlined style={{ fontSize: "24px", color: colors.darkblue01 }} />
+      {/* <HistoryOutlined style={{ fontSize: "24px", color: colors.darkblue01 }} /> */}
+      <StyledIcon src={icon} />
       <StyledButtonText>{text}</StyledButtonText>
     </StyledButton>
   );

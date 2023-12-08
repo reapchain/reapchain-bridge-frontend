@@ -48,7 +48,7 @@ const DropDownMenu: MenuProps = {
   ],
   style: {
     backgroundColor: colors.secondary,
-    border: `1px solid ${colors.darkblue01}`,
+    border: `1px solid ${colors.darkblue03}`,
     borderRadius: "12px",
     marginTop: "12px",
     padding: "8px 0px",

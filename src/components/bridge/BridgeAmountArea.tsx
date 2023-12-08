@@ -6,6 +6,8 @@ import colors from "../../assets/colors";
 import { Token } from "types/chain";
 import { displayBalanceWithDash } from "utils/number";
 import { BigNumberish } from "@ethersproject/bignumber";
+import { bridgeFee, chainFee } from "constants/bridgeConfig";
+import { formatEther } from "@ethersproject/units";
 
 const StyledBridgeInputArea = styled.div`
   border: 1px solid transparent;
@@ -77,7 +79,15 @@ const BridgeAmountArea: React.FC<Props> = ({
   };
 
   const getTypeTitle = () => {
-    return type === "send" ? "Send :" : "Receive (estimated) :";
+    if (type === "send") {
+      return "Send :";
+    } else {
+      if (amount && amount !== "-") {
+        return `Receive (estimated, fees applied) :`;
+      } else {
+        return "Receive (estimated) :";
+      }
+    }
   };
 
   const disabled = () => {

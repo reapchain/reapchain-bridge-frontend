@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { RetweetOutlined } from "@ant-design/icons";
 import colors from "../../assets/colors";
 import icon from "assets/images/reload.svg";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
-import metamaskIcon from "../../assets/images/metamask-logo.svg";
+import metamaskIcon from "../../assets/images/icon/fox.svg";
 import keplrIcon from "../../assets/images/keplr-logo.svg";
 
 const StyledImage = styled.img`
@@ -39,8 +39,8 @@ const HeaderWalletContext: React.FC<Props> = ({
     <>
       <StyledImage
         src={getWalletIcon()}
-        width={24}
-        height={24}
+        width={20}
+        height={20}
         alt="walletImage"
       />
       <StyledContent>{displayAddress}</StyledContent>
