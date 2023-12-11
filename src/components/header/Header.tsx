@@ -67,7 +67,7 @@ const Header: React.FC = () => {
         />
       </StyledHeaderItemWrapper>
       <StyledTitleWrapper>
-        <HeaderTitle title={"rBridge"} />
+        <HeaderTitle title={"bridge"} />
       </StyledTitleWrapper>
       <StyledHeaderItemWrapper>
         <HistoryButton text={"History"} onClick={handleClickHistory} />

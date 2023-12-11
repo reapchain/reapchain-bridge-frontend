@@ -6,7 +6,6 @@ import { abbrAddress, abbrAddress2 } from "utils/util";
 import { getEthereumTxInfo, getReapchainTxInfo } from "apis/api";
 import { reapchainKeplrConfig } from "constants/keplrConfig";
 import { useInterval } from "react-use";
-import { BigNumber } from "@ethersproject/bignumber";
 import {
   ethereumNetworkConfig,
   reapchainNetworkConfig,
@@ -14,7 +13,6 @@ import {
 import dotIcon from "assets/images/ellipse.svg";
 import checkIcon from "assets/images/progress_check.svg";
 import ExecuteButton from "components/common/button/ExecuteButton";
-import { formatEther } from "@ethersproject/units";
 const { Link } = Typography;
 
 const StyledContainer = styled.div``;
@@ -104,10 +102,16 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo, onClose }) => {
   const [percent, setPercent] = useState<number>(20);
   const [showInfo, setShowInfo] = useState<boolean>(false);
 
+  const waitErc20Approve = async () => {};
+
+  useEffect(() => {
+    waitErc20Approve();
+  }, [txInfo]);
+
   useInterval(() => fetchTxStatus(), 1000);
 
   const fetchTxStatus = async () => {
-    if (!showInfo) {
+    if (!showInfo && txInfo.type !== "ERC20Approve") {
       if (targetWallet === "Keplr") {
         const res = await getReapchainTxInfo(
           reapchainKeplrConfig.rest,

@@ -126,7 +126,10 @@ const TxHistoryListItem: React.FC<Props> = ({ item, onClickRefund }) => {
                 padding: "0px 20px",
               }}
             />
-            <StyledTokenIcon src={getBgIconSource("ethereum")} alt="icon" />
+            <StyledTokenIcon
+              src={getBgIconSource("reapchain_classic")}
+              alt="icon"
+            />
             <StyledTokenTransferAmount>
               <TokenTitleText>{"cREAP"}</TokenTitleText>
               <DestinationAmountText>{`+${toAmount()}`}</DestinationAmountText>
@@ -143,7 +146,10 @@ const TxHistoryListItem: React.FC<Props> = ({ item, onClickRefund }) => {
       <StyledItemWrapper>
         <StatusText>{displayStatus(item)}</StatusText>
         <StyledTokenTransfer>
-          <StyledTokenIcon src={getBgIconSource("ethereum")} alt="icon" />
+          <StyledTokenIcon
+            src={getBgIconSource("reapchain_classic")}
+            alt="icon"
+          />
           <StyledTokenTransferAmount>
             <TokenTitleText>{"cREAP"}</TokenTitleText>
             <SourceAmountText>{`-${fromAmount()}`}</SourceAmountText>

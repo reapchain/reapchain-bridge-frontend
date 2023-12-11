@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import colors from "assets/colors";
 import { Modal, message } from "antd";
@@ -77,15 +77,24 @@ const StyledInformation = styled.div``;
 
 const StyledFromToArea = styled.div`
   margin-top: 8px;
-  padding: 20px;
+  margin-bottom: 30px;
+  padding: 24px;
   border-radius: 12px;
   border: 1px solid transparent;
   border-color: ${colors.darkblue03};
   background-color: ${colors.background};
 `;
 
+const StyledApproveMessage = styled.div`
+  font-size: 16px;
+  font-weight: 700;
+
+  padding-left: 24px;
+  padding-right: 24px;
+`;
+
 const StyledFeeWrapper = styled.div`
-  margin-top: 40px;
+  margin-top: 20px;
   margin-bottom: 40px;
 `;
 
@@ -129,6 +138,7 @@ const BridgeTxModal: React.FC<Props> = ({
     txResult: null,
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const [showApproveMessage, setShowApproveMessage] = useState<boolean>(false);
 
   const checkSendAmount = (): boolean => {
     const tempSendAmount = removeLastDot(sendAmount);
@@ -233,7 +243,7 @@ const BridgeTxModal: React.FC<Props> = ({
     }
   };
 
-  const executeSendToCosmos = async () => {
+  const checkApproveAmount = async () => {
     if (!provider) {
       return;
     }
@@ -253,7 +263,32 @@ const BridgeTxModal: React.FC<Props> = ({
       const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
 
       if (allowanceResult.lt(sendAmountBigNumber)) {
-        messageApi.info("To use the bridge, you must approve ERC20.");
+        return false;
+      } else {
+        return true;
+      }
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  };
+
+  const executeSendToCosmos = async () => {
+    if (!provider) {
+      return;
+    }
+
+    try {
+      const contractERC20 = new Contract(
+        ERC20ContractAddress,
+        ERC20ABI,
+        provider.getSigner()
+      );
+      const tempSendAmount = removeLastDot(sendAmount);
+      const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
+
+      if (!(await checkApproveAmount())) {
+        // messageApi.info("To use the bridge, you must approve ERC20 first.");
 
         const approveResult = await contractERC20.approve(
           BridgeContractAddress,
@@ -344,6 +379,21 @@ const BridgeTxModal: React.FC<Props> = ({
     onCancel();
   };
 
+  const displayApproveMessage = async () => {
+    setShowApproveMessage(false);
+    if (!(await checkApproveAmount())) {
+      setShowApproveMessage(true);
+    }
+  };
+
+  useEffect(() => {
+    if (open && targetWallet === "MetaMask") {
+      displayApproveMessage();
+    } else {
+      setShowApproveMessage(false);
+    }
+  }, [open]);
+
   return (
     <StyledModal
       title={"Transfer"}
@@ -390,6 +440,13 @@ const BridgeTxModal: React.FC<Props> = ({
                 denom={toToken.symbol}
               />
             </StyledFromToArea>
+            {showApproveMessage && (
+              <StyledApproveMessage>
+                To transfer from cREAP to REAP, you must approve ERC20 contract
+                interaction first.
+              </StyledApproveMessage>
+            )}
+
             <StyledFeeWrapper>
               <FeeDetailInfo
                 targetWallet={targetWallet}

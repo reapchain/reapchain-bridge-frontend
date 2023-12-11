@@ -74,9 +74,8 @@ export const ethereumConfig: EthereumConfig = {
   chainIdHex: "0xAA36A7",
   chainName: "Sepolia TestNet",
   // for testnet
-  // rpcEndpoint: "https://test-eth-rpc.reapchain.org",
+  rpcEndpoint: "https://test-eth-rpc.reapchain.org",
   // for debug
-  rpcEndpoint: "https://sepolia.infura.io/v3/91032b3fbbf842e7b545289832cf07e0",
   explorerUrl: "https://sepolia.etherscan.io",
   restEndpoint: "https://test-lcd.reapchain.org",
 

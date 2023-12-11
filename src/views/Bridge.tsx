@@ -206,13 +206,19 @@ const Bridge: React.FC = () => {
       return;
     }
 
-    const balance = await getBankBalance(
-      reapchainKeplrConfig.rest,
-      keplrWallet.address,
-      reapchainKeplrConfig.currencies[0].coinMinimalDenom
-    );
-    if (targetWallet === "Keplr") {
-      setAvailableBalance(BigNumber.from(balance));
+    try {
+      const balance = await getBankBalance(
+        reapchainKeplrConfig.rest,
+        keplrWallet.address,
+        reapchainKeplrConfig.currencies[0].coinMinimalDenom
+      );
+      if (targetWallet === "Keplr") {
+        setAvailableBalance(BigNumber.from(balance));
+      }
+    } catch (error) {
+      console.error(error);
+      messageApi.warning("Failed to load available balance.");
+      setAvailableBalance(BigNumber.from(0));
     }
   };
 
@@ -259,16 +265,16 @@ const Bridge: React.FC = () => {
     }
     if (location.pathname === "/bridge/reap") {
       walletMutate("Keplr");
-      setFromChain(networks.reapchain_testnet);
-      setFromToken(networks.reapchain_testnet.tokens[0]);
-      setToChain(networks.ethereum_sepolia);
-      setToToken(networks.ethereum_sepolia.tokens[0]);
+      setFromChain(reapchainNetworkConfig);
+      setFromToken(reapchainNetworkConfig.tokens[0]);
+      setToChain(ethereumNetworkConfig);
+      setToToken(ethereumNetworkConfig.tokens[0]);
     } else {
       walletMutate("MetaMask");
-      setFromChain(networks.ethereum_sepolia);
-      setFromToken(networks.ethereum_sepolia.tokens[0]);
-      setToChain(networks.reapchain_testnet);
-      setToToken(networks.reapchain_testnet.tokens[0]);
+      setFromChain(ethereumNetworkConfig);
+      setFromToken(ethereumNetworkConfig.tokens[0]);
+      setToChain(reapchainNetworkConfig);
+      setToToken(reapchainNetworkConfig.tokens[0]);
     }
   };
 
@@ -414,11 +420,9 @@ const Bridge: React.FC = () => {
     if (!keplr) {
       return;
     }
-
     if (!checkSendAmount()) {
       return;
     }
-
     setTxModalOpen(true);
   };
 

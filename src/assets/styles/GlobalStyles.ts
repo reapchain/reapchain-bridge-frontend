@@ -14,6 +14,11 @@ ${reset}
 
 body {
 }
+
+.ant-message-custom-content {
+	
+}
+
 `;
 
 export default GlobalStyles;

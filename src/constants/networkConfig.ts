@@ -55,7 +55,7 @@ export const ethereumNetworkConfig: Chain = {
       decimals: ethereumConfig.token.decimals,
       contractAddress: ERC20ContractAddress,
       contractOwner: "",
-      icon: "ethereum",
+      icon: "reapchain_classic",
     },
   ],
   wallet: "MetaMask",

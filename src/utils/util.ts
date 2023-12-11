@@ -1,6 +1,7 @@
 import reapchainIcon from "assets/images/reapchain.png";
 import ethereumIcon from "assets/images/ethereum.png";
 import bgReapchainIcon from "assets/images/icon/reap_bg.png";
+import bgReapchainClasicIcon from "assets/images/icon/creap_bg.png";
 import bgEthereumIcon from "assets/images/icon/eth_bg.png";
 import { Chain } from "types/chain";
 import { fromHex, toBech32, fromBech32, toHex } from "@cosmjs/encoding";
@@ -20,6 +21,8 @@ export const getBgIconSource = (logo: string) => {
     return bgReapchainIcon;
   } else if (logo === "ethereum") {
     return bgEthereumIcon;
+  } else if (logo === "reapchain_classic") {
+    return bgReapchainClasicIcon;
   } else {
     return reapchainIcon;
   }
