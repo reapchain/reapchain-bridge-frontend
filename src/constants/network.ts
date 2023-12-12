@@ -152,7 +152,8 @@ export const networks: NetworkList = {
   ethereum_sepolia: {
     chainId: "0xAA36A7",
     chainName: "Ethereum Sepolia Testnet",
-    rpcUrls: ["https://test-eth-rpc.reapchain.org"],
+    // rpcUrls: ["https://test-eth-rpc.reapchain.org"],
+    rpcUrls: ["https://sepolia.infura.io/v3/04d0b50dcb5a4f8185354eb0c1e60de6"],
     blockExplorerUrls: ["https://sepolia.etherscan.io"],
     nativeCurrency: {
       name: "Sepolia",
