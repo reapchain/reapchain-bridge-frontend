@@ -1,7 +1,7 @@
 import colors from "assets/colors";
 import React, { useMemo } from "react";
 import styled from "styled-components";
-import { getBgIconSource } from "utils/util";
+import { getBgIconSource, getTokenSource } from "utils/util";
 import { formatEther } from "@ethersproject/units";
 import { useWalletQuery } from "queries/useWalletType";
 import { getBigNumberEth } from "utils/number";
@@ -45,6 +45,11 @@ const StyledTransferInfo = styled.div`
 const StyledTransferInfoItem = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+const StyledTokenIcon = styled.img`
+  width: 10px;
+  height: 10px;
+  margin-right: 4px;
 `;
 
 interface Props {
@@ -98,7 +103,10 @@ const BridgeTxChainItem: React.FC<Props> = ({
           <ChainSideText>
             {isFrom ? "Source" : "Destination"} Chain
           </ChainSideText>
-          <StyledDenomText>{denom}</StyledDenomText>
+          <StyledDenomText>
+            <StyledTokenIcon src={getTokenSource(denom)} alt="icon" />
+            {denom}
+          </StyledDenomText>
         </StyledTransferInfoItem>
       </StyledTransferInfo>
     </StyledContainer>

@@ -8,7 +8,6 @@ import ChainSelectModal from "components/bridge/ChainSelectModal";
 import ExchangeButton from "components/bridge/ExchangeButton";
 import TransferButton from "components/bridge/TransferButton";
 import { Chain, Token } from "types/chain";
-import { networks } from "constants/network";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import TokenSelectModal from "components/bridge/TokenSelectModal";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -25,6 +24,10 @@ import FeeInfo from "components/bridge/FeeInfo";
 import { useWeb3React } from "@web3-react/core";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { compareHexAddress, convertToBech32, convertToHex } from "utils/util";
+import {
+  ethereumNetworkConfig,
+  reapchainNetworkConfig,
+} from "constants/networkConfig";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.white};
@@ -67,13 +70,13 @@ const Bridge: React.FC = () => {
   const [chainModalTarget, setChainModalTarget] = useState("from");
   const [tokenModalOpen, setTokenModalOpen] = useState(false);
   const [tokenModalTarget, setTokenModalTarget] = useState("from");
-  const [fromChain, setFromChain] = useState<Chain>(networks.ethereum_sepolia);
-  const [toChain, setToChain] = useState<Chain>(networks.reapchain_testnet);
+  const [fromChain, setFromChain] = useState<Chain>(ethereumNetworkConfig);
+  const [toChain, setToChain] = useState<Chain>(reapchainNetworkConfig);
   const [fromToken, setFromToken] = useState<Token>(
-    networks.ethereum_sepolia.tokens[0]
+    ethereumNetworkConfig.tokens[0]
   );
   const [toToken, setToToken] = useState<Token>(
-    networks.reapchain_testnet.tokens[0]
+    reapchainNetworkConfig.tokens[0]
   );
   const [sendAmount, setSendAmount] = useState<string>("");
   const [receiveAmount, setReceiveAmount] = useState<string>("");

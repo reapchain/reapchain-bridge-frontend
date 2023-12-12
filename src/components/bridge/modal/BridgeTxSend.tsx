@@ -208,7 +208,9 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo, onClose }) => {
           {showInfo && <ProgressCheckIcon src={checkIcon} />}
         </ProgressWrapper>
         <TitleWrapper>
-          <StyledTitleText>Tx Sending</StyledTitleText>
+          <StyledTitleText>
+            {percent < 100 ? "Tx Sending" : "Submitted"}
+          </StyledTitleText>
         </TitleWrapper>
         <TokenTransferWrapper>
           <StyledTxDesc>{displayTxDesc()}</StyledTxDesc>

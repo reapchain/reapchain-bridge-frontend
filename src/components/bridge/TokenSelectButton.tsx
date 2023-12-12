@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import logoIcon from "../../assets/images/logo.png";
 import Icon from "@mdi/react";
 import { mdiChevronDown } from "@mdi/js";
 import colors from "../../assets/colors";
 import { Token } from "types/chain";
-import { getBgIconSource, getIconSource } from "utils/util";
+import { getBgIconSource } from "utils/util";
 
 type Props = {
   token: Token;

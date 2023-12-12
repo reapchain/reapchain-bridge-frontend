@@ -4,6 +4,7 @@ import colors from "assets/colors";
 import Icon from "@mdi/react";
 import { mdiChevronRight } from "@mdi/js";
 import { useNavigate } from "react-router-dom";
+import { getBgIconSource, getTokenSource } from "utils/util";
 
 const StyledButton = styled.div<{ active?: string }>`
   height: 48px;
@@ -35,6 +36,11 @@ const StyledIcon = styled(Icon)<{ active?: string }>`
   color: ${(props) => (props.active ? colors.lightblue : colors.darkblue01)};
 `;
 
+const StyledTokenIcon = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+
 type Props = {
   value: string;
   selected: string;
@@ -55,8 +61,10 @@ const TabButton: React.FC<Props> = ({ value, selected, from, to }) => {
   if (value === selected) {
     return (
       <StyledButton active={"true"} onClick={handleClick}>
+        <StyledTokenIcon src={getTokenSource(from)} alt="icon" />
         <StyledButtonText active={"true"}>{from}</StyledButtonText>
         <StyledIcon active={"true"} path={mdiChevronRight} size={1} />
+        <StyledTokenIcon src={getTokenSource(to)} alt="icon" />
         <StyledButtonText active={"true"}>{to}</StyledButtonText>
       </StyledButton>
     );
@@ -64,8 +72,10 @@ const TabButton: React.FC<Props> = ({ value, selected, from, to }) => {
 
   return (
     <StyledButton onClick={handleClick}>
+      <StyledTokenIcon src={getTokenSource(from)} alt="icon" />
       <StyledButtonText>{from}</StyledButtonText>
       <StyledIcon path={mdiChevronRight} size={1} />
+      <StyledTokenIcon src={getTokenSource(to)} alt="icon" />
       <StyledButtonText>{to}</StyledButtonText>
     </StyledButton>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import colors from "assets/colors";
-import { getBgIconSource, getIconSource } from "utils/util";
+import { getBgIconSource, getIconSource, getTokenSource } from "utils/util";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Popover } from "antd";
 import icon from "assets/images/ellipse.svg";
@@ -72,9 +72,9 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
               Bridge Rate
             </StyledItemTitle>
             <StyledToken>
-              <StyledTokenIcon src={getBgIconSource("ethereum")} alt="icon" />
+              <StyledTokenIcon src={getTokenSource("cREAP")} alt="icon" />
               <StyledItemValue>cREAP&nbsp;=&nbsp;</StyledItemValue>
-              <StyledTokenIcon src={getBgIconSource("reapchain")} alt="icon" />
+              <StyledTokenIcon src={getTokenSource("REAP")} alt="icon" />
               <StyledItemValue>REAP&nbsp;:&nbsp;</StyledItemValue>
               <StyledRatio>1 : 1</StyledRatio>
             </StyledToken>
@@ -100,7 +100,7 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
                 <InfoCircleOutlined style={{ marginLeft: "4px" }} />
               </Popover>
             </StyledItemTitle>
-            <StyledItemValue>20 minutes</StyledItemValue>
+            <StyledItemValue>about 20 minutes</StyledItemValue>
           </StyledItem>
         </StyledList>
       </StyledContainer>
@@ -116,9 +116,9 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
             Bridge Rate
           </StyledItemTitle>
           <StyledToken>
-            <StyledTokenIcon src={getBgIconSource("reapchain")} alt="icon" />
+            <StyledTokenIcon src={getTokenSource("REAP")} alt="icon" />
             <StyledItemValue>REAP&nbsp;:&nbsp;</StyledItemValue>
-            <StyledTokenIcon src={getBgIconSource("ethereum")} alt="icon" />
+            <StyledTokenIcon src={getTokenSource("cREAP")} alt="icon" />
             <StyledItemValue>cREAP&nbsp;=&nbsp;</StyledItemValue>
             <StyledRatio>1 : 1</StyledRatio>
           </StyledToken>

@@ -28,6 +28,16 @@ export const getBgIconSource = (logo: string) => {
   }
 };
 
+export const getTokenSource = (token: string) => {
+  if (token === "cREAP") {
+    return getBgIconSource("reapchain_classic");
+  } else if (token === "REAP") {
+    return getBgIconSource("reapchain");
+  } else {
+    return getBgIconSource("reapchain");
+  }
+};
+
 export const displayShortHexAddress = (hexAddress: string) => {
   return hexAddress
     .substring(0, 6)

@@ -12,7 +12,7 @@ const commonProcess = (res: any) => {
 
 export const getNodeInfo = (endpoint: string): Promise<any> =>
   axios
-    .get(`${endpoint}/node_info`)
+    .get(`${endpoint}/node_info`, {})
     .then((res) => {
       return { data: res.data };
     })
@@ -78,7 +78,7 @@ export const getReapchainTxInfo = async (
   txHash: string
 ): Promise<any> =>
   axios
-    .get(`${endpoint}/cosmos/tx/v1beta1/txs/${txHash}`, { timeout: 1000 })
+    .get(`${endpoint}/cosmos/tx/v1beta1/txs/${txHash}`)
     .then((res) => {
       const data = commonProcess(res.data);
       // console.log("getReapchainTxInfo data : ", data);
@@ -100,7 +100,13 @@ export const getEthereumTxInfo = async (txHash: string): Promise<any> =>
         params: [txHash],
         id: 1,
       },
-      { timeout: 1000 }
+      {
+        // headers: {
+        //   "Access-Control-Allow-Origin": "*",
+        //   "Access-Control-Allow-Headers": "*",
+        // },
+        timeout: 1000,
+      }
     )
     .then((res) => {
       const data = commonProcess(res);
