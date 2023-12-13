@@ -183,7 +183,6 @@ const Bridge: React.FC = () => {
 
   const fetchBalanceOfToken = async () => {
     if (parseInt(fromChain.chainId) !== chainId) {
-      console.log("ChainId missmatch");
       setAvailableBalance(BigNumber.from(0));
       return;
     }
@@ -403,7 +402,7 @@ const Bridge: React.FC = () => {
       <StyledConnectWalletWrapper>
         <TransferButton
           onClickExecute={handleClickExecute}
-          onClickConnectWallet={handleClickConnectWallet}
+          // onClickConnectWallet={handleClickConnectWallet}
         />
       </StyledConnectWalletWrapper>
       {receiveAmount && <FeeInfo />}

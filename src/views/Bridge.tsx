@@ -224,7 +224,6 @@ const Bridge: React.FC = () => {
 
   const fetchBalanceOfToken = async () => {
     if (parseInt(fromChain.chainId) !== chainId) {
-      console.log("ChainId missmatch");
       setAvailableBalance(BigNumber.from(0));
       return;
     }
@@ -302,7 +301,8 @@ const Bridge: React.FC = () => {
 
   useEffect(() => {
     clearForm();
-  }, [isActive, keplrWallet, fromChain, fromToken, address]);
+    fetchBalance();
+  }, [isActive, keplrWallet, fromChain, fromToken, address, provider]);
 
   useEffect(() => debouncedChangeSendAmount(), [sendAmount]);
 
@@ -346,10 +346,16 @@ const Bridge: React.FC = () => {
     }
   }, 500);
 
-  const handleClickConnectWallet = () => {
+  const checkConnectWallet = () => {
     if (targetWallet === "MetaMask") {
+      if (!address) {
+        // messageApi.error("Please connect your MetaMask wallet.");
+      }
       connectWeb3("injected");
     } else {
+      if (!keplrWallet || !keplrWallet.isActive) {
+        messageApi.error("Please connect your Keplr wallet.");
+      }
       connectKeplr();
     }
   };
@@ -374,7 +380,10 @@ const Bridge: React.FC = () => {
   };
 
   const handleClickExecute = () => {
-    if (!receiveAmount) {
+    checkConnectWallet();
+
+    if (!sendAmount || !receiveAmount) {
+      messageApi.warning("Please check your send & receive amount.");
       return;
     }
 
@@ -498,7 +507,7 @@ const Bridge: React.FC = () => {
       <StyledExecuteButtonWrapper>
         <TransferButton
           onClickExecute={handleClickExecute}
-          onClickConnectWallet={handleClickConnectWallet}
+          // onClickConnectWallet={handleClickConnectWallet}
         />
       </StyledExecuteButtonWrapper>
       <BridgeTxModal

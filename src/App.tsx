@@ -76,7 +76,7 @@ const App = () => {
                       <Route path="/bridge/reap" element={<Bridge />} />
                       {/* <Route path="/swap" element={<Swap />} /> */}
                       {/* <Route path="/test" element={<Test />} /> */}
-                      <Route path="/*" element={<Swap />} />
+                      <Route path="/*" element={<Bridge />} />
                     </Routes>
                   </Suspense>
                 </StyledContent>

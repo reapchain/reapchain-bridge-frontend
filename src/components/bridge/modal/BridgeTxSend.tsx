@@ -127,7 +127,6 @@ const BridgeTxSend: React.FC<Props> = ({ targetWallet, txInfo, onClose }) => {
         }
       } else if (targetWallet === "MetaMask") {
         const res = await getEthereumTxInfo(txInfo.hash);
-        console.log("res : ", res);
         if (!res) {
           const prevPercent = percent >= 100 ? percent - 100 : percent;
           const nowPercent = prevPercent + 10;
