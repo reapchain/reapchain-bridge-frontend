@@ -69,9 +69,7 @@ const RecipientInput: React.FC<Props> = ({
   return (
     <StyledContainer>
       <StyledCheckbox checked={openRecipient} onChange={handleClickToggle}>
-        <ToggleButtonText>
-          Send to another Recipient, not your account
-        </ToggleButtonText>
+        <ToggleButtonText>Set optional recipient address</ToggleButtonText>
       </StyledCheckbox>
       {openRecipient && (
         <StyledInputAddress
