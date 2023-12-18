@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import styled from "styled-components";
 import colors from "./assets/colors";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -11,6 +11,7 @@ import TabMenu from "components/menu/TabMenu";
 import Bridge from "views/Bridge";
 import Web3ContextProvider from "components/common/Web3ContextProvider";
 import GlobalStyles from "assets/styles/GlobalStyles";
+import { getEthereumTxInfo } from "apis/api";
 
 const metaMask = initializeConnector<MetaMask>(
   (actions) => new MetaMask({ actions })
@@ -56,6 +57,8 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [metaMaskConnector, metaMaskHooks] = connectors["MetaMask"];
+
+  useEffect(() => {}, []);
 
   return (
     <Web3ReactProvider connectors={[[metaMaskConnector, metaMaskHooks]]}>

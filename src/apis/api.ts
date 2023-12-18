@@ -101,11 +101,7 @@ export const getEthereumTxInfo = async (txHash: string): Promise<any> =>
         id: 1,
       },
       {
-        // headers: {
-        //   "Access-Control-Allow-Origin": "*",
-        //   "Access-Control-Allow-Headers": "*",
-        // },
-        timeout: 1000,
+        timeout: 3000,
       }
     )
     .then((res) => {

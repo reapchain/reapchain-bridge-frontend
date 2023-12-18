@@ -29,6 +29,7 @@ import {
   calcFee,
 } from "utils/fee";
 import { TxHistory, updateSendToCosmosTxs } from "utils/txsHistory";
+import RecipientInput from "components/bridge/modal/RecipientInput";
 
 const StyledModal = styled(Modal)`
   & .ant-modal-content {
@@ -94,8 +95,15 @@ const StyledApproveMessage = styled.div`
 `;
 
 const StyledFeeWrapper = styled.div`
-  margin-top: 20px;
+  margin-top: 10px;
   margin-bottom: 40px;
+`;
+
+const StyledRecipientWrapper = styled.div`
+  margin-top: 20px;
+  margin-bottom: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
 `;
 
 type Props = {
@@ -140,6 +148,9 @@ const BridgeTxModal: React.FC<Props> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [showApproveMessage, setShowApproveMessage] = useState<boolean>(false);
 
+  const [openRecipient, setOpenRecipient] = useState<boolean>(false);
+  const [recipient, setRecipient] = useState<string>("");
+
   const checkSendAmount = (): boolean => {
     const tempSendAmount = removeLastDot(sendAmount);
 
@@ -164,18 +175,51 @@ const BridgeTxModal: React.FC<Props> = ({
     return true;
   };
 
+  const checkRecipient = (): boolean => {
+    if (openRecipient) {
+      if (!recipient) {
+        messageApi.error("Please input recipient address.");
+        return false;
+      }
+
+      if (targetWallet === "Keplr") {
+        if (recipient.substring(0, 2) !== "0x" || recipient.length !== 42) {
+          messageApi.error("Invalid recipient address.");
+          return false;
+        }
+      } else if (targetWallet === "MetaMask") {
+        if (recipient.substring(0, 4) !== "reap" || recipient.length !== 43) {
+          messageApi.error("Invalid recipient address.");
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  const clearRecipientInfo = () => {
+    setRecipient("");
+    setOpenRecipient(false);
+  };
+
   const handleClickExecute = () => {
     if (loading === true) {
-      return;
-    }
-    setLoading(true);
-    if (!checkSendAmount()) {
       return;
     }
 
     setTimeout(() => {
       setLoading(false);
     }, 1000);
+
+    setLoading(true);
+    if (!checkSendAmount()) {
+      return;
+    }
+
+    if (!checkRecipient()) {
+      return;
+    }
 
     if (targetWallet === "MetaMask") {
       executeSendToCosmos();
@@ -192,9 +236,12 @@ const BridgeTxModal: React.FC<Props> = ({
       }
       const tempSendAmount = removeLastDot(sendAmount);
       const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
+
+      const ethDest = recipient || convertToHex(keplr.account.bech32Address);
+
       const sendToEthParams: MessageSendToEthParams = {
         sender: keplr.account.bech32Address,
-        ethDest: convertToHex(keplr.account.bech32Address),
+        ethDest: ethDest,
         amount: {
           denom: "areap",
           amount: applySendToEthFeeBigNumber(sendAmountBigNumber).toString(),
@@ -215,8 +262,6 @@ const BridgeTxModal: React.FC<Props> = ({
         fromChain
       );
 
-      console.log("keplrTxResult : ", keplrTxResult);
-
       if (!keplrTxResult.result && keplrTxResult.msg === "Request rejected") {
         messageApi.error(keplrTxResult.msg);
         return;
@@ -225,6 +270,7 @@ const BridgeTxModal: React.FC<Props> = ({
         return;
       }
 
+      clearRecipientInfo();
       setTxInfo({
         isSend: true,
         type: "SendToEth",
@@ -235,6 +281,7 @@ const BridgeTxModal: React.FC<Props> = ({
       });
     } catch (err) {
       console.error(err);
+      clearForm();
       setTxInfo({
         ...txInfo,
         error: err,
@@ -298,6 +345,7 @@ const BridgeTxModal: React.FC<Props> = ({
           }
         );
         if (approveResult.hash) {
+          clearRecipientInfo();
           setTxInfo({
             isSend: true,
             type: "ERC20Approve",
@@ -310,13 +358,8 @@ const BridgeTxModal: React.FC<Props> = ({
         return;
       }
 
-      const bech32Address = convertToBech32(address, "reap");
-      const hexAddress = convertToHex(bech32Address);
-
-      if (!compareHexAddress(address, hexAddress)) {
-        messageApi.error("Error : address missmatch");
-        return;
-      }
+      const reapDest = recipient || convertToBech32(address, "reap");
+      const hexAddress = address;
 
       const contractBridge = new Contract(
         BridgeContractAddress,
@@ -326,7 +369,7 @@ const BridgeTxModal: React.FC<Props> = ({
 
       const sendToCosmosResult = await contractBridge.sendToCosmos(
         ERC20ContractAddress,
-        bech32Address,
+        reapDest,
         sendAmountBigNumber,
         {
           gasLimit: 100000,
@@ -349,7 +392,7 @@ const BridgeTxModal: React.FC<Props> = ({
         createdAt: "",
       };
       updateSendToCosmosTxs(txHistory);
-
+      clearRecipientInfo();
       setTxInfo({
         isSend: true,
         type: "SendToCosmos",
@@ -376,6 +419,7 @@ const BridgeTxModal: React.FC<Props> = ({
     if (txInfo.isSend) {
       clearForm();
     }
+    clearRecipientInfo();
     onCancel();
   };
 
@@ -446,7 +490,17 @@ const BridgeTxModal: React.FC<Props> = ({
                 interaction first.
               </StyledApproveMessage>
             )}
-
+            {!showApproveMessage && (
+              <StyledRecipientWrapper>
+                <RecipientInput
+                  targetWallet={targetWallet}
+                  openRecipient={openRecipient}
+                  recipient={recipient}
+                  setOpenRecipient={setOpenRecipient}
+                  setRecipient={setRecipient}
+                />
+              </StyledRecipientWrapper>
+            )}
             <StyledFeeWrapper>
               <FeeDetailInfo
                 targetWallet={targetWallet}

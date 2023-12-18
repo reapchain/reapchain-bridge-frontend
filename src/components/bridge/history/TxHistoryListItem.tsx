@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import colors from "assets/colors";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { getBgIconSource } from "utils/util";
+import { abbrAddress, abbrAddress2, getBgIconSource } from "utils/util";
 import { formatEther } from "@ethersproject/units";
 import RefundButton from "components/bridge/history/RefundButton";
 import { TxHistory } from "utils/txsHistory";
@@ -34,11 +34,16 @@ const StyledTokenIcon = styled.img`
   height: 36px;
   padding-right: 12px;
 `;
+const StatusArea = styled.div``;
 const StatusText = styled.div`
   color: ${colors.white};
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
-  width: 100px;
+`;
+const TxIdText = styled.div`
+  color: ${colors.darkblue01};
+  font-size: 10px;
+  font-weight: 700;
 `;
 const TokenTitleText = styled.div`
   color: ${colors.white};
@@ -110,7 +115,10 @@ const TxHistoryListItem: React.FC<Props> = ({ item, onClickRefund }) => {
     return (
       <StyledContainer>
         <StyledItemWrapper>
-          <StatusText>{displayStatus(item)}</StatusText>
+          <StatusArea>
+            <TxIdText>[{item.id}]</TxIdText>
+            <StatusText>{displayStatus(item)}</StatusText>
+          </StatusArea>
           <StyledTokenTransfer>
             <StyledTokenIcon src={getBgIconSource("reapchain")} alt="icon" />
             <StyledTokenTransferAmount>
@@ -144,7 +152,10 @@ const TxHistoryListItem: React.FC<Props> = ({ item, onClickRefund }) => {
   return (
     <StyledContainer>
       <StyledItemWrapper>
-        <StatusText>{displayStatus(item)}</StatusText>
+        <StatusArea>
+          <TxIdText>[{abbrAddress2(item.id.toString(), 4, 4)}]</TxIdText>
+          <StatusText>{displayStatus(item)}</StatusText>
+        </StatusArea>
         <StyledTokenTransfer>
           <StyledTokenIcon
             src={getBgIconSource("reapchain_classic")}
