@@ -7,6 +7,9 @@ import { Popover } from "antd";
 import icon from "assets/images/ellipse.svg";
 import { WalletType } from "queries/useWalletType";
 import { Token } from "types/chain";
+import { bridgeFee, chainFee } from "constants/bridgeConfig";
+import { formatEther } from "@ethersproject/units";
+import { formatFixed } from "@ethersproject/bignumber";
 
 const StyledContainer = styled.div``;
 const StyledList = styled.div`
@@ -131,7 +134,9 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
               <InfoCircleOutlined style={{ marginLeft: "6px" }} />
             </Popover>
           </StyledItemTitle>
-          <StyledItemValue>2 REAP</StyledItemValue>
+          <StyledItemValue>
+            {parseInt(formatEther(bridgeFee))} REAP
+          </StyledItemValue>
         </StyledItem>
         <StyledItem>
           <StyledItemTitle>
@@ -141,7 +146,9 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
               <InfoCircleOutlined style={{ marginLeft: "6px" }} />
             </Popover>
           </StyledItemTitle>
-          <StyledItemValue>1 REAP</StyledItemValue>
+          <StyledItemValue>
+            {parseInt(formatEther(chainFee))} REAP
+          </StyledItemValue>
         </StyledItem>
         <StyledItem>
           <StyledItemTitle>
