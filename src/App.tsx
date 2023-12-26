@@ -12,6 +12,7 @@ import Bridge from "views/Bridge";
 import Web3ContextProvider from "components/common/Web3ContextProvider";
 import GlobalStyles from "assets/styles/GlobalStyles";
 import { getEthereumTxInfo } from "apis/api";
+import NotFound from "views/NotFound";
 
 const metaMask = initializeConnector<MetaMask>(
   (actions) => new MetaMask({ actions })
@@ -70,7 +71,6 @@ const App = () => {
               <BrowserRouter>
                 <Header />
                 <StyledContent>
-                  <TabMenu />
                   <Suspense fallback={<ComponentLoading />}>
                     <Routes>
                       <Route path="/" element={<Bridge />} />
@@ -79,7 +79,7 @@ const App = () => {
                       <Route path="/bridge/reap" element={<Bridge />} />
                       {/* <Route path="/swap" element={<Swap />} /> */}
                       {/* <Route path="/test" element={<Test />} /> */}
-                      <Route path="/*" element={<Bridge />} />
+                      <Route path="/*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
                 </StyledContent>

@@ -33,6 +33,7 @@ import {
 } from "constants/networkConfig";
 import BridgeTxModal from "components/bridge/modal/BridgeTxModal";
 import { applySendToEthFee } from "utils/fee";
+import TabMenu from "components/menu/TabMenu";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.primary};
@@ -468,6 +469,7 @@ const Bridge: React.FC = () => {
 
   return (
     <>
+      <TabMenu />
       <StyledBridgeCard>
         <StyledSelectChainWrapper>
           <ChainSelectButton chain={fromChain} onClick={() => {}} />
