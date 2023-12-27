@@ -30,6 +30,7 @@ import {
 } from "utils/fee";
 import { TxHistory, updateSendToCosmosTxs } from "utils/txsHistory";
 import RecipientInput from "components/bridge/modal/RecipientInput";
+import { bridgeFee, chainFee } from "constants/bridgeConfig";
 
 const StyledModal = styled(Modal)`
   & .ant-modal-content {
@@ -248,11 +249,11 @@ const BridgeTxModal: React.FC<Props> = ({
         },
         bridgeFee: {
           denom: "areap",
-          amount: "2000000000000000000",
+          amount: bridgeFee.toString(),
         },
         chainFee: {
           denom: "areap",
-          amount: "1000000000000000000",
+          amount: chainFee.toString(),
         },
       };
 
@@ -341,7 +342,7 @@ const BridgeTxModal: React.FC<Props> = ({
           BridgeContractAddress,
           BigNumber.from(ApproveAmount),
           {
-            gasLimit: 50000,
+            gasLimit: 100000,
           }
         );
         if (approveResult.hash) {

@@ -15,7 +15,10 @@ import {
 } from "queries/useKeplrWallet";
 import { getItem, setItem } from "utils/localStorage";
 import { localStorageKey } from "constants/storage";
-import { reapchainNetworkConfig } from "constants/networkConfig";
+import {
+  ethereumNetworkConfig,
+  reapchainNetworkConfig,
+} from "constants/networkConfig";
 
 const StyledContainer = styled.div`
   background-color: ${colors.blue};
@@ -161,12 +164,12 @@ const HeaderWallet: React.FC<Props> = () => {
   const handleClickLinkButton = useCallback(() => {
     if (targetWallet === "MetaMask") {
       window.open(
-        `${networks.ethereum_sepolia.explorerUrl}/address/${address}`,
+        `${ethereumNetworkConfig.explorerUrl}/address/${address}`,
         "_blank"
       );
     } else {
       window.open(
-        `${networks.reapchain_testnet.explorerUrl}/account/${keplrWallet.address}`,
+        `${reapchainNetworkConfig.explorerUrl}/account/${keplrWallet.address}`,
         "_blank"
       );
     }
