@@ -2,7 +2,7 @@ const links = {
   homepage: "https://reapchain.com",
   dashboard: "https://dashboard.reapchain.org",
   github: "https://github.com/reapchain",
-  gitbook: "https://reapchain.gitbook.io/reapchain",
+  gitbook: "https://reapchain.gitbook.io/mainnet",
   bridgeEtherscan:
     "https://sepolia.etherscan.io/address/0x9C83f7f0B206017622e218688D92dA72f5E4295e",
   erc20Etherscan:

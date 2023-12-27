@@ -45,7 +45,6 @@ export const reapchainKeplrConfig = {
       },
     },
   ],
-
   features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
   beta: true,
 };
