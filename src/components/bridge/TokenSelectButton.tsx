@@ -40,7 +40,7 @@ const TokenSelectButton: React.FC<Props> = ({ token, onClick }) => {
   return (
     <StyledTokenSelectButton onClick={onClick}>
       <StyledIcon src={getBgIconSource(token.icon)} alt="icon" />
-      <StyledTokenText>{token.name}</StyledTokenText>
+      <StyledTokenText>{token.symbol}</StyledTokenText>
       <StyledArrowIcon
         path={mdiChevronDown}
         size={1}

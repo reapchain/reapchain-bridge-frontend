@@ -37,12 +37,6 @@ export interface EthereumConfig {
   nativeCurrency: NativeCurrency;
 }
 
-// export const ERC20ContractAddress =
-//   "0x89b7284C67B30e8E85A930B8A07c4943286D0D1d";
-
-// export const BridgeContractAddress =
-//   "0x3b2B5B6C4B72b84BAcaF50376e03E51e6103AAe3";
-
 export const reapchainConfig: ReapchainConfig = {
   chainId: 221231,
   chainIdHex: "0x3602F",
@@ -56,27 +50,11 @@ export const reapchainConfig: ReapchainConfig = {
   walletUrlForStaking: "https://test-dashboard.reapchain.org/validators",
 };
 
-// for debug
-// export const reapchainConfig: ReapchainConfig = {
-//   chainId: 101010,
-//   chainIdHex: "0x18A92",
-//   chainName: "Reapchain Dev",
-//   cosmosChainId: "dev_101010-1",
-//   restEndpoint: "http://192.168.250.19:1317",
-//   rpcEndpoint: "http://192.168.250.19:27000",
-//   ethEndpoint: "http://192.168.250.19:27400",
-//   explorerUrl: "https://test-dashboard.reapchain.org",
-//   walletUrl: "https://test-dashboard.reapchain.org/validators",
-//   walletUrlForStaking: "https://test-dashboard.reapchain.org/validators",
-// };
-
 export const ethereumConfig: EthereumConfig = {
   chainIdHex: "0xAA36A7",
   chainName: "Sepolia TestNet",
-  // for testnet
   rpcEndpoint:
-    "https://eth-sepolia.g.alchemy.com/v2/HoLqG30vvtgxqQWWAYSDVJzkNgM7u_-T",
-  // rpcEndpoint: "https://test-eth-rpc.reapchain.org",
+    "https://eth-sepolia.g.alchemy.com/v2/cwmORjO96-FP_fHlH1V-27qRBObpFnaU",
   explorerUrl: "https://sepolia.etherscan.io",
   restEndpoint: "https://test-lcd.reapchain.org",
 

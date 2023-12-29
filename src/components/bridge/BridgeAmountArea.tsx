@@ -106,10 +106,17 @@ const BridgeAmountArea: React.FC<Props> = ({
     <StyledBridgeInputArea>
       <StyledContentWrapper>
         <StyledTitleText>{getTypeTitle()}</StyledTitleText>
-        {type === "send" && (
+        {type === "send" ? (
           <StyledTitleText>
             Balance: {displayBalanceWithDash(availableBalance, token.symbol, 4)}
           </StyledTitleText>
+        ) : token.symbol === "cREAP" ? (
+          <StyledTitleText>
+            Bridge fee: {parseInt(formatEther(bridgeFee))} REAP, Chain fee:{" "}
+            {parseInt(formatEther(chainFee))} REAP
+          </StyledTitleText>
+        ) : (
+          <StyledTitleText>Ethereum Tx Fee</StyledTitleText>
         )}
       </StyledContentWrapper>
       <StyledInputAmountWrapper>

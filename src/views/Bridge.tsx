@@ -11,7 +11,11 @@ import { networks } from "constants/network";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Contract } from "@ethersproject/contracts";
-import { ERC20ContractAddress } from "constants/contractConfig";
+import {
+  ERC20ContractAddress,
+  BridgeContractAddress,
+  ApproveAmount,
+} from "constants/contractConfig";
 import { ERC20ABI } from "contracts/abi";
 import { removeLastDot, validateDecimalInput } from "utils/number";
 import { debounce } from "lodash";
@@ -33,6 +37,8 @@ import {
 } from "constants/networkConfig";
 import BridgeTxModal from "components/bridge/modal/BridgeTxModal";
 import { applySendToEthFee } from "utils/fee";
+import TabMenu from "components/menu/TabMenu";
+import ApproveModal from "components/bridge/approve/ApproveModal";
 
 const StyledBridgeCard = styled(Card)`
   background-color: ${colors.primary};
@@ -109,6 +115,7 @@ const Bridge: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const [txModalOpen, setTxModalOpen] = useState<boolean>(false);
+  const [approveModalOpen, setApproveModalOpen] = useState<boolean>(false);
 
   const {
     provider,
@@ -401,6 +408,36 @@ const Bridge: React.FC = () => {
     }
   };
 
+  const checkApproveAmount = async () => {
+    if (!provider) {
+      return;
+    }
+
+    try {
+      const contractERC20 = new Contract(
+        ERC20ContractAddress,
+        ERC20ABI,
+        provider.getSigner()
+      );
+      const allowanceResult = await contractERC20.allowance(
+        address,
+        BridgeContractAddress
+      );
+
+      const tempSendAmount = removeLastDot(sendAmount);
+      const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
+
+      if (allowanceResult.lt(sendAmountBigNumber)) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  };
+
   const checkSendAmount = (): boolean => {
     const tempSendAmount = removeLastDot(sendAmount);
 
@@ -455,6 +492,13 @@ const Bridge: React.FC = () => {
     }
 
     if (!checkSendAmount()) {
+      messageApi.error("Please check your send amount");
+      return;
+    }
+
+    if (!(await checkApproveAmount())) {
+      // messageApi.info("To use the bridge, you must approve ERC20 first");
+      setApproveModalOpen(true);
       return;
     }
 
@@ -466,8 +510,13 @@ const Bridge: React.FC = () => {
     setTxModalOpen(false);
   };
 
+  const handleClickApproveModalClose = () => {
+    setApproveModalOpen(false);
+  };
+
   return (
     <>
+      <TabMenu />
       <StyledBridgeCard>
         <StyledSelectChainWrapper>
           <ChainSelectButton chain={fromChain} onClick={() => {}} />
@@ -523,6 +572,10 @@ const Bridge: React.FC = () => {
         onExecute={executeTransaction}
         onCancel={handleClickModalClose}
         clearForm={clearForm}
+      />
+      <ApproveModal
+        open={approveModalOpen}
+        onCancel={handleClickApproveModalClose}
       />
       {contextHolder}
     </>
