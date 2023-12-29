@@ -161,7 +161,7 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
               <InfoCircleOutlined style={{ marginLeft: "4px" }} />
             </Popover>
           </StyledItemTitle>
-          <StyledItemValue>20 minutes</StyledItemValue>
+          <StyledItemValue>about 1 hour</StyledItemValue>
         </StyledItem>
       </StyledList>
     </StyledContainer>
