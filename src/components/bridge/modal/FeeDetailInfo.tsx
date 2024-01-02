@@ -130,9 +130,9 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
           <StyledItemTitle>
             <StyledIcon src={icon} />
             Fee(Bridge)
-            <Popover content={<div>Bridge Fee</div>} title="Fee">
+            {/* <Popover content={<div>Bridge Fee</div>} title="Fee">
               <InfoCircleOutlined style={{ marginLeft: "6px" }} />
-            </Popover>
+            </Popover> */}
           </StyledItemTitle>
           <StyledItemValue>
             {parseInt(formatEther(bridgeFee))} REAP
@@ -142,9 +142,9 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
           <StyledItemTitle>
             <StyledIcon src={icon} />
             Fee(Chain)
-            <Popover content={<div>Chain Fee</div>} title="Fee">
+            {/* <Popover content={<div>Chain Fee</div>} title="Fee">
               <InfoCircleOutlined style={{ marginLeft: "6px" }} />
-            </Popover>
+            </Popover> */}
           </StyledItemTitle>
           <StyledItemValue>
             {parseInt(formatEther(chainFee))} REAP
@@ -154,12 +154,12 @@ const FeeDetailInfo: React.FC<Props> = ({ targetWallet }) => {
           <StyledItemTitle>
             <StyledIcon src={icon} />
             Estimated Time of Arrival
-            <Popover
+            {/* <Popover
               content={<div>Estimated Time of Arrival</div>}
               title="Estimated Time of Arrival"
             >
               <InfoCircleOutlined style={{ marginLeft: "4px" }} />
-            </Popover>
+            </Popover> */}
           </StyledItemTitle>
           <StyledItemValue>about 1 hour</StyledItemValue>
         </StyledItem>
