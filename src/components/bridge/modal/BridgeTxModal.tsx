@@ -336,8 +336,6 @@ const BridgeTxModal: React.FC<Props> = ({
       const sendAmountBigNumber = BigNumber.from(parseEther(tempSendAmount));
 
       if (!(await checkApproveAmount())) {
-        // messageApi.info("To use the bridge, you must approve ERC20 first.");
-
         const approveResult = await contractERC20.approve(
           BridgeContractAddress,
           BigNumber.from(ApproveAmount),
