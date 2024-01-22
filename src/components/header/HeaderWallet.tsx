@@ -1,13 +1,12 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
 import { Button, Dropdown, message } from "antd";
 import HeaderWalletContext from "components/header/HeaderWalletContext";
 import { useWalletQuery } from "queries/useWalletType";
-import { networks } from "constants/network";
 import { connectKeplrWallet } from "utils/keplr";
-import { displayShortHexAddress } from "utils/util";
+import { abbrAddress2, displayShortHexAddress } from "utils/util";
 import {
   initKeplrWallet,
   useKeplrMutation,
@@ -19,6 +18,7 @@ import {
   ethereumNetworkConfig,
   reapchainNetworkConfig,
 } from "constants/networkConfig";
+import { CopyOutlined, CheckOutlined } from "@ant-design/icons";
 
 const StyledContainer = styled.div`
   background-color: ${colors.blue};
@@ -83,7 +83,12 @@ const StyledMenuItem = styled.div`
   }
 `;
 
-const StyledButtonText = styled.div`
+const StyledButtonText = styled.div``;
+
+const StyledAddress = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
   font-size: 14px;
   font-weight: 600;
   line-height: 140%;
@@ -108,6 +113,18 @@ const HeaderWallet: React.FC<Props> = () => {
   const { mutate: keplrMutate } = useKeplrMutation();
   const { data: keplrData } = useKeplrQuery();
   const keplrWallet = keplrData ?? initKeplrWallet;
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const [copyFlag, setCopyFlag] = useState(false);
+
+  const handleMenuClick = (e: any) => {
+    if (e.key !== "1") {
+      setOpenDropdown(false);
+    }
+  };
+
+  const handleOpenChange = () => {
+    setOpenDropdown(true);
+  };
 
   useEffect(() => {
     if (getItem(localStorageKey.KEY_KEPLR_ACTIVE) === "active") {
@@ -161,6 +178,23 @@ const HeaderWallet: React.FC<Props> = () => {
     }
   };
 
+  const getAddress = () => {
+    if (targetWallet === "MetaMask") {
+      return address;
+    } else {
+      return keplrWallet.address;
+    }
+  };
+
+  const copyAddress = async () => {
+    setCopyFlag(true);
+    await navigator.clipboard.writeText(getAddress());
+
+    setTimeout(() => {
+      setCopyFlag(false);
+    }, 1500);
+  };
+
   const handleClickLinkButton = useCallback(() => {
     if (targetWallet === "MetaMask") {
       window.open(
@@ -192,11 +226,28 @@ const HeaderWallet: React.FC<Props> = () => {
         items: [
           {
             label: (
+              <StyledMenuItem onClick={copyAddress}>
+                <StyledAddress>
+                  {copyFlag ? (
+                    <CheckOutlined style={{ paddingRight: "4px" }} />
+                  ) : (
+                    <CopyOutlined style={{ paddingRight: "4px" }} />
+                  )}
+                  <StyledButtonText>
+                    {abbrAddress2(getAddress(), 8, 6)}
+                  </StyledButtonText>
+                </StyledAddress>
+              </StyledMenuItem>
+            ),
+            key: 1,
+          },
+          {
+            label: (
               <StyledMenuItem onClick={handleClickLinkButton}>
                 <StyledButtonText>Account Info</StyledButtonText>
               </StyledMenuItem>
             ),
-            key: 1,
+            key: 2,
           },
           {
             label: (
@@ -204,11 +255,14 @@ const HeaderWallet: React.FC<Props> = () => {
                 <StyledButtonText>Disconnect</StyledButtonText>
               </StyledMenuItem>
             ),
-            key: 2,
+            key: 3,
           },
         ],
+        onClick: handleMenuClick,
         style: dropDownStyle,
       }}
+      open={openDropdown}
+      onOpenChange={handleOpenChange}
       placement={"bottomLeft"}
       trigger={["click"]}
       overlayStyle={{ color: colors.white }}
