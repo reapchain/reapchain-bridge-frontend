@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import colors from "../../assets/colors";
 import { useWeb3Context } from "components/common/Web3ContextProvider";
-import { Button, Dropdown, message } from "antd";
+import { Button, Dropdown, DropdownProps, message } from "antd";
 import HeaderWalletContext from "components/header/HeaderWalletContext";
 import { useWalletQuery } from "queries/useWalletType";
 import { connectKeplrWallet } from "utils/keplr";
@@ -120,10 +120,13 @@ const HeaderWallet: React.FC<Props> = () => {
     if (e.key !== "1") {
       setOpenDropdown(false);
     }
+    console.log(e);
   };
 
-  const handleOpenChange = () => {
-    setOpenDropdown(true);
+  const handleOpenChange: DropdownProps["onOpenChange"] = (
+    nextOpen: boolean
+  ) => {
+    setOpenDropdown(nextOpen);
   };
 
   useEffect(() => {
