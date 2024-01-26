@@ -9,6 +9,14 @@ The Reapchain Bridge provides two important features:
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Set congig variables
+
+Check the settings of the following files in the src/components path.
+
+- bridgeConfig : fees for transaction
+- chainConfig : network info for Reapchain & Ethereum
+- contractConfig : contract address for ERC-20 & Bridge
+
 ## Available Scripts
 
 In the project directory, you can run:
